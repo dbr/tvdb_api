@@ -484,6 +484,8 @@ class Tvdb:
         else:
             self.config['url_getSeries'] = u"%(base_url)s/api/GetSeries.php?seriesname=%%s&language=%(language)s" % self.config
 
+        self.config['url_seriesByIMDBId'] = u"%(base_url)s/api/GetSeriesByRemoteID.php?imdbid=%%s" % self.config            
+
         self.config['url_epInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/all/%%s.xml" % self.config
         self.config['url_epInfo_zip'] = u"%(base_url)s/api/%(apikey)s/series/%%s/all/%%s.zip" % self.config
 
@@ -621,7 +623,7 @@ class Tvdb:
         return data
     #end _cleanData
 
-    def _getSeries(self, series):
+    def _getSeries(self, series, by_imdb_id=False):
         """This searches TheTVDB.com for the series name,
         If a custom_ui UI is configured, it uses this to select the correct
         series. If not, and interactive == True, ConsoleUI is used, if not
@@ -629,7 +631,11 @@ class Tvdb:
         """
         series = urllib.quote(series.encode("utf-8"))
         log().debug("Searching for show %s" % series)
-        seriesEt = self._getetsrc(self.config['url_getSeries'] % (series))
+        if by_imdb_id:
+            url = self.config['url_seriesByIMDBId']
+        else:
+            url = self.config['url_getSeries']
+        seriesEt = self._getetsrc(url % (series))
         allSeries = []
         for series in seriesEt:
             result = dict((k.tag.lower(), k.text) for k in series.getchildren())
@@ -659,6 +665,14 @@ class Tvdb:
         return ui.selectSeries(allSeries)
 
     #end _getSeries
+
+    def _imdbIdToSid(self, imdbid):
+        ser = self._getSeries(imdbid, by_imdb_id=True)        
+        return ser['id']
+
+    def getSeriesByIMDBId(self, imdbid):
+        sid = self._imdbIdToSid(imdbid)        
+        return self.__getitem__(sid)                
 
     def _parseBanners(self, sid):
         """Parses banners XML, from

@@ -483,6 +483,26 @@ class test_tvdb_by_id(unittest.TestCase):
             'Scrubs'
             )
 
+class test_tvdb_by_imdb_id(unittest.TestCase):
+    t = None
+    def setUp(self):
+        if self.t is None:
+            self.__class__.t = tvdb_api.Tvdb(cache = True, actors = True)
+
+    def test_actors_is_correct_datatype(self):
+        """Check show/_actors key exists and is correct type"""
+        self.assertEquals(
+            self.t[285403, 'imdb']['seriesname'],
+            'Scrubs'
+            )        
+        self.assertEquals(
+            self.t['tt0285403', 'imdb']['seriesname'],
+            'Scrubs'
+            )                
+        self.assertEquals(
+            self.t['0285403', 'imdb']['seriesname'],
+            'Scrubs'
+            )                
 
 class test_tvdb_zip(unittest.TestCase):
     # Used to store the cached instance of Tvdb()

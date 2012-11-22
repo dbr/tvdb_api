@@ -28,6 +28,7 @@ import warnings
 import logging
 import datetime
 import zipfile
+import re
 
 try:
     import xml.etree.cElementTree as ElementTree
@@ -628,8 +629,10 @@ class Tvdb:
         If a custom_ui UI is configured, it uses this to select the correct
         series. If not, and interactive == True, ConsoleUI is used, if not
         BaseUI is used to select the first result.
+
+        If by_imdb_id==True, the first argument will be treated as an imdb id.
         """
-        series = urllib.quote(series.encode("utf-8"))
+        series = urllib.quote(series.encode("utf-8"))                    
         log().debug("Searching for show %s" % series)
         if by_imdb_id:
             url = self.config['url_seriesByIMDBId']
@@ -665,14 +668,6 @@ class Tvdb:
         return ui.selectSeries(allSeries)
 
     #end _getSeries
-
-    def _imdbIdToSid(self, imdbid):
-        ser = self._getSeries(imdbid, by_imdb_id=True)        
-        return ser['id']
-
-    def getSeriesByIMDBId(self, imdbid):
-        sid = self._imdbIdToSid(imdbid)        
-        return self.__getitem__(sid)                
 
     def _parseBanners(self, sid):
         """Parses banners XML, from
@@ -859,14 +854,48 @@ class Tvdb:
         return sid
     #end _nameToSid
 
+    def _imdbIdToSid(self, imdbid):
+        """
+        Like _nameToSid, but takes an IMDB id like:
+        'tt0092455'
+        '0092455'
+        92455                        
+        """
+        ser = self._getSeries(imdbid, by_imdb_id=True)        
+        self._getShowData(ser['id'], self.config['language'])
+        return ser['id']    
+
     def __getitem__(self, key):
         """Handles tvdb_instance['seriesname'] calls.
-        The dict index should be the show id
+        The dict index should be the show id.
+
+        Accepts following key formats        
+        series name: tvdb_instance['Scrubs'] 
+        tvdb series id: tvdb_instance[76156] 
+        imdb id: tvdb_instance['tt0285403', 'imdb'] 
+        imdb id: tvdb_instance[285403, 'imdb'] 
+        imdb id: tvdb_instance['0285403', 'imdb']         
+
+        Returns a Show instance. 
+        May raise tvdb_shownotfound or KeyError.
         """
         if isinstance(key, (int, long)):
             # Item is integer, treat as show id
             if key not in self.shows:
                 self._getShowData(key, self.config['language'])
+            return self.shows[key]
+        if isinstance(key, tuple) and len(key) == 2:
+            if not key[1] == 'imdb':
+                raise KeyError('%s is not a valid key modifier.' % key[1])
+            id_ = key[0]
+            try:
+                long(id_)
+            except ValueError:
+                if not re.match('tt\d+', id_):
+                    raise KeyError('%s is not a valid imdb id' % id_)                                
+                id_ = id_[2:]                
+            finally: id_ = str(id_)
+            key = self._imdbIdToSid(id_)            
             return self.shows[key]
         
         key = key.lower() # make key lower case

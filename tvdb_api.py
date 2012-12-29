@@ -198,6 +198,11 @@ class Season(dict):
         else:
             return dict.__getitem__(self, episode_number)
 
+    def __call__(self, k, d=None):
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
+        """
+        return self.get(k, d)
+
     def search(self, term = None, key = None):
         """Search all episodes in season, returns a list of matching Episode
         instances.
@@ -239,6 +244,11 @@ class Episode(dict):
             return dict.__getitem__(self, key)
         except KeyError:
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
+
+    def __call__(self, k, d=None):
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
+        """
+        return self.get(k, d)
 
     def search(self, term = None, key = None):
         """Search episode data for term, if it matches, return the Episode (self).

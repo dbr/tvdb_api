@@ -199,9 +199,10 @@ class Season(dict):
             return dict.__getitem__(self, episode_number)
 
     def __call__(self, k, d=None):
-        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
+        """Emulate call behavior of Show and Episode.  Return NoneType because
+        there is no associated TVDB data.
         """
-        return self.get(k, d)
+        return None
 
     def search(self, term = None, key = None):
         """Search all episodes in season, returns a list of matching Episode

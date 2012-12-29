@@ -16,6 +16,7 @@ u'Cabin Fever'
 """
 __author__ = "dbr/Ben"
 __version__ = "1.8.2"
+__dev__ = True  # DEBUG
 
 import os
 import time
@@ -109,6 +110,11 @@ class Show(dict):
             # doesn't exist, so attribute error.
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
 
+    def __call__(self, k, d=None):
+        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
+        """
+        return self.data.get(k, d)
+
     def airedOn(self, date):
         ret = self.search(str(date), 'firstaired')
         if len(ret) == 0:
@@ -130,9 +136,9 @@ class Show(dict):
         Search terms are converted to lower case (unicode) strings.
 
         # Examples
-        
+
         These examples assume t is an instance of Tvdb():
-        
+
         >>> t = Tvdb()
         >>>
 
@@ -238,7 +244,7 @@ class Episode(dict):
         """Search episode data for term, if it matches, return the Episode (self).
         The key parameter can be used to limit the search to a specific element,
         for example, episodename.
-        
+
         This primarily for use use by Show.search and Season.search. See
         Show.search for further information on search
 
@@ -269,6 +275,20 @@ class Episode(dict):
                 return self
             #end if cur_value.find()
         #end for cur_key, cur_value
+
+    def walk(self, field):
+        """
+        Get data field from any node in the TVDB data tree.
+
+        # Example
+
+        >>> episode.walk('seriesname')
+        <Show Homeland (containing 3 seasons)>
+        """
+        if field in self:
+            return self[field]
+
+        return self.season.show.data.get('seriesname')
 
 
 class Actors(list):
@@ -362,7 +382,7 @@ class Tvdb:
             By default, Tvdb will only search in the language specified using
             the language option. When this is True, it will search for the
             show in and language
-        
+
         apikey (str/unicode):
             Override the default thetvdb.com API key. By default it will use
             tvdb_api's own key (fine for small scripts), but you can use your

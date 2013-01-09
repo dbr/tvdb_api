@@ -16,7 +16,6 @@ u'Cabin Fever'
 """
 __author__ = "dbr/Ben"
 __version__ = "1.8.2"
-__dev__ = True  # DEBUG
 
 import os
 import time
@@ -110,11 +109,6 @@ class Show(dict):
             # doesn't exist, so attribute error.
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
 
-    def __call__(self, k, d=None):
-        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
-        """
-        return self.data.get(k, d)
-
     def airedOn(self, date):
         ret = self.search(str(date), 'firstaired')
         if len(ret) == 0:
@@ -180,12 +174,16 @@ class Show(dict):
         #end for cur_season
         return results
 
+    def get_field(self, key):
+        return self.data.get(key)
+
 
 class Season(dict):
     def __init__(self, show = None):
         """The show attribute points to the parent show
         """
         self.show = show
+        self.update(show.data)  # no checks because `Season` has no TVDB info
 
     def __repr__(self):
         return "<Season instance (containing %s episodes)>" % (
@@ -197,12 +195,6 @@ class Season(dict):
             raise tvdb_episodenotfound("Could not find episode %s" % (repr(episode_number)))
         else:
             return dict.__getitem__(self, episode_number)
-
-    def __call__(self, k, d=None):
-        """Emulate call behavior of Show and Episode.  Return NoneType because
-        there is no associated TVDB data.
-        """
-        return None
 
     def search(self, term = None, key = None):
         """Search all episodes in season, returns a list of matching Episode
@@ -224,12 +216,25 @@ class Season(dict):
                 )
         return results
 
+    def get_field(self, key):
+        return self.get(key) or self.show.data.get(key)
+
 
 class Episode(dict):
     def __init__(self, season = None):
         """The season attribute points to the parent season
         """
         self.season = season
+
+        # seen = set()
+        # for k, v in season.items():
+        #     if isinstance(k, unicode) or isinstance(k, str):
+        #         import pdb; pdb.set_trace()
+        #         if k in seen:
+        #             k = 'ep_' + k
+
+        #         seen.add(k)
+        #         self.update({k: v})
 
     def __repr__(self):
         seasno = int(self.get(u'seasonnumber', 0))
@@ -245,11 +250,6 @@ class Episode(dict):
             return dict.__getitem__(self, key)
         except KeyError:
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
-
-    def __call__(self, k, d=None):
-        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None.
-        """
-        return self.get(k, d)
 
     def search(self, term = None, key = None):
         """Search episode data for term, if it matches, return the Episode (self).
@@ -287,19 +287,18 @@ class Episode(dict):
             #end if cur_value.find()
         #end for cur_key, cur_value
 
-    def walk(self, field):
+    def get_field(self, key):
+        """Return the value of a key including parent structures in the search.
+
+        Example:
+
+        >>> t = Tvdb()
+        >>> show = t['Homeland']
+        >>> ep = show[1][1]
+        >>> ep.get_field('seriesname')
+        u'Homeland'
         """
-        Get data field from any node in the TVDB data tree.
-
-        # Example
-
-        >>> episode.walk('seriesname')
-        <Show Homeland (containing 3 seasons)>
-        """
-        if field in self:
-            return self[field]
-
-        return self.season.show.data.get('seriesname')
+        return self.get(key) or self.season.get(key) or self.season.show.data.get(key)
 
 
 class Actors(list):

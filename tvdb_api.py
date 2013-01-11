@@ -183,7 +183,6 @@ class Season(dict):
         """The show attribute points to the parent show
         """
         self.show = show
-        self.update(show.data)  # no checks because `Season` has no TVDB info
 
     def __repr__(self):
         return "<Season instance (containing %s episodes)>" % (
@@ -225,16 +224,6 @@ class Episode(dict):
         """The season attribute points to the parent season
         """
         self.season = season
-
-        # seen = set()
-        # for k, v in season.items():
-        #     if isinstance(k, unicode) or isinstance(k, str):
-        #         import pdb; pdb.set_trace()
-        #         if k in seen:
-        #             k = 'ep_' + k
-
-        #         seen.add(k)
-        #         self.update({k: v})
 
     def __repr__(self):
         seasno = int(self.get(u'seasonnumber', 0))

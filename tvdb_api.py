@@ -5,7 +5,7 @@
 #repository:http://github.com/dbr/tvdb_api
 #license:unlicense (http://unlicense.org/)
 
-"""Simple-to-use Python interface to The TVDB's API (www.thetvdb.com)
+"""Simple-to-use Python interface to The TVDB's API (thetvdb.com)
 
 Example usage:
 
@@ -448,7 +448,7 @@ class Tvdb:
             logging.basicConfig(level=logging.DEBUG)
 
 
-        # List of language from http://www.thetvdb.com/api/0629B785CE550C8D/languages.xml
+        # List of language from http://thetvdb.com/api/0629B785CE550C8D/languages.xml
         # Hard-coded here as it is realtively static, and saves another HTTP request, as
         # recommended on http://thetvdb.com/wiki/index.php/API:languages.xml
         self.config['valid_languages'] = [
@@ -477,7 +477,7 @@ class Tvdb:
 
         # The following url_ configs are based of the
         # http://thetvdb.com/wiki/index.php/Programmers_API
-        self.config['base_url'] = "http://www.thetvdb.com"
+        self.config['base_url'] = "http://thetvdb.com"
 
         if self.config['search_all_languages']:
             self.config['url_getSeries'] = u"%(base_url)s/api/GetSeries.php?seriesname=%%s&language=all" % self.config
@@ -665,7 +665,7 @@ class Tvdb:
 
     def _parseBanners(self, sid):
         """Parses banners XML, from
-        http://www.thetvdb.com/api/[APIKEY]/series/[SERIES ID]/banners.xml
+        http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/banners.xml
 
         Banners are retrieved using t['show name]['_banners'], for example:
 
@@ -673,7 +673,7 @@ class Tvdb:
         >>> t['scrubs']['_banners'].keys()
         ['fanart', 'poster', 'series', 'season']
         >>> t['scrubs']['_banners']['poster']['680x1000']['35308']['_bannerpath']
-        u'http://www.thetvdb.com/banners/posters/76156-2.jpg'
+        u'http://thetvdb.com/banners/posters/76156-2.jpg'
         >>>
 
         Any key starting with an underscore has been processed (not the raw
@@ -717,7 +717,7 @@ class Tvdb:
 
     def _parseActors(self, sid):
         """Parsers actors XML, from
-        http://www.thetvdb.com/api/[APIKEY]/series/[SERIES ID]/actors.xml
+        http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/actors.xml
 
         Actors are retrieved using t['show name]['_actors'], for example:
 
@@ -734,7 +734,7 @@ class Tvdb:
         >>> actors[0]['name']
         u'Zach Braff'
         >>> actors[0]['image']
-        u'http://www.thetvdb.com/banners/actors/43640.jpg'
+        u'http://thetvdb.com/banners/actors/43640.jpg'
 
         Any key starting with an underscore has been processed (not the raw
         data from the XML)

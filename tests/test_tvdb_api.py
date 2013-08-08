@@ -518,7 +518,7 @@ class test_tvdb_show_search(unittest.TestCase):
         """
         results = self.t.search("my name is earl")
         all_ids = [x['seriesid'] for x in results]
-        self.assertTrue(75397 in all_ids)
+        self.assertTrue('75397' in all_ids)
 
 
 if __name__ == '__main__':

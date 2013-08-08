@@ -624,11 +624,9 @@ class Tvdb:
         return data
     #end _cleanData
 
-    def _getSeries(self, series):
-        """This searches TheTVDB.com for the series name,
-        If a custom_ui UI is configured, it uses this to select the correct
-        series. If not, and interactive == True, ConsoleUI is used, if not
-        BaseUI is used to select the first result.
+    def search(self, series):
+        """This searches TheTVDB.com for the series name
+        and returns the result list
         """
         series = urllib.quote(series.encode("utf-8"))
         log().debug("Searching for show %s" % series)
@@ -641,6 +639,17 @@ class Tvdb:
             log().debug('Found series %(seriesname)s' % result)
             allSeries.append(result)
         #end for series
+        
+        return allSeries
+    #end search
+
+    def _getSeries(self, series):
+        """This searches TheTVDB.com for the series name,
+        If a custom_ui UI is configured, it uses this to select the correct
+        series. If not, and interactive == True, ConsoleUI is used, if not
+        BaseUI is used to select the first result.
+        """
+        allSeries = self.search(series)
 
         if len(allSeries) == 0:
             log().debug('Series result returned zero')

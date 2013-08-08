@@ -171,7 +171,7 @@ class Show(dict):
             searchresult = cur_season.search(term = term, key = key)
             if len(searchresult) != 0:
                 results.extend(searchresult)
-        #end for cur_season
+
         return results
 
 
@@ -267,8 +267,6 @@ class Episode(dict):
                 continue
             if cur_value.find( unicode(term).lower() ) > -1:
                 return self
-            #end if cur_value.find()
-        #end for cur_key, cur_value
 
 
 class Actors(list):
@@ -493,8 +491,6 @@ class Tvdb:
         self.config['url_seriesBanner'] = u"%(base_url)s/api/%(apikey)s/series/%%s/banners.xml" % self.config
         self.config['url_artworkPrefix'] = u"%(base_url)s/banners/%%s" % self.config
 
-    #end __init__
-
     def _getTempDir(self):
         """Returns the [system temp dir]/tvdb_api-u501 (or
         tvdb_api-myuser)
@@ -527,7 +523,7 @@ class Tvdb:
             if not str(errormsg).startswith('HTTP Error'):
                 lastTimeout = datetime.datetime.now()
             raise tvdb_error("Could not connect to server: %s" % (errormsg))
-        #end try
+
         
         # handle gzipped content,
         # http://dbr.lighthouseapp.com/projects/13342/tickets/72-gzipped-data-patch
@@ -579,7 +575,6 @@ class Tvdb:
                 errormsg += "\nIf this does not resolve the issue, please try again later. If the error persists, report a bug on"
                 errormsg += "\nhttp://dbr.lighthouseapp.com/projects/13342-tvdb_api/overview\n"
                 raise tvdb_error(errormsg)
-    #end _getetsrc
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
@@ -603,7 +598,6 @@ class Tvdb:
         if ep not in self.shows[sid][seas]:
             self.shows[sid][seas][ep] = Episode(season = self.shows[sid][seas])
         self.shows[sid][seas][ep][attrib] = value
-    #end _set_item
 
     def _setShowData(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
@@ -622,7 +616,6 @@ class Tvdb:
         data = data.replace(u"&amp;", u"&")
         data = data.strip()
         return data
-    #end _cleanData
 
     def search(self, series):
         """This searches TheTVDB.com for the series name
@@ -638,10 +631,8 @@ class Tvdb:
             result['lid'] = self.config['langabbv_to_id'][result['language']]
             log().debug('Found series %(seriesname)s' % result)
             allSeries.append(result)
-        #end for series
         
         return allSeries
-    #end search
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -665,12 +656,8 @@ class Tvdb:
             else:
                 log().debug('Interactively selecting show using ConsoleUI')
                 ui = ConsoleUI(config = self.config)
-            #end if config['interactive]
-        #end if custom_ui != None
 
         return ui.selectSeries(allSeries)
-
-    #end _getSeries
 
     def _parseBanners(self, sid):
         """Parses banners XML, from
@@ -802,7 +789,6 @@ class Tvdb:
                     value = self._cleanData(value)
 
             self._setShowData(sid, tag, value)
-        #end for series
 
         # Parse banners
         if self.config['banners_enabled']:
@@ -834,8 +820,6 @@ class Tvdb:
                     else:
                         value = self._cleanData(value)
                 self._setItem(sid, seas_no, ep_no, tag, value)
-        #end for cur_ep
-    #end _geEps
 
     def _nameToSid(self, name):
         """Takes show name, returns the correct series ID (if the show has
@@ -853,9 +837,8 @@ class Tvdb:
 
             self.corrections[name] = sid
             self._getShowData(selected_series['id'], selected_series['language'])
-        #end if name in self.corrections
+
         return sid
-    #end _nameToSid
 
     def __getitem__(self, key):
         """Handles tvdb_instance['seriesname'] calls.
@@ -871,12 +854,10 @@ class Tvdb:
         sid = self._nameToSid(key)
         log().debug('Got series id %s' % (sid))
         return self.shows[sid]
-    #end __getitem__
 
     def __repr__(self):
         return str(self.shows)
-    #end __repr__
-#end Tvdb
+
 
 def main():
     """Simple example of using tvdb_api - it just

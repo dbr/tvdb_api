@@ -505,6 +505,22 @@ class test_tvdb_zip(unittest.TestCase):
         self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked His Own Death')
 
 
+class test_tvdb_show_search(unittest.TestCase):
+    # Used to store the cached instance of Tvdb()
+    t = None
+
+    def setUp(self):
+        if self.t is None:
+            self.__class__.t = tvdb_api.Tvdb(cache = True, useZip = True)
+
+    def test_search(self):
+        """Test Tvdb.search method
+        """
+        results = self.t.search("my name is earl")
+        all_ids = [x['seriesid'] for x in results]
+        self.assertTrue(75397 in all_ids)
+
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner(verbosity = 2)
     unittest.main(testRunner = runner)

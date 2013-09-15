@@ -528,7 +528,8 @@ class test_tvdb_alt_names(unittest.TestCase):
             self.__class__.t = tvdb_api.Tvdb(cache = True, actors = True)
 
     def test_1(self):
-        """Check show/_actors key exists and is correct type"""
+        """Tests basic access of series name alias
+        """
         results = self.t.search("Don't Trust the B---- in Apartment 23")
         series = results[0]
         self.assertTrue(

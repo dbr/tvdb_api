@@ -521,6 +521,21 @@ class test_tvdb_show_search(unittest.TestCase):
         self.assertTrue('75397' in all_ids)
 
 
+class test_tvdb_alt_names(unittest.TestCase):
+    t = None
+    def setUp(self):
+        if self.t is None:
+            self.__class__.t = tvdb_api.Tvdb(cache = True, actors = True)
+
+    def test_1(self):
+        """Check show/_actors key exists and is correct type"""
+        results = self.t.search("Don't Trust the B---- in Apartment 23")
+        series = results[0]
+        self.assertTrue(
+            'Apartment 23' in series['aliasnames']
+        )
+
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner(verbosity = 2)
     unittest.main(testRunner = runner)

@@ -306,7 +306,8 @@ class Tvdb:
                 search_all_languages = False,
                 apikey = None,
                 forceConnect=False,
-                useZip=False):
+                useZip=False,
+                dvdorder=False):
 
         """interactive (True/False):
             When True, uses built-in console UI is used to select the correct show.
@@ -408,6 +409,7 @@ class Tvdb:
 
         self.config['useZip'] = useZip
 
+        self.config['dvdorder'] = dvdorder
 
         if cache is True:
             self.config['cache_enabled'] = True
@@ -811,8 +813,20 @@ class Tvdb:
         epsEt = self._getetsrc( url, language=language)
 
         for cur_ep in epsEt.findall("Episode"):
-            seas_no = int(cur_ep.find('SeasonNumber').text)
-            ep_no = int(cur_ep.find('EpisodeNumber').text)
+
+            if self.config['dvdorder']:
+                log().debug('Using DVD ordering.')
+                use_dvd = cur_ep.find('DVD_season').text != None and cur_ep.find('DVD_episodenumber').text != None
+            else:
+                use_dvd = False
+
+            if use_dvd:
+                seas_no = int(cur_ep.find('DVD_season').text)
+                ep_no   = int(float(cur_ep.find('DVD_episodenumber').text))
+            else:
+                seas_no = int(cur_ep.find('SeasonNumber').text)
+                ep_no = int(cur_ep.find('EpisodeNumber').text)
+
             for cur_item in cur_ep.getchildren():
                 tag = cur_item.tag.lower()
                 value = cur_item.text

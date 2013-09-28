@@ -505,6 +505,27 @@ class test_tvdb_zip(unittest.TestCase):
         self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked His Own Death')
 
 
+class test_tvdb_show_ordering(unittest.TestCase):
+    # Used to store the cached instance of Tvdb()
+    t_dvd = None
+    t_air = None
+
+    def setUp(self):
+        if self.t_dvd is None:
+            self.t_dvd = tvdb_api.Tvdb(cache = True, useZip = True, dvdorder=True)
+
+        if self.t_air is None:
+            self.t_air = tvdb_api.Tvdb(cache = True, useZip = True)
+
+    def test_ordering(self):
+        """Test Tvdb.search method
+        """
+        self.assertEquals(u'The Train Job', self.t_air['Firefly'][1][1]['episodename'])
+        self.assertEquals(u'Serenity', self.t_dvd['Firefly'][1][1]['episodename'])
+
+        self.assertEquals(u'The Cat & the Claw (Part 1)', self.t_air['Batman The Animated Series'][1][1]['episodename'])
+        self.assertEquals(u'On Leather Wings', self.t_dvd['Batman The Animated Series'][1][1]['episodename'])
+
 class test_tvdb_show_search(unittest.TestCase):
     # Used to store the cached instance of Tvdb()
     t = None

@@ -821,11 +821,22 @@ class Tvdb:
                 use_dvd = False
 
             if use_dvd:
-                seas_no = int(cur_ep.find('DVD_season').text)
-                ep_no   = int(float(cur_ep.find('DVD_episodenumber').text))
+                elem_seasnum, elem_epno = cur_ep.find('DVD_season'), cur_ep.find('DVD_episodenumber')
             else:
-                seas_no = int(cur_ep.find('SeasonNumber').text)
-                ep_no = int(cur_ep.find('EpisodeNumber').text)
+                elem_seasnum, elem_epno = cur_ep.find('SeasonNumber'), cur_ep.find('EpisodeNumber')
+
+            if elem_seasnum is None or elem_epno is None:
+                log().warning("An episode has incomplete season/episode number (season: %r, episode: %r)" % (
+                    elem_seasnum, elem_epno))
+                log().debug(
+                    " ".join(
+                        "%r is %r" % (child.tag, child.text) for child in cur_ep.getchildren()))
+                # TODO: Should this happen?
+                continue # Skip to next episode
+
+            # float() is because https://github.com/dbr/tvnamer/issues/95 - should probably be fixed in TVDB data
+            seas_no = int(float(elem_seasnum.text))
+            ep_no = int(float(elem_epno.text))
 
             for cur_item in cur_ep.getchildren():
                 tag = cur_item.tag.lower()

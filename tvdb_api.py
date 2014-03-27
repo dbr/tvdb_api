@@ -72,7 +72,7 @@ class ShowContainer(dict):
                 del self._stack[i]
                 i += 1
 
-            _lastgc = time.time()
+            self._lastgc = time.time()
             del tbd
                     
         super(ShowContainer, self).__setitem__(key, value)

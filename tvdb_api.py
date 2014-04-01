@@ -65,16 +65,12 @@ class ShowContainer(dict):
 
         #keep only the 100th latest results
         if time.time() - self._lastgc > 20:
-            tbd = self._stack[:-100]
-            i = 0
-            for o in tbd:
+            for o in self._stack[:-100]:
                 del self[o]
-                del self._stack[i]
-                i += 1
+            self._stack = self._stack[-100:]
 
             self._lastgc = time.time()
-            del tbd
-                    
+
         super(ShowContainer, self).__setitem__(key, value)
 
 

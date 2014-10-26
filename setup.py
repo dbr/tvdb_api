@@ -1,4 +1,17 @@
+import sys
 from setuptools import setup
+
+IS_PY2 = sys.version_info[0] == 2
+
+_requirements = []
+if not IS_PY2:
+    _requirements.append('requests')
+
+_modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
+if IS_PY2:
+    _modules.append('tvdb_cache')
+
+
 setup(
 name = 'tvdb_api',
 version='1.9',
@@ -21,13 +34,19 @@ Basic usage is:
 u'Stole a Badge'
 """,
 
-py_modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions', 'tvdb_cache'],
+py_modules = _modules,
+install_requires = _requirements,
 
 classifiers=[
     "Intended Audience :: Developers",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.6",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.3",
+    "Programming Language :: Python :: 3.4",
     "Topic :: Multimedia",
     "Topic :: Utilities",
     "Topic :: Software Development :: Libraries :: Python Modules",

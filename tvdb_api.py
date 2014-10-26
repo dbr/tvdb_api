@@ -17,12 +17,23 @@ u'Cabin Fever'
 __author__ = "dbr/Ben"
 __version__ = "1.9"
 
+import sys
+
+IS_PY2 = sys.version_info[0] == 2
+
 import os
 import time
-import urllib
-import urllib2
+if IS_PY2:
+    import urllib
+    import urllib2
+    import StringIO
+    from tvdb_cache import CacheHandler
+    from urllib import quote as url_quote
+else:
+    from io import StringIO
+    import requests
+    from urllib.parse import quote as url_quote
 import getpass
-import StringIO
 import tempfile
 import warnings
 import logging
@@ -40,7 +51,11 @@ except ImportError:
     gzip = None
 
 
-from tvdb_cache import CacheHandler
+if IS_PY2:
+    int_types = (int, long)
+else:
+    int_types = int
+
 
 from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (tvdb_error, tvdb_userabort, tvdb_shownotfound,
@@ -377,6 +392,11 @@ class Tvdb:
             And only the main language xml is used, the actor and banner xml are lost.
         """
         
+
+        if not IS_PY2 and useZip:
+            # FIXME: Need to implement 'application/zip' further down..
+            raise NotImplementedError("useZip=True not yet supported in Python 3")
+
         global lastTimeout
         
         # if we're given a lastTimeout that is less than 1 min just give up
@@ -407,32 +427,45 @@ class Tvdb:
 
         self.config['dvdorder'] = dvdorder
 
-        if cache is True:
-            self.config['cache_enabled'] = True
-            self.config['cache_location'] = self._getTempDir()
-            self.urlopener = urllib2.build_opener(
-                CacheHandler(self.config['cache_location'])
-            )
-
-        elif cache is False:
-            self.config['cache_enabled'] = False
-            self.urlopener = urllib2.build_opener() # default opener with no caching
-
-        elif isinstance(cache, basestring):
-            self.config['cache_enabled'] = True
-            self.config['cache_location'] = cache
-            self.urlopener = urllib2.build_opener(
-                CacheHandler(self.config['cache_location'])
-            )
-
-        elif isinstance(cache, urllib2.OpenerDirector):
-            # If passed something from urllib2.build_opener, use that
-            log().debug("Using %r as urlopener" % cache)
-            self.config['cache_enabled'] = True
-            self.urlopener = cache
-
+        if not IS_PY2: # FIXME: Allow using requests in Python 2?
+            if cache is True:
+                import requests_cache
+                self.session = requests_cache.CachedSession()
+                self.config['cache_enabled'] = True
+            elif cache is False:
+                self.session = requests.Session()
+                self.config['cache_enabled'] = False
+            else:
+                # FIXME: Should allow passing custom requests.Session
+                raise ValueError("In Python 3, cache must be either True or False")
         else:
-            raise ValueError("Invalid value for Cache %r (type was %s)" % (cache, type(cache)))
+            # For backwards compatibility in Python 2.x
+            if cache is True:
+                self.config['cache_enabled'] = True
+                self.config['cache_location'] = self._getTempDir()
+                self.urlopener = urllib2.build_opener(
+                    CacheHandler(self.config['cache_location'])
+                )
+
+            elif cache is False:
+                self.config['cache_enabled'] = False
+                self.urlopener = urllib2.build_opener() # default opener with no caching
+
+            elif isinstance(cache, basestring):
+                self.config['cache_enabled'] = True
+                self.config['cache_location'] = cache
+                self.urlopener = urllib2.build_opener(
+                    CacheHandler(self.config['cache_location'])
+                )
+
+            elif isinstance(cache, urllib2.OpenerDirector):
+                # If passed something from urllib2.build_opener, use that
+                log().debug("Using %r as urlopener" % cache)
+                self.config['cache_enabled'] = True
+                self.urlopener = cache
+
+            else:
+                raise ValueError("Invalid value for Cache %r (type was %s)" % (cache, type(cache)))
 
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
@@ -505,48 +538,53 @@ class Tvdb:
         return os.path.join(tempfile.gettempdir(), "tvdb_api-%s" % (uid))
 
     def _loadUrl(self, url, recache = False, language=None):
-        global lastTimeout
-        try:
-            log().debug("Retrieving URL %s" % url)
-            resp = self.urlopener.open(url)
-            if 'x-local-cache' in resp.headers:
-                log().debug("URL %s was cached in %s" % (
-                    url,
-                    resp.headers['x-local-cache'])
-                )
-                if recache:
-                    log().debug("Attempting to recache %s" % url)
-                    resp.recache()
-        except (IOError, urllib2.URLError), errormsg:
-            if not str(errormsg).startswith('HTTP Error'):
-                lastTimeout = datetime.datetime.now()
-            raise tvdb_error("Could not connect to server: %s" % (errormsg))
-
-        
-        # handle gzipped content,
-        # http://dbr.lighthouseapp.com/projects/13342/tickets/72-gzipped-data-patch
-        if 'gzip' in resp.headers.get("Content-Encoding", ''):
-            if gzip:
-                stream = StringIO.StringIO(resp.read())
-                gz = gzip.GzipFile(fileobj=stream)
-                return gz.read()
-
-            raise tvdb_error("Received gzip data from thetvdb.com, but could not correctly handle it")
-
-        if 'application/zip' in resp.headers.get("Content-Type", ''):
+        if not IS_PY2:
+            # FIXME: Doesn't support implement application/zip as below
+            resp = self.session.get(url)
+            return resp.text
+        else:
+            global lastTimeout
             try:
-                # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
-                log().debug("We recived a zip file unpacking now ...")
-                zipdata = StringIO.StringIO()
-                zipdata.write(resp.read())
-                myzipfile = zipfile.ZipFile(zipdata)
-                return myzipfile.read('%s.xml' % language)
-            except zipfile.BadZipfile:
+                log().debug("Retrieving URL %s" % url)
+                resp = self.urlopener.open(url)
                 if 'x-local-cache' in resp.headers:
-                    resp.delete_cache()
-                raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
+                    log().debug("URL %s was cached in %s" % (
+                        url,
+                        resp.headers['x-local-cache'])
+                    )
+                    if recache:
+                        log().debug("Attempting to recache %s" % url)
+                        resp.recache()
+            except (IOError, urllib2.URLError) as errormsg:
+                if not str(errormsg).startswith('HTTP Error'):
+                    lastTimeout = datetime.datetime.now()
+                raise tvdb_error("Could not connect to server: %s" % (errormsg))
 
-        return resp.read()
+
+            # handle gzipped content,
+            # http://dbr.lighthouseapp.com/projects/13342/tickets/72-gzipped-data-patch
+            if 'gzip' in resp.headers.get("Content-Encoding", ''):
+                if gzip:
+                    stream = StringIO.StringIO(resp.read())
+                    gz = gzip.GzipFile(fileobj=stream)
+                    return gz.read()
+
+                raise tvdb_error("Received gzip data from thetvdb.com, but could not correctly handle it")
+
+            if 'application/zip' in resp.headers.get("Content-Type", ''):
+                try:
+                    # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
+                    log().debug("We recived a zip file unpacking now ...")
+                    zipdata = StringIO.StringIO()
+                    zipdata.write(resp.read())
+                    myzipfile = zipfile.ZipFile(zipdata)
+                    return myzipfile.read('%s.xml' % language)
+                except zipfile.BadZipfile:
+                    if 'x-local-cache' in resp.headers:
+                        resp.delete_cache()
+                    raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
+
+            return resp.read()
 
     def _getetsrc(self, url, language=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -560,7 +598,7 @@ class Tvdb:
             src = self._loadUrl(url, recache=True, language=language)
             try:
                 return ElementTree.fromstring(src.rstrip("\r"))
-            except SyntaxError, exceptionmsg:
+            except SyntaxError as exceptionmsg:
                 errormsg = "There was an error with the XML retrieved from thetvdb.com:\n%s" % (
                     exceptionmsg
                 )
@@ -619,7 +657,7 @@ class Tvdb:
         """This searches TheTVDB.com for the series name
         and returns the result list
         """
-        series = urllib.quote(series.encode("utf-8"))
+        series = url_quote(series.encode("utf-8"))
         log().debug("Searching for show %s" % series)
         seriesEt = self._getetsrc(self.config['url_getSeries'] % (series))
         allSeries = []
@@ -867,7 +905,7 @@ class Tvdb:
         """Handles tvdb_instance['seriesname'] calls.
         The dict index should be the show id
         """
-        if isinstance(key, (int, long)):
+        if isinstance(key, int_types):
             # Item is integer, treat as show id
             if key not in self.shows:
                 self._getShowData(key, self.config['language'])
@@ -890,8 +928,8 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
 
     tvdb_instance = Tvdb(interactive=True, cache=False)
-    print tvdb_instance['Lost']['seriesname']
-    print tvdb_instance['Lost'][1][4]['episodename']
+    print(tvdb_instance['Lost']['seriesname'])
+    print(tvdb_instance['Lost'][1][4]['episodename'])
 
 if __name__ == '__main__':
     main()

@@ -21,6 +21,10 @@ import tvdb_ui
 from tvdb_api import (tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound)
 
+
+IS_PY2 = sys.version_info[0] == 2
+
+
 class test_tvdb_basic(unittest.TestCase):
     # Used to store the cached instance of Tvdb()
     t = None
@@ -101,8 +105,8 @@ class test_tvdb_basic(unittest.TestCase):
 
     def test_no_season(self):
         show = self.t['Katekyo Hitman Reborn']
-        print tvdb_api
-        print show[1][1]
+        print(tvdb_api)
+        print(show[1][1])
 
 class test_tvdb_errors(unittest.TestCase):
     # Used to store the cached instance of Tvdb()
@@ -455,6 +459,7 @@ class test_tvdb_custom_caching(unittest.TestCase):
         else:
             self.fail("Expected ValueError from setting cache to float")
 
+    @unittest.skipIf(not IS_PY2, "cannot supply custom opener in Python 3 because requests is used")
     def test_custom_urlopener(self):
         class UsedCustomOpener(Exception):
             pass
@@ -462,7 +467,7 @@ class test_tvdb_custom_caching(unittest.TestCase):
         import urllib2
         class TestOpener(urllib2.BaseHandler):
             def default_open(self, request):
-                print request.get_method()
+                print(request.get_method())
                 raise UsedCustomOpener("Something")
 
         custom_opener = urllib2.build_opener(TestOpener())

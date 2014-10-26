@@ -5,8 +5,12 @@ IS_PY2 = sys.version_info[0] == 2
 
 _requirements = []
 if not IS_PY2:
-    _requirements.append('requests')
     _requirements.append('requests_cache')
+
+    # 'requests' is installed as requirement by requests-cache,
+    # commented out because it triggers a bug in setuptool:
+    # https://bitbucket.org/pypa/setuptools/issue/196/tests_require-pytest-pytest-cov-breaks
+
 
 _modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
 if IS_PY2:

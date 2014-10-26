@@ -430,7 +430,7 @@ class Tvdb:
         if not IS_PY2: # FIXME: Allow using requests in Python 2?
             if cache is True:
                 import requests_cache
-                self.session = requests_cache.CachedSession()
+                self.session = requests_cache.CachedSession(expire_after=21600) # 6 hours
                 self.config['cache_enabled'] = True
             elif cache is False:
                 self.session = requests.Session()

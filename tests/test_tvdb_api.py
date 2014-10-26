@@ -459,8 +459,10 @@ class test_tvdb_custom_caching(unittest.TestCase):
         else:
             self.fail("Expected ValueError from setting cache to float")
 
-    @unittest.skipIf(not IS_PY2, "cannot supply custom opener in Python 3 because requests is used")
     def test_custom_urlopener(self):
+        if not IS_PY2:
+            raise unittest.SkipTest("cannot supply custom opener in Python 3 because requests is used")
+
         class UsedCustomOpener(Exception):
             pass
 

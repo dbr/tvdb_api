@@ -481,6 +481,26 @@ class test_tvdb_custom_caching(unittest.TestCase):
         else:
             self.fail("Did not use custom opener")
 
+    def test_custom_request_session(self):
+        if IS_PY2:
+            return
+        from requests import Session as OriginalSession
+        class Used(Exception):
+            pass
+        class CustomCacheForTest(OriginalSession):
+            call_count = 0
+            def request(self, *args, **kwargs):
+                raise Used("Hurray")
+        c = CustomCacheForTest()
+        t = tvdb_api.Tvdb(cache = c)
+        try:
+            t['scrubs']
+        except Used:
+            pass
+        else:
+            self.fail("Did not use custom session")
+
+
 class test_tvdb_by_id(unittest.TestCase):
     t = None
     def setUp(self):

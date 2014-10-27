@@ -343,6 +343,12 @@ class Tvdb:
             an arbitrary Python object, which is used as a urllib2
             opener, which should be created by urllib2.build_opener
 
+            In Python 3, True/False enable or disable default
+            caching. Passing string specified directory where to store
+            the "tvdb.sqlite3" cache file. Also a custom
+            requests.Session instance can be passed (e.g maybe a
+            customised instance of requests_cache.CachedSession)
+
         banners (True/False):
             Retrieves the banners for a show. These are accessed
             via the _banners key of a Show(), for example:
@@ -424,16 +430,30 @@ class Tvdb:
         self.config['dvdorder'] = dvdorder
 
         if not IS_PY2: # FIXME: Allow using requests in Python 2?
+            import requests_cache
             if cache is True:
-                import requests_cache
-                self.session = requests_cache.CachedSession(expire_after=21600) # 6 hours
+                self.session = requests_cache.CachedSession(
+                    expire_after=21600, # 6 hours
+                    backend='sqlite',
+                    cache_name=self._getTempDir(),
+                    )
                 self.config['cache_enabled'] = True
             elif cache is False:
                 self.session = requests.Session()
                 self.config['cache_enabled'] = False
+            elif isinstance(cache, text_type):
+                # Specified cache path
+                self.session = requests_cache.CachedSession(
+                    expire_after=21600, # 6 hours
+                    backend='sqlite',
+                    cache_name=os.path.join(cache, "tvdb_api"),
+                    )
             else:
-                # FIXME: Should allow passing custom requests.Session
-                raise ValueError("In Python 3, cache must be either True or False")
+                self.session = cache
+                try:
+                    self.session.get
+                except AttributeError:
+                    raise ValueError("cache argument must be True/False, string as cache path or requests.Session-type object (e.g from requests_cache.CachedSession)")
         else:
             # For backwards compatibility in Python 2.x
             if cache is True:

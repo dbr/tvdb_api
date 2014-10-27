@@ -26,11 +26,9 @@ import time
 if IS_PY2:
     import urllib
     import urllib2
-    import StringIO
     from tvdb_cache import CacheHandler
     from urllib import quote as url_quote
 else:
-    from io import StringIO
     import requests
     from urllib.parse import quote as url_quote
 import getpass
@@ -393,10 +391,6 @@ class Tvdb:
         """
         
 
-        if not IS_PY2 and useZip:
-            # FIXME: Need to implement 'application/zip' further down..
-            raise NotImplementedError("useZip=True not yet supported in Python 3")
-
         global lastTimeout
         
         # if we're given a lastTimeout that is less than 1 min just give up
@@ -539,8 +533,18 @@ class Tvdb:
 
     def _loadUrl(self, url, recache = False, language=None):
         if not IS_PY2:
-            # FIXME: Doesn't support implement application/zip as below
             resp = self.session.get(url)
+            if 'application/zip' in resp.headers.get("Content-Type", ''):
+                try:
+                    # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
+                    log().debug("We recived a zip file unpacking now ...")
+                    from io import BytesIO
+                    myzipfile = zipfile.ZipFile(BytesIO(resp.content))
+                    return myzipfile.read('%s.xml' % language)
+                except zipfile.BadZipfile:
+                    if 'x-local-cache' in resp.headers: # FIXME: Wrong
+                        resp.delete_cache()
+                    raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
             return resp.text
         else:
             global lastTimeout
@@ -565,6 +569,7 @@ class Tvdb:
             # http://dbr.lighthouseapp.com/projects/13342/tickets/72-gzipped-data-patch
             if 'gzip' in resp.headers.get("Content-Encoding", ''):
                 if gzip:
+                    from StringIO import StringIO
                     stream = StringIO.StringIO(resp.read())
                     gz = gzip.GzipFile(fileobj=stream)
                     return gz.read()
@@ -575,6 +580,7 @@ class Tvdb:
                 try:
                     # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
                     log().debug("We recived a zip file unpacking now ...")
+                    from StringIO import StringIO
                     zipdata = StringIO.StringIO()
                     zipdata.write(resp.read())
                     myzipfile = zipfile.ZipFile(zipdata)

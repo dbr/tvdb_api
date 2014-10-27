@@ -535,6 +535,7 @@ class Tvdb:
 
     def _loadUrl(self, url, recache = False, language=None):
         if not IS_PY2:
+            # Python 3: return content at URL as bytes
             resp = self.session.get(url)
             if 'application/zip' in resp.headers.get("Content-Type", ''):
                 try:
@@ -544,10 +545,10 @@ class Tvdb:
                     myzipfile = zipfile.ZipFile(BytesIO(resp.content))
                     return myzipfile.read('%s.xml' % language)
                 except zipfile.BadZipfile:
-                    if 'x-local-cache' in resp.headers: # FIXME: Wrong
-                        resp.delete_cache()
+                    self.session.cache.delete_url(url)
                     raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
-            return resp.text
+            return resp.content
+
         else:
             global lastTimeout
             try:
@@ -598,14 +599,22 @@ class Tvdb:
         """Loads a URL using caching, returns an ElementTree of the source
         """
         src = self._loadUrl(url, language=language)
+
+
+        # TVDB doesn't sanitize \r (CR) from user input in some fields,
+        # remove it to avoid errors. Change from SickBeard, from will14m
+        if not IS_PY2:
+            # Remove trailing \r byte
+            src = src.replace(b"\r", b"")
+        else:
+            src = src.rstrip("\r") # FIXME: this seems wrong
+
         try:
-            # TVDB doesn't sanitize \r (CR) from user input in some fields,
-            # remove it to avoid errors. Change from SickBeard, from will14m
-            return ElementTree.fromstring(src.rstrip("\r"))
+            return ElementTree.fromstring(src)
         except SyntaxError:
             src = self._loadUrl(url, recache=True, language=language)
             try:
-                return ElementTree.fromstring(src.rstrip("\r"))
+                return ElementTree.fromstring(src)
             except SyntaxError as exceptionmsg:
                 errormsg = "There was an error with the XML retrieved from thetvdb.com:\n%s" % (
                     exceptionmsg

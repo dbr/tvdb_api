@@ -593,7 +593,7 @@ class Tvdb:
             if 'gzip' in resp.headers.get("Content-Encoding", ''):
                 if gzip:
                     from StringIO import StringIO
-                    stream = StringIO.StringIO(resp.read())
+                    stream = StringIO(resp.read())
                     gz = gzip.GzipFile(fileobj=stream)
                     return gz.read()
 
@@ -604,7 +604,7 @@ class Tvdb:
                     # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
                     log().debug("We recived a zip file unpacking now ...")
                     from StringIO import StringIO
-                    zipdata = StringIO.StringIO()
+                    zipdata = StringIO()
                     zipdata.write(resp.read())
                     myzipfile = zipfile.ZipFile(zipdata)
                     return myzipfile.read('%s.xml' % language)

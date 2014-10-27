@@ -51,8 +51,10 @@ except ImportError:
 
 if IS_PY2:
     int_types = (int, long)
+    text_type = unicode
 else:
     int_types = int
+    text_type = str
 
 
 from tvdb_ui import BaseUI, ConsoleUI
@@ -268,13 +270,13 @@ class Episode(dict):
         if term == None:
             raise TypeError("must supply string to search for (contents)")
 
-        term = unicode(term).lower()
+        term = text_type(term).lower()
         for cur_key, cur_value in self.items():
-            cur_key, cur_value = unicode(cur_key).lower(), unicode(cur_value).lower()
+            cur_key, cur_value = text_type(cur_key).lower(), text_type(cur_value).lower()
             if key is not None and cur_key != key:
                 # Do not search this key
                 continue
-            if cur_value.find( unicode(term).lower() ) > -1:
+            if cur_value.find( text_type(term).lower() ) > -1:
                 return self
 
 

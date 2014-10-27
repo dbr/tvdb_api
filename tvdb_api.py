@@ -777,7 +777,7 @@ class Tvdb:
                 tag, value = tag.lower(), value.lower()
                 banners[btype][btype2][bid][tag] = value
 
-            for k, v in banners[btype][btype2][bid].items():
+            for k, v in list(banners[btype][btype2][bid].items()):
                 if k.endswith("path"):
                     new_key = "_%s" % (k)
                     log().debug("Transforming %s to %s" % (k, new_key))

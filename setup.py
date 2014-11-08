@@ -19,7 +19,7 @@ if IS_PY2:
 
 setup(
 name = 'tvdb_api',
-version='1.9',
+version='1.10',
 
 author='dbr/Ben',
 description='Interface to thetvdb.com',

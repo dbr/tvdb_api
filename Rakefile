@@ -50,7 +50,7 @@ desc "Upload current version to PyPi"
 task :topypi => :test do
   cur_file = File.open("tvdb_api.py").read()
   tvdb_api_version = cur_file.scan(/__version__ = "(.*)"/)
-  tvdb_api_version = tvdb_api_version[0][0].to_f
+  tvdb_api_version = tvdb_api_version[0][0]
 
   puts "Build sdist and send tvdb_api v#{tvdb_api_version} to PyPi?"
   if $stdin.gets.chomp == "y"

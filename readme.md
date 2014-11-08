@@ -65,7 +65,7 @@ For example, to find out what network Scrubs is aired:
 The data is stored in an attribute named `data`, within the Show instance:
 
     >>> t['scrubs'].data.keys()
-    ['networkid', 'rating', 'airs_dayofweek', 'contentrating', 'seriesname', 'id', 'airs_time', 'network', 'fanart', 'lastupdated', 'actors', 'ratingcount', 'status', 'added', 'poster', 'imdb_id', 'genre', 'banner', 'seriesid', 'language', 'zap2it_id', 'addedby', 'tms_wanted', 'firstaired', 'runtime', 'overview']
+    ['networkid', 'rating', 'airs_dayofweek', 'contentrating', 'seriesname', 'id', 'airs_time', 'network', 'fanart', 'lastupdated', 'actors', 'ratingcount', 'status', 'added', 'poster', 'tms_wanted_old', 'imdb_id', 'genre', 'banner', 'seriesid', 'language', 'zap2it_id', 'addedby', 'firstaired', 'runtime', 'overview']
 
 Although each element is also accessible via `t['scrubs']` for ease-of-use:
 
@@ -105,7 +105,7 @@ Extended actor data is accessible similarly:
 Remember a simple list of actors is accessible via the default Show data:
 
     >>> t['scrubs']['actors']
-    u'|Zach Braff|Donald Faison|Sarah Chalke|Christa Miller|Aloma Wright|Robert Maschio|Sam Lloyd|Neil Flynn|Ken Jenkins|Judy Reyes|John C. McGinley|Travis Schuldt|Johnny Kastl|Heather Graham|Michael Mosley|Kerry Bish\xe9|Dave Franco|Eliza Coupe|'
+    u'|Zach Braff|Donald Faison|Sarah Chalke|Judy Reyes|John C. McGinley|Neil Flynn|Ken Jenkins|Christa Miller|Aloma Wright|Robert Maschio|Sam Lloyd|Travis Schuldt|Johnny Kastl|Heather Graham|Michael Mosley|Kerry Bish\xe9|Dave Franco|Eliza Coupe|'
 
 [tvdb]: http://thetvdb.com
 [tvnamer]: http://github.com/dbr/tvnamer

@@ -44,7 +44,7 @@ class test_tvdb_basic(unittest.TestCase):
         """Checks shownames with spaces
         """
         self.assertEquals(self.t['My Name Is Earl']['seriesname'], 'My Name Is Earl')
-        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked His Own Death')
+        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked My Own Death')
 
     def test_numeric(self):
         """Checks numeric show names
@@ -148,13 +148,13 @@ class test_tvdb_search(unittest.TestCase):
     def test_search_len(self):
         """There should be only one result matching
         """
-        self.assertEquals(len(self.t['My Name Is Earl'].search('Faked His Own Death')), 1)
+        self.assertEquals(len(self.t['My Name Is Earl'].search('Faked My Own Death')), 1)
 
     def test_search_checkname(self):
         """Checks you can get the episode name of a search result
         """
         self.assertEquals(self.t['Scrubs'].search('my first')[0]['episodename'], 'My First Day')
-        self.assertEquals(self.t['My Name Is Earl'].search('Faked His Own Death')[0]['episodename'], 'Faked His Own Death')
+        self.assertEquals(self.t['My Name Is Earl'].search('Faked My Own Death')[0]['episodename'], 'Faked My Own Death')
     
     def test_search_multiresults(self):
         """Checks search can return multiple results
@@ -533,7 +533,7 @@ class test_tvdb_zip(unittest.TestCase):
         """Checks shownames with spaces
         """
         self.assertEquals(self.t['My Name Is Earl']['seriesname'], 'My Name Is Earl')
-        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked His Own Death')
+        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked My Own Death')
 
 
 class test_tvdb_show_ordering(unittest.TestCase):

@@ -217,7 +217,7 @@ class test_tvdb_misc(unittest.TestCase):
         """
         self.assertEquals(
             repr(self.t['CNNNN']),
-            "<Show Chaser Non-Stop News Network (CNNNN) (containing 3 seasons)>"
+            "<Show u'Chaser Non-Stop News Network (CNNNN)' (containing 3 seasons)>"
         )
     def test_repr_season(self):
         """Check repr() of Season
@@ -231,7 +231,7 @@ class test_tvdb_misc(unittest.TestCase):
         """
         self.assertEquals(
             repr(self.t['CNNNN'][1][1]),
-            "<Episode 01x01 - Terror Alert>"
+            "<Episode 01x01 - u'Terror Alert'>"
         )
     def test_have_all_languages(self):
         """Check valid_languages is up-to-date (compared to languages.xml)

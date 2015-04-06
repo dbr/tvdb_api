@@ -97,7 +97,7 @@ class Show(dict):
         self.data = {}
 
     def __repr__(self):
-        return "<Show %s (containing %s seasons)>" % (
+        return "<Show %r (containing %s seasons)>" % (
             self.data.get(u'seriesname', 'instance'),
             len(self)
         )
@@ -235,7 +235,7 @@ class Episode(dict):
         epno = int(self.get(u'episodenumber', 0))
         epname = self.get(u'episodename')
         if epname is not None:
-            return "<Episode %02dx%02d - %s>" % (seasno, epno, epname)
+            return "<Episode %02dx%02d - %r>" % (seasno, epno, epname)
         else:
             return "<Episode %02dx%02d>" % (seasno, epno)
 
@@ -296,7 +296,7 @@ class Actor(dict):
     sortorder
     """
     def __repr__(self):
-        return "<Actor \"%s\">" % (self.get("name"))
+        return "<Actor %r>" % (self.get("name"))
 
 
 class Tvdb:
@@ -954,7 +954,7 @@ class Tvdb:
         return self.shows[sid]
 
     def __repr__(self):
-        return str(self.shows)
+        return repr(self.shows)
 
 
 def main():

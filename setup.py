@@ -12,14 +12,14 @@ if not IS_PY2:
     # https://bitbucket.org/pypa/setuptools/issue/196/tests_require-pytest-pytest-cov-breaks
 
 
-_modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
+_modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions', 'dvd_order']
 if IS_PY2:
     _modules.append('tvdb_cache')
 
 
 setup(
 name = 'tvdb_api',
-version='1.10',
+version='1.11-dev',
 
 author='dbr/Ben',
 description='Interface to thetvdb.com',

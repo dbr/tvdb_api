@@ -60,6 +60,7 @@ else:
 from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (tvdb_error, tvdb_userabort, tvdb_shownotfound,
     tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
+from dvd_order import create_dvd_tree
 
 lastTimeout = None
 
@@ -619,6 +620,7 @@ class Tvdb:
         """Loads a URL using caching, returns an ElementTree of the source
         """
         src = self._loadUrl(url, language=language)
+        dvdorder = self.config['dvdorder']
 
 
         # TVDB doesn't sanitize \r (CR) from user input in some fields,
@@ -630,11 +632,19 @@ class Tvdb:
             src = src.rstrip("\r") # FIXME: this seems wrong
 
         try:
-            return ElementTree.fromstring(src)
+            tree = ElementTree.fromstring(src)
+            if dvdorder:
+                return create_dvd_tree(tree)
+            else:
+                return tree
         except SyntaxError:
             src = self._loadUrl(url, recache=True, language=language)
             try:
-                return ElementTree.fromstring(src)
+                tree = ElementTree.fromstring(src)
+                if dvdorder:
+                    return create_dvd_tree(tree)
+                else:
+                    return tree
             except SyntaxError as exceptionmsg:
                 errormsg = "There was an error with the XML retrieved from thetvdb.com:\n%s" % (
                     exceptionmsg
@@ -885,16 +895,7 @@ class Tvdb:
 
         for cur_ep in epsEt.findall("Episode"):
 
-            if self.config['dvdorder']:
-                log().debug('Using DVD ordering.')
-                use_dvd = cur_ep.find('DVD_season').text != None and cur_ep.find('DVD_episodenumber').text != None
-            else:
-                use_dvd = False
-
-            if use_dvd:
-                elem_seasnum, elem_epno = cur_ep.find('DVD_season'), cur_ep.find('DVD_episodenumber')
-            else:
-                elem_seasnum, elem_epno = cur_ep.find('SeasonNumber'), cur_ep.find('EpisodeNumber')
+            elem_seasnum, elem_epno = cur_ep.find('SeasonNumber'), cur_ep.find('EpisodeNumber')
 
             if elem_seasnum is None or elem_epno is None:
                 log().warning("An episode has incomplete season/episode number (season: %r, episode: %r)" % (

@@ -632,13 +632,6 @@ class Tvdb:
         try:
             return ElementTree.fromstring(src)
         except SyntaxError:
-
-            # Checks if TVDB returns a 404 error
-            # Example - Show "BBC News Witness" ID "290490"
-            # URL http://thetvdb.com/api/0629B785CE550C8D/series/290490/en.xml
-            if "<title>404 Not Found</title>" in str(src):
-                raise tvdb_error("Sever returned error 404 with url %s" % url)
-
             src = self._loadUrl(url, recache=True, language=language)
             try:
                 return ElementTree.fromstring(src)

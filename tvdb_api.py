@@ -557,6 +557,8 @@ class Tvdb:
         if not IS_PY2:
             # Python 3: return content at URL as bytes
             resp = self.session.get(url)
+            if str(resp) == "<Response [404]>":
+                raise tvdb_error("Sever returned error 404 at url %s" % url)
             if 'application/zip' in resp.headers.get("Content-Type", ''):
                 try:
                     # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]

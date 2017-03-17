@@ -37,20 +37,20 @@ class test_tvdb_basic(unittest.TestCase):
         """Checks the auto-correction of show names is working.
         It should correct the weirdly capitalised 'sCruBs' to 'Scrubs'
         """
-        self.assertEquals(self.t['scrubs'][1][4]['episodename'], 'My Old Lady')
-        self.assertEquals(self.t['sCruBs']['seriesname'], 'Scrubs')
+        self.assertEquals(self.t['scrubs'][1][4]['episodeName'], 'My Old Lady')
+        self.assertEquals(self.t['sCruBs']['seriesName'], 'Scrubs')
 
     def test_spaces(self):
         """Checks shownames with spaces
         """
-        self.assertEquals(self.t['My Name Is Earl']['seriesname'], 'My Name Is Earl')
-        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked My Own Death')
+        self.assertEquals(self.t['My Name Is Earl']['seriesName'], 'My Name Is Earl')
+        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodeName'], 'Faked My Own Death')
 
     def test_numeric(self):
         """Checks numeric show names
         """
-        self.assertEquals(self.t['24'][2][20]['episodename'], 'Day 2: 3:00 A.M.-4:00 A.M.')
-        self.assertEquals(self.t['24']['seriesname'], '24')
+        self.assertEquals(self.t['24'][2][20]['episodeName'], 'Day 2: 3:00 A.M. - 4:00 A.M.')
+        self.assertEquals(self.t['24']['seriesName'], '24')
 
     def test_show_iter(self):
         """Iterating over a show returns each seasons
@@ -153,8 +153,8 @@ class test_tvdb_search(unittest.TestCase):
     def test_search_checkname(self):
         """Checks you can get the episode name of a search result
         """
-        self.assertEquals(self.t['Scrubs'].search('my first')[0]['episodename'], 'My First Day')
-        self.assertEquals(self.t['My Name Is Earl'].search('Faked My Own Death')[0]['episodename'], 'Faked My Own Death')
+        self.assertEquals(self.t['Scrubs'].search('my first')[0]['episodeName'], 'My First Day')
+        self.assertEquals(self.t['My Name Is Earl'].search('Faked My Own Death')[0]['episodeName'], 'Faked My Own Death')
     
     def test_search_multiresults(self):
         """Checks search can return multiple results
@@ -178,7 +178,7 @@ class test_tvdb_search(unittest.TestCase):
     def test_search_show(self):
         """Checks the searching of an entire show"""
         self.assertEquals(
-            len(self.t['CNNNN'].search('CNNNN', key='episodename')),
+            len(self.t['CNNNN'].search('CNNNN', key='episodeName')),
             3
         )
 
@@ -186,7 +186,7 @@ class test_tvdb_search(unittest.TestCase):
         """Tests airedOn show method"""
         sr = self.t['Scrubs'].airedOn(datetime.date(2001, 10, 2))
         self.assertEquals(len(sr), 1)
-        self.assertEquals(sr[0]['episodename'], u'My First Day')
+        self.assertEquals(sr[0]['episodeName'], u'My First Day')
 
 class test_tvdb_data(unittest.TestCase):
     # Used to store the cached instance of Tvdb()
@@ -200,7 +200,7 @@ class test_tvdb_data(unittest.TestCase):
         """Check the firstaired value is retrieved
         """
         self.assertEquals(
-            self.t['lost']['firstaired'],
+            self.t['lost']['firstAired'],
             '2004-09-22'
         )
 
@@ -219,6 +219,7 @@ class test_tvdb_misc(unittest.TestCase):
             repr(self.t['CNNNN']).replace("u'", "'"),
             "<Show 'Chaser Non-Stop News Network (CNNNN)' (containing 3 seasons)>"
         )
+
     def test_repr_season(self):
         """Check repr() of Season
         """
@@ -236,12 +237,9 @@ class test_tvdb_misc(unittest.TestCase):
     def test_have_all_languages(self):
         """Check valid_languages is up-to-date (compared to languages.xml)
         """
-        et = self.t._getetsrc(
-            "http://thetvdb.com/api/%s/languages.xml" % (
-                self.t.config['apikey']
-            )
-        )
-        languages = [x.find("abbreviation").text for x in et.findall("Language")]
+        et = self.t._getetsrc("https://api.thetvdb.com/languages")
+
+        languages = [x['abbreviation'] for x in et]
         
         self.assertEquals(
             sorted(languages),
@@ -254,7 +252,7 @@ class test_tvdb_languages(unittest.TestCase):
         """
         t = tvdb_api.Tvdb(cache = True, language = "fr")
         self.assertEquals(
-            t['scrubs'][1][1]['episodename'],
+            t['scrubs'][1][1]['episodeName'],
             "Mon premier jour"
         )
         self.assertTrue(
@@ -268,8 +266,8 @@ class test_tvdb_languages(unittest.TestCase):
         """
         t = tvdb_api.Tvdb(cache = True, language = "es")
         self.assertEquals(
-            t['scrubs'][1][1]['episodename'],
-            "Mi Primer Dia"
+            t['scrubs'][1][1]['episodeName'],
+            u'Mi primer día'
         )
         self.assertTrue(
             t['scrubs']['overview'].startswith(
@@ -280,28 +278,18 @@ class test_tvdb_languages(unittest.TestCase):
     def test_multilanguage_selection(self):
         """Check selected language is used
         """
-        class SelectEnglishUI(tvdb_ui.BaseUI):
-            def selectSeries(self, allSeries):
-                return [x for x in allSeries if x['language'] == "en"][0]
-
-        class SelectItalianUI(tvdb_ui.BaseUI):
-            def selectSeries(self, allSeries):
-                return [x for x in allSeries if x['language'] == "it"][0]
-
         t_en = tvdb_api.Tvdb(
             cache=True,
-            custom_ui = SelectEnglishUI,
             language = "en")
         t_it = tvdb_api.Tvdb(
             cache=True,
-            custom_ui = SelectItalianUI,
             language = "it")
 
         self.assertEquals(
-            t_en['dexter'][1][2]['episodename'], "Crocodile"
+            t_en['dexter'][1][2]['episodeName'], "Crocodile"
         )
         self.assertEquals(
-            t_it['dexter'][1][2]['episodename'], "Lacrime di coccodrillo"
+            t_it['dexter'][1][2]['episodeName'], "Lacrime di coccodrillo"
         )
 
 
@@ -317,10 +305,11 @@ class test_tvdb_unicode(unittest.TestCase):
         )
         
         self.assertEquals(
-            show['seriesname'],
+            show['seriesName'],
             u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
         )
 
+    @unittest.skip('Новое API не возвращает сразу все языки')
     def test_search_in_all_languages(self):
         """Check search_all_languages returns Chinese show, with language=en
         """
@@ -332,7 +321,7 @@ class test_tvdb_unicode(unittest.TestCase):
         )
         
         self.assertEquals(
-            show['seriesname'],
+            show['seriesName'],
             u'Virtues Of Harmony II'
         )
 
@@ -362,7 +351,7 @@ class test_tvdb_banners(unittest.TestCase):
                         banner_info['_bannerpath'].startswith("http://"),
                         True
                     )
-
+    @unittest.skip('В новом API нет картинки у эпизода')
     def test_episode_image(self):
         """Checks episode 'filename' image is fully qualified URL
         """
@@ -370,7 +359,8 @@ class test_tvdb_banners(unittest.TestCase):
             self.t['scrubs'][1][1]['filename'].startswith("http://"),
             True
         )
-    
+
+    @unittest.skip('В новом API у сериала кроме банера больше нет картинок')
     def test_show_artwork(self):
         """Checks various image URLs within season data are fully qualified
         """
@@ -407,9 +397,10 @@ class test_tvdb_actors(unittest.TestCase):
     
     def test_actor_has_name(self):
         """Check first actor has a name"""
-        self.assertEquals(
-            self.t['scrubs']['_actors'][0]['name'],
-            "Zach Braff"
+        names = [actor['name'] for actor in self.t['scrubs']['_actors']]
+        self.assertIn(
+            u"Zach Braff",
+            names
         )
 
     def test_actor_image_corrected(self):
@@ -510,30 +501,9 @@ class test_tvdb_by_id(unittest.TestCase):
     def test_actors_is_correct_datatype(self):
         """Check show/_actors key exists and is correct type"""
         self.assertEquals(
-            self.t[76156]['seriesname'],
+            self.t[76156]['seriesName'],
             'Scrubs'
             )
-
-
-class test_tvdb_zip(unittest.TestCase):
-    # Used to store the cached instance of Tvdb()
-    t = None
-
-    def setUp(self):
-        if self.t is None:
-            self.__class__.t = tvdb_api.Tvdb(cache = True, useZip = True)
-
-    def test_get_series_from_zip(self):
-        """
-        """
-        self.assertEquals(self.t['scrubs'][1][4]['episodename'], 'My Old Lady')
-        self.assertEquals(self.t['sCruBs']['seriesname'], 'Scrubs')
-
-    def test_spaces_from_zip(self):
-        """Checks shownames with spaces
-        """
-        self.assertEquals(self.t['My Name Is Earl']['seriesname'], 'My Name Is Earl')
-        self.assertEquals(self.t['My Name Is Earl'][1][4]['episodename'], 'Faked My Own Death')
 
 
 class test_tvdb_show_ordering(unittest.TestCase):
@@ -543,19 +513,19 @@ class test_tvdb_show_ordering(unittest.TestCase):
 
     def setUp(self):
         if self.t_dvd is None:
-            self.t_dvd = tvdb_api.Tvdb(cache = True, useZip = True, dvdorder=True)
+            self.t_dvd = tvdb_api.Tvdb(cache = True, dvdorder=True)
 
         if self.t_air is None:
-            self.t_air = tvdb_api.Tvdb(cache = True, useZip = True)
+            self.t_air = tvdb_api.Tvdb(cache = True)
 
     def test_ordering(self):
         """Test Tvdb.search method
         """
-        self.assertEquals(u'The Train Job', self.t_air['Firefly'][1][1]['episodename'])
-        self.assertEquals(u'Serenity', self.t_dvd['Firefly'][1][1]['episodename'])
+        self.assertEquals(u'The Train Job', self.t_air['Firefly'][1][1]['episodeName'])
+        self.assertEquals(u'Serenity', self.t_dvd['Firefly'][1][1]['episodeName'])
 
-        self.assertEquals(u'The Cat & the Claw (Part 1)', self.t_air['Batman The Animated Series'][1][1]['episodename'])
-        self.assertEquals(u'On Leather Wings', self.t_dvd['Batman The Animated Series'][1][1]['episodename'])
+        self.assertEquals(u'The Cat & the Claw (Part 1)', self.t_air['Batman The Animated Series'][1][1]['episodeName'])
+        self.assertEquals(u'On Leather Wings', self.t_dvd['Batman The Animated Series'][1][1]['episodeName'])
 
 class test_tvdb_show_search(unittest.TestCase):
     # Used to store the cached instance of Tvdb()
@@ -563,14 +533,14 @@ class test_tvdb_show_search(unittest.TestCase):
 
     def setUp(self):
         if self.t is None:
-            self.__class__.t = tvdb_api.Tvdb(cache = True, useZip = True)
+            self.__class__.t = tvdb_api.Tvdb(cache = True)
 
     def test_search(self):
         """Test Tvdb.search method
         """
         results = self.t.search("my name is earl")
-        all_ids = [x['seriesid'] for x in results]
-        self.assertTrue('75397' in all_ids)
+        all_ids = [x['id'] for x in results]
+        self.assertTrue(75397 in all_ids)
 
 
 class test_tvdb_alt_names(unittest.TestCase):
@@ -585,9 +555,8 @@ class test_tvdb_alt_names(unittest.TestCase):
         results = self.t.search("Don't Trust the B---- in Apartment 23")
         series = results[0]
         self.assertTrue(
-            'Apartment 23' in series['aliasnames']
+            'Apartment 23' in series['aliases']
         )
-
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner(verbosity = 2)

@@ -11,7 +11,7 @@ Example usage:
 
 >>> from tvdb_api import Tvdb
 >>> t = Tvdb()
->>> t['Lost'][4][11]['episodename']
+>>> t['Lost'][4][11]['episodeName']
 u'Cabin Fever'
 """
 __author__ = "dbr/Ben"
@@ -24,6 +24,7 @@ IS_PY2 = sys.version_info[0] == 2
 import os
 import time
 if IS_PY2:
+    import requests
     import urllib
     import urllib2
     from tvdb_cache import CacheHandler
@@ -98,7 +99,7 @@ class Show(dict):
 
     def __repr__(self):
         return "<Show %r (containing %s seasons)>" % (
-            self.data.get(u'seriesname', 'instance'),
+            self.data.get(u'seriesName', 'instance'),
             len(self)
         )
 
@@ -121,7 +122,7 @@ class Show(dict):
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
 
     def airedOn(self, date):
-        ret = self.search(str(date), 'firstaired')
+        ret = self.search(str(date), 'firstAired')
         if len(ret) == 0:
             raise tvdb_episodenotfound("Could not find any episodes that aired on %s" % date)
         return ret
@@ -151,27 +152,27 @@ class Show(dict):
         containing "my first day":
 
         >>> t['Scrubs'].search("my first day")
-        [<Episode 01x01 - My First Day>]
+        [<Episode 01x01 - u'My First Day'>]
         >>>
 
         Search for "My Name Is Earl" episode named "Faked His Own Death":
 
-        >>> t['My Name Is Earl'].search('Faked His Own Death', key = 'episodename')
-        [<Episode 01x04 - Faked His Own Death>]
+        >>> t['My Name Is Earl'].search('Faked My Own Death', key = 'episodeName')
+        [<Episode 01x04 - u'Faked My Own Death'>]
         >>>
 
         To search Scrubs for all episodes with "mentor" in the episode name:
 
-        >>> t['scrubs'].search('mentor', key = 'episodename')
-        [<Episode 01x02 - My Mentor>, <Episode 03x15 - My Tormented Mentor>]
+        >>> t['scrubs'].search('mentor', key = 'episodeName')
+        [<Episode 01x02 - u'My Mentor'>, <Episode 03x15 - u'My Tormented Mentor'>]
         >>>
 
         # Using search results
 
         >>> results = t['Scrubs'].search("my first")
-        >>> print results[0]['episodename']
+        >>> print results[0]['episodeName']
         My First Day
-        >>> for x in results: print x['episodename']
+        >>> for x in results: print x['episodeName']
         My First Day
         My First Step
         My First Kill
@@ -209,7 +210,7 @@ class Season(dict):
 
         >>> t = Tvdb()
         >>> t['scrubs'][1].search('first day')
-        [<Episode 01x01 - My First Day>]
+        [<Episode 01x01 - u'My First Day'>]
         >>>
 
         See Show.search documentation for further information on search
@@ -231,9 +232,9 @@ class Episode(dict):
         self.season = season
 
     def __repr__(self):
-        seasno = int(self.get(u'seasonnumber', 0))
-        epno = int(self.get(u'episodenumber', 0))
-        epname = self.get(u'episodename')
+        seasno = self.get(u'airedSeason', 0)
+        epno = self.get(u'airedEpisodeNumber', 0)
+        epname = self.get(u'episodeName')
         if epname is not None:
             return "<Episode %02dx%02d - %r>" % (seasno, epno, epname)
         else:
@@ -256,15 +257,15 @@ class Episode(dict):
         Simple example:
 
         >>> e = Episode()
-        >>> e['episodename'] = "An Example"
+        >>> e['episodeName'] = "An Example"
         >>> e.search("examp")
-        <Episode 00x00 - An Example>
+        <Episode 00x00 - 'An Example'>
         >>>
 
         Limiting by key:
 
-        >>> e.search("examp", key = "episodename")
-        <Episode 00x00 - An Example>
+        >>> e.search("examp", key = "episodeName")
+        <Episode 00x00 - 'An Example'>
         >>>
         """
         if term == None:
@@ -272,11 +273,11 @@ class Episode(dict):
 
         term = text_type(term).lower()
         for cur_key, cur_value in self.items():
-            cur_key, cur_value = text_type(cur_key).lower(), text_type(cur_value).lower()
+            cur_key, cur_value = text_type(cur_key), text_type(cur_value).lower()
             if key is not None and cur_key != key:
                 # Do not search this key
                 continue
-            if cur_value.find( text_type(term).lower() ) > -1:
+            if cur_value.find( text_type(term) ) > -1:
                 return self
 
 
@@ -302,7 +303,7 @@ class Actor(dict):
 class Tvdb:
     """Create easy-to-use interface to name of season/episode name
     >>> t = Tvdb()
-    >>> t['Scrubs'][1][24]['episodename']
+    >>> t['Scrubs'][1][24]['episodeName']
     u'My Last Day'
     """
     def __init__(self,
@@ -316,8 +317,9 @@ class Tvdb:
                 language = None,
                 search_all_languages = False,
                 apikey = None,
+                username = None,
+                userkey = None,
                 forceConnect=False,
-                useZip=False,
                 dvdorder=False):
 
         """interactive (True/False):
@@ -354,7 +356,7 @@ class Tvdb:
             via the _banners key of a Show(), for example:
 
             >>> Tvdb(banners=True)['scrubs']['_banners'].keys()
-            ['fanart', 'poster', 'series', 'season']
+            [u'fanart', u'poster', u'seasonwide', u'season', u'series']
 
         actors (True/False):
             Retrieves a list of the actors for a show. These are accessed
@@ -362,7 +364,7 @@ class Tvdb:
 
             >>> t = Tvdb(actors=True)
             >>> t['scrubs']['_actors'][0]['name']
-            u'Zach Braff'
+            u'John C. McGinley'
 
         custom_ui (tvdb_ui.BaseUI subclass):
             A callable subclass of tvdb_ui.BaseUI (overrides interactive option)
@@ -391,11 +393,6 @@ class Tvdb:
             recently timed out. By default it will wait one minute before
             trying again, and any requests within that one minute window will
             return an exception immediately.
-
-        useZip (bool):
-            Download the zip archive where possibale, instead of the xml.
-            This is only used when all episodes are pulled.
-            And only the main language xml is used, the actor and banner xml are lost.
         """
         
 
@@ -410,10 +407,18 @@ class Tvdb:
 
         self.config = {}
 
-        if apikey is not None:
-            self.config['apikey'] = apikey
+        if apikey and username and userkey:
+            self.config['auth_payload'] = {
+                "apikey": apikey,
+                "userkey": username,
+                "username": userkey
+            }
         else:
-            self.config['apikey'] = "0629B785CE550C8D" # tvdb_api's API key
+            self.config['auth_payload'] = {
+                "apikey": "199FD9384384C73A",
+                "userkey": "9BBA332F483717C1",
+                "username": "pelmen"
+            }
 
         self.config['debug_enabled'] = debug # show debugging messages
 
@@ -424,8 +429,6 @@ class Tvdb:
         self.config['select_first'] = select_first
 
         self.config['search_all_languages'] = search_all_languages
-
-        self.config['useZip'] = useZip
 
         self.config['dvdorder'] = dvdorder
 
@@ -505,10 +508,10 @@ class Tvdb:
         # but to link to a series like http://thetvdb.com/?tab=series&id=79349&lid=16
         # requires the language ID, thus this mapping is required (mainly
         # for usage in tvdb_ui - internally tvdb_api will use the language abbreviations)
-        self.config['langabbv_to_id'] = {'el': 20, 'en': 7, 'zh': 27,
-        'it': 15, 'cs': 28, 'es': 16, 'ru': 22, 'nl': 13, 'pt': 26, 'no': 9,
-        'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11,
-        'hu': 19, 'ja': 25, 'he': 24, 'ko': 32, 'sv': 8, 'sl': 30}
+        self.config['langabbv_to_id'] = {'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16,
+                                         'ru': 22, 'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18,
+                                         'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11, 'hu': 19,
+                                         'ja': 25, 'he': 24, 'ko': 32, 'sv': 8, 'sl': 30}
 
         if language is None:
             self.config['language'] = 'en'
@@ -523,20 +526,21 @@ class Tvdb:
         # The following url_ configs are based of the
         # http://thetvdb.com/wiki/index.php/Programmers_API
         self.config['base_url'] = "http://thetvdb.com"
+        self.config['api_url'] = "https://api.thetvdb.com"
 
-        if self.config['search_all_languages']:
-            self.config['url_getSeries'] = u"%(base_url)s/api/GetSeries.php?seriesname=%%s&language=all" % self.config
-        else:
-            self.config['url_getSeries'] = u"%(base_url)s/api/GetSeries.php?seriesname=%%s&language=%(language)s" % self.config
+        self.config['url_getSeries'] = u"%(api_url)s/search/series?name=%%s" % self.config
 
-        self.config['url_epInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/all/%%s.xml" % self.config
-        self.config['url_epInfo_zip'] = u"%(base_url)s/api/%(apikey)s/series/%%s/all/%%s.zip" % self.config
+        self.config['url_epInfo'] = u"%(api_url)s/series/%%s/episodes" % self.config
 
-        self.config['url_seriesInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/%%s.xml" % self.config
-        self.config['url_actorsInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/actors.xml" % self.config
+        self.config['url_seriesInfo'] = u"%(api_url)s/series/%%s" % self.config
+        self.config['url_actorsInfo'] = u"%(api_url)s/series/%%s/actors" % self.config
 
-        self.config['url_seriesBanner'] = u"%(base_url)s/api/%(apikey)s/series/%%s/banners.xml" % self.config
+        self.config['url_seriesBanner'] = u"%(api_url)s/series/%%s/images" % self.config
+        self.config['url_seriesBannerInfo'] = u"%(api_url)s/series/%%s/images/query?keyType=%%s" % self.config
         self.config['url_artworkPrefix'] = u"%(base_url)s/banners/%%s" % self.config
+
+        self.__authorized = False
+        self.headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Accept-Language': self.config['language']}
 
     def _getTempDir(self):
         """Returns the [system temp dir]/tvdb_api-u501 (or
@@ -553,101 +557,41 @@ class Tvdb:
 
         return os.path.join(tempfile.gettempdir(), "tvdb_api-%s" % (uid))
 
-    def _loadUrl(self, url, recache = False, language=None):
-        if not IS_PY2:
-            # Python 3: return content at URL as bytes
-            resp = self.session.get(url)
-            if 'application/zip' in resp.headers.get("Content-Type", ''):
-                try:
-                    # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
-                    log().debug("We recived a zip file unpacking now ...")
-                    from io import BytesIO
-                    myzipfile = zipfile.ZipFile(BytesIO(resp.content))
-                    return myzipfile.read('%s.xml' % language)
-                except zipfile.BadZipfile:
-                    self.session.cache.delete_url(url)
-                    raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
-            return resp.content
+    def _loadUrl(self, url, data=None, recache = False, language=None):
+        """Return response from The TVDB API"""
+        # TODO: обрабатывать исключения
+        # TODO: обновлять токен
+        if not self.__authorized:
+            self.authorize()
 
+        r = requests.get(url, headers=self.headers).json()
+        r_data = r.get('data')
+        links = r.get('links')
+
+        if data and isinstance(data, list):
+            data.extend(r_data)
         else:
-            global lastTimeout
-            try:
-                log().debug("Retrieving URL %s" % url)
-                resp = self.urlopener.open(url)
-                if 'x-local-cache' in resp.headers:
-                    log().debug("URL %s was cached in %s" % (
-                        url,
-                        resp.headers['x-local-cache'])
-                    )
-                    if recache:
-                        log().debug("Attempting to recache %s" % url)
-                        resp.recache()
-            except (IOError, urllib2.URLError) as errormsg:
-                if not str(errormsg).startswith('HTTP Error'):
-                    lastTimeout = datetime.datetime.now()
-                raise tvdb_error("Could not connect to server: %s" % (errormsg))
+            data = r_data
 
+        if links and links['next']:
+            url = url.split('?')[0]
+            _url = url + "?page=%s" % links['next']
+            self._loadUrl(_url, data)
 
-            # handle gzipped content,
-            # http://dbr.lighthouseapp.com/projects/13342/tickets/72-gzipped-data-patch
-            if 'gzip' in resp.headers.get("Content-Encoding", ''):
-                if gzip:
-                    from StringIO import StringIO
-                    stream = StringIO(resp.read())
-                    gz = gzip.GzipFile(fileobj=stream)
-                    return gz.read()
+        return data
 
-                raise tvdb_error("Received gzip data from thetvdb.com, but could not correctly handle it")
-
-            if 'application/zip' in resp.headers.get("Content-Type", ''):
-                try:
-                    # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
-                    log().debug("We recived a zip file unpacking now ...")
-                    from StringIO import StringIO
-                    zipdata = StringIO()
-                    zipdata.write(resp.read())
-                    myzipfile = zipfile.ZipFile(zipdata)
-                    return myzipfile.read('%s.xml' % language)
-                except zipfile.BadZipfile:
-                    if 'x-local-cache' in resp.headers:
-                        resp.delete_cache()
-                    raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
-
-            return resp.read()
+    def authorize(self):
+        r = requests.post('https://api.thetvdb.com/login', json=self.config['auth_payload'], headers=self.headers)
+        token = r.json().get('token')
+        self.headers['Authorization'] = "Bearer %s" % token.encode('utf8')
+        self.__authorized = True
 
     def _getetsrc(self, url, language=None):
         """Loads a URL using caching, returns an ElementTree of the source
         """
         src = self._loadUrl(url, language=language)
 
-
-        # TVDB doesn't sanitize \r (CR) from user input in some fields,
-        # remove it to avoid errors. Change from SickBeard, from will14m
-        if not IS_PY2:
-            # Remove trailing \r byte
-            src = src.replace(b"\r", b"")
-        else:
-            src = src.rstrip("\r") # FIXME: this seems wrong
-
-        try:
-            return ElementTree.fromstring(src)
-        except SyntaxError:
-            src = self._loadUrl(url, recache=True, language=language)
-            try:
-                return ElementTree.fromstring(src)
-            except SyntaxError as exceptionmsg:
-                errormsg = "There was an error with the XML retrieved from thetvdb.com:\n%s" % (
-                    exceptionmsg
-                )
-
-                if self.config['cache_enabled']:
-                    errormsg += "\nFirst try emptying the cache folder at..\n%s" % (
-                        self.config['cache_location']
-                    )
-
-                errormsg += "\nIf this does not resolve the issue, please try again later. If the error persists, report a bug on"
-                errormsg += "\nhttp://dbr.lighthouseapp.com/projects/13342-tvdb_api/overview\n"
-                raise tvdb_error(errormsg)
+        return src
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
@@ -679,17 +623,6 @@ class Tvdb:
             self.shows[sid] = Show()
         self.shows[sid].data[key] = value
 
-    def _cleanData(self, data):
-        """Cleans up strings returned by TheTVDB.com
-
-        Issues corrected:
-        - Replaces &amp; with &
-        - Trailing whitespace
-        """
-        data = data.replace(u"&amp;", u"&")
-        data = data.strip()
-        return data
-
     def search(self, series):
         """This searches TheTVDB.com for the series name
         and returns the result list
@@ -697,15 +630,15 @@ class Tvdb:
         series = url_quote(series.encode("utf-8"))
         log().debug("Searching for show %s" % series)
         seriesEt = self._getetsrc(self.config['url_getSeries'] % (series))
+        if not seriesEt:
+            log().debug('Series result returned zero')
+            raise tvdb_shownotfound("Show-name search returned zero results (cannot find show on TVDB)")
+
         allSeries = []
         for series in seriesEt:
-            result = dict((k.tag.lower(), k.text) for k in series.getchildren())
-            result['id'] = int(result['id'])
-            result['lid'] = self.config['langabbv_to_id'][result['language']]
-            if 'aliasnames' in result:
-                result['aliasnames'] = result['aliasnames'].split("|")
-            log().debug('Found series %(seriesname)s' % result)
-            allSeries.append(result)
+            series['lid'] = self.config['langabbv_to_id'][self.config['language']]
+            log().debug('Found series %(seriesName)s' % series)
+            allSeries.append(series)
         
         return allSeries
 
@@ -716,10 +649,6 @@ class Tvdb:
         BaseUI is used to select the first result.
         """
         allSeries = self.search(series)
-
-        if len(allSeries) == 0:
-            log().debug('Series result returned zero')
-            raise tvdb_shownotfound("Show-name search returned zero results (cannot find show on TVDB)")
 
         if self.config['custom_ui'] is not None:
             log().debug("Using custom UI %s" % (repr(self.config['custom_ui'])))
@@ -742,8 +671,8 @@ class Tvdb:
 
         >>> t = Tvdb(banners = True)
         >>> t['scrubs']['_banners'].keys()
-        ['fanart', 'poster', 'series', 'season']
-        >>> t['scrubs']['_banners']['poster']['680x1000']['35308']['_bannerpath']
+        [u'fanart', u'poster', u'seasonwide', u'season', u'series']
+        >>> t['scrubs']['_banners']['poster']['680x1000'][35308]['_bannerpath']
         u'http://thetvdb.com/banners/posters/76156-2.jpg'
         >>>
 
@@ -753,38 +682,34 @@ class Tvdb:
         This interface will be improved in future versions.
         """
         log().debug('Getting season banners for %s' % (sid))
-        bannersEt = self._getetsrc( self.config['url_seriesBanner'] % (sid) )
+        bannersEt = self._getetsrc(self.config['url_seriesBanner'] % sid)
         banners = {}
-        for cur_banner in bannersEt.findall('Banner'):
-            bid = cur_banner.find('id').text
-            btype = cur_banner.find('BannerType')
-            btype2 = cur_banner.find('BannerType2')
-            if btype is None or btype2 is None:
-                continue
-            btype, btype2 = btype.text, btype2.text
-            if not btype in banners:
-                banners[btype] = {}
-            if not btype2 in banners[btype]:
-                banners[btype][btype2] = {}
-            if not bid in banners[btype][btype2]:
-                banners[btype][btype2][bid] = {}
-
-            for cur_element in cur_banner.getchildren():
-                tag = cur_element.tag.lower()
-                value = cur_element.text
-                if tag is None or value is None:
+        for cur_banner in bannersEt.keys():
+            banners_info = self._getetsrc(self.config['url_seriesBannerInfo'] % (sid, cur_banner))
+            for banner_info in banners_info:
+                bid = banner_info.get('id')
+                btype = banner_info.get('keyType')
+                btype2 = banner_info.get('resolution')
+                if btype is None or btype2 is None:
                     continue
-                tag, value = tag.lower(), value.lower()
-                banners[btype][btype2][bid][tag] = value
 
-            for k, v in list(banners[btype][btype2][bid].items()):
-                if k.endswith("path"):
-                    new_key = "_%s" % (k)
-                    log().debug("Transforming %s to %s" % (k, new_key))
-                    new_url = self.config['url_artworkPrefix'] % (v)
-                    banners[btype][btype2][bid][new_key] = new_url
+                if not btype in banners:
+                    banners[btype] = {}
+                if not btype2 in banners[btype]:
+                    banners[btype][btype2] = {}
+                if not bid in banners[btype][btype2]:
+                    banners[btype][btype2][bid] = {}
 
-        self._setShowData(sid, "_banners", banners)
+                banners[btype][btype2][bid]['bannerpath'] = banner_info['fileName']
+
+                for k, v in list(banners[btype][btype2][bid].items()):
+                    if k.endswith("path"):
+                        new_key = "_%s" % (k)
+                        log().debug("Transforming %s to %s" % (k, new_key))
+                        new_url = self.config['url_artworkPrefix'] % (v)
+                        banners[btype][btype2][bid][new_key] = new_url
+
+            self._setShowData(sid, "_banners", banners)
 
     def _parseActors(self, sid):
         """Parsers actors XML, from
@@ -799,13 +724,13 @@ class Tvdb:
         >>> type(actors[0])
         <class 'tvdb_api.Actor'>
         >>> actors[0]
-        <Actor "Zach Braff">
+        <Actor u'John C. McGinley'>
         >>> sorted(actors[0].keys())
-        ['id', 'image', 'name', 'role', 'sortorder']
+        [u'id', u'image', u'imageAdded', u'imageAuthor', u'lastUpdated', u'name', u'role', u'seriesId', u'sortOrder']
         >>> actors[0]['name']
-        u'Zach Braff'
+        u'John C. McGinley'
         >>> actors[0]['image']
-        u'http://thetvdb.com/banners/actors/43640.jpg'
+        u'http://thetvdb.com/banners/actors/43638.jpg'
 
         Any key starting with an underscore has been processed (not the raw
         data from the XML)
@@ -814,16 +739,14 @@ class Tvdb:
         actorsEt = self._getetsrc(self.config['url_actorsInfo'] % (sid))
 
         cur_actors = Actors()
-        for curActorItem in actorsEt.findall("Actor"):
+        for curActorItem in actorsEt:
             curActor = Actor()
-            for curInfo in curActorItem:
-                tag = curInfo.tag.lower()
-                value = curInfo.text
+            for curInfo in curActorItem.keys():
+                tag = curInfo
+                value = curActorItem[curInfo]
                 if value is not None:
                     if tag == "image":
                         value = self.config['url_artworkPrefix'] % (value)
-                    else:
-                        value = self._cleanData(value)
                 curActor[tag] = value
             cur_actors.append(curActor)
         self._setShowData(sid, '_actors', cur_actors)
@@ -851,17 +774,15 @@ class Tvdb:
         # Parse show information
         log().debug('Getting all series data for %s' % (sid))
         seriesInfoEt = self._getetsrc(
-            self.config['url_seriesInfo'] % (sid, getShowInLanguage)
+            self.config['url_seriesInfo'] % sid
         )
-        for curInfo in seriesInfoEt.findall("Series")[0]:
-            tag = curInfo.tag.lower()
-            value = curInfo.text
+        for curInfo in seriesInfoEt.keys():
+            tag = curInfo
+            value = seriesInfoEt[curInfo]
 
             if value is not None:
                 if tag in ['banner', 'fanart', 'poster']:
                     value = self.config['url_artworkPrefix'] % (value)
-                else:
-                    value = self._cleanData(value)
 
             self._setShowData(sid, tag, value)
 
@@ -876,25 +797,22 @@ class Tvdb:
         # Parse episode data
         log().debug('Getting all episodes of %s' % (sid))
 
-        if self.config['useZip']:
-            url = self.config['url_epInfo_zip'] % (sid, language)
-        else:
-            url = self.config['url_epInfo'] % (sid, language)
+        url = self.config['url_epInfo'] % sid
 
         epsEt = self._getetsrc( url, language=language)
 
-        for cur_ep in epsEt.findall("Episode"):
+        for cur_ep in epsEt:
 
             if self.config['dvdorder']:
                 log().debug('Using DVD ordering.')
-                use_dvd = cur_ep.find('DVD_season').text != None and cur_ep.find('DVD_episodenumber').text != None
+                use_dvd = cur_ep.get('dvdSeason') != None and cur_ep.get('dvdEpisodeNumber') != None
             else:
                 use_dvd = False
 
             if use_dvd:
-                elem_seasnum, elem_epno = cur_ep.find('DVD_season'), cur_ep.find('DVD_episodenumber')
+                elem_seasnum, elem_epno = cur_ep.get('dvdSeason'), cur_ep.get('dvdEpisodeNumber')
             else:
-                elem_seasnum, elem_epno = cur_ep.find('SeasonNumber'), cur_ep.find('EpisodeNumber')
+                elem_seasnum, elem_epno = cur_ep['airedSeason'], cur_ep['airedEpisodeNumber']
 
             if elem_seasnum is None or elem_epno is None:
                 log().warning("An episode has incomplete season/episode number (season: %r, episode: %r)" % (
@@ -906,17 +824,15 @@ class Tvdb:
                 continue # Skip to next episode
 
             # float() is because https://github.com/dbr/tvnamer/issues/95 - should probably be fixed in TVDB data
-            seas_no = int(float(elem_seasnum.text))
-            ep_no = int(float(elem_epno.text))
+            seas_no = elem_seasnum
+            ep_no = elem_epno
 
-            for cur_item in cur_ep.getchildren():
-                tag = cur_item.tag.lower()
-                value = cur_item.text
+            for cur_item in cur_ep.keys():
+                tag = cur_item
+                value = cur_ep[cur_item]
                 if value is not None:
                     if tag == 'filename':
                         value = self.config['url_artworkPrefix'] % (value)
-                    else:
-                        value = self._cleanData(value)
                 self._setItem(sid, seas_no, ep_no, tag, value)
 
     def _nameToSid(self, name):
@@ -930,11 +846,11 @@ class Tvdb:
         else:
             log().debug('Getting show %s' % (name))
             selected_series = self._getSeries( name )
-            sname, sid = selected_series['seriesname'], selected_series['id']
-            log().debug('Got %(seriesname)s, id %(id)s' % selected_series)
+            sname, sid = selected_series['seriesName'], selected_series['id']
+            log().debug('Got %(seriesName)s, id %(id)s' % selected_series)
 
             self.corrections[name] = sid
-            self._getShowData(selected_series['id'], selected_series['language'])
+            self._getShowData(selected_series['id'], self.config['language'])
 
         return sid
 
@@ -948,7 +864,6 @@ class Tvdb:
                 self._getShowData(key, self.config['language'])
             return self.shows[key]
         
-        key = key.lower() # make key lower case
         sid = self._nameToSid(key)
         log().debug('Got series id %s' % (sid))
         return self.shows[sid]
@@ -964,7 +879,7 @@ def main():
     import logging
     logging.basicConfig(level=logging.DEBUG)
 
-    tvdb_instance = Tvdb(interactive=True, cache=False)
+    tvdb_instance = Tvdb(interactive=False, cache=False)
     print(tvdb_instance['Lost']['seriesname'])
     print(tvdb_instance['Lost'][1][4]['episodename'])
 

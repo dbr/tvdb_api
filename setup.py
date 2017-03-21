@@ -3,7 +3,7 @@ from setuptools import setup
 
 IS_PY2 = sys.version_info[0] == 2
 
-_requirements = []
+_requirements = ['requests', ]
 if not IS_PY2:
     _requirements.append('requests_cache')
 

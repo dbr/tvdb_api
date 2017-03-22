@@ -15,7 +15,6 @@ import warnings
 import logging
 import datetime
 
-from urllib import quote as url_quote
 from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (
     tvdb_error, tvdb_shownotfound,
@@ -36,6 +35,11 @@ __version__ = "1.10"
 
 
 IS_PY2 = sys.version_info[0] == 2
+
+if IS_PY2:
+    from urllib import quote as url_quote
+else:
+    from urllib.parse import quote as url_quote
 
 
 if IS_PY2:
@@ -288,7 +292,7 @@ class Actor(dict):
     sortorder
     """
     def __repr__(self):
-        return "<Actor %r>" % (self.get("name"))
+        return "<Actor %r>" % self.get("name")
 
 
 class Tvdb:
@@ -433,7 +437,7 @@ class Tvdb:
         elif cache is False:
             self.session = requests.Session()
             self.config['cache_enabled'] = False
-        elif isinstance(cache, (str, unicode)):
+        elif isinstance(cache, str):
             # Specified cache path
             self.session = requests_cache.CachedSession(
                 expire_after=21600,  # 6 hours
@@ -549,7 +553,7 @@ class Tvdb:
     def authorize(self):
         r = self.session.post('https://api.thetvdb.com/login', json=self.config['auth_payload'], headers=self.headers)
         token = r.json().get('token')
-        self.headers['Authorization'] = "Bearer %s" % token.encode('utf8')
+        self.headers['Authorization'] = "Bearer %s" % text_type(token)
         self.__authorized = True
 
     def _getetsrc(self, url, language=None):

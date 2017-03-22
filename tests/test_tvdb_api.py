@@ -450,28 +450,6 @@ class test_tvdb_custom_caching(unittest.TestCase):
         else:
             self.fail("Expected ValueError from setting cache to float")
 
-    def test_custom_urlopener(self):
-        if not IS_PY2:
-            raise unittest.SkipTest("cannot supply custom opener in Python 3 because requests is used")
-
-        class UsedCustomOpener(Exception):
-            pass
-
-        import urllib2
-        class TestOpener(urllib2.BaseHandler):
-            def default_open(self, request):
-                print(request.get_method())
-                raise UsedCustomOpener("Something")
-
-        custom_opener = urllib2.build_opener(TestOpener())
-        t = tvdb_api.Tvdb(cache = custom_opener)
-        try:
-            t['scrubs']
-        except UsedCustomOpener:
-            pass
-        else:
-            self.fail("Did not use custom opener")
-
     def test_custom_request_session(self):
         if IS_PY2:
             return

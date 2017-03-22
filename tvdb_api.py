@@ -4,6 +4,23 @@
 # project:tvdb_api
 # repository:http://github.com/dbr/tvdb_api
 # license:unlicense (http://unlicense.org/)
+import sys
+import os
+import time
+import requests
+import requests_cache
+import getpass
+import tempfile
+import warnings
+import logging
+import datetime
+
+from urllib import quote as url_quote
+from tvdb_ui import BaseUI, ConsoleUI
+from tvdb_exceptions import (
+    tvdb_error, tvdb_shownotfound,
+    tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound
+)
 
 """Simple-to-use Python interface to The TVDB's API (thetvdb.com)
 
@@ -17,31 +34,9 @@ u'Cabin Fever'
 __author__ = "dbr/Ben"
 __version__ = "1.10"
 
-import sys
 
 IS_PY2 = sys.version_info[0] == 2
 
-import os
-import time
-if IS_PY2:
-    import requests
-    import urllib2
-    from tvdb_cache import CacheHandler
-    from urllib import quote as url_quote
-else:
-    import requests
-    from urllib.parse import quote as url_quote
-import getpass
-import tempfile
-import warnings
-import logging
-import datetime
-
-from tvdb_ui import BaseUI, ConsoleUI
-from tvdb_exceptions import (
-    tvdb_error, tvdb_shownotfound,
-    tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound
-)
 
 if IS_PY2:
     int_types = (int, long)
@@ -427,59 +422,31 @@ class Tvdb:
 
         self.config['dvdorder'] = dvdorder
 
-        if not IS_PY2:  # FIXME: Allow using requests in Python 2?
-            import requests_cache
-            if cache is True:
-                self.session = requests_cache.CachedSession(
-                    expire_after=21600,  # 6 hours
-                    backend='sqlite',
-                    cache_name=self._getTempDir(),
-                    )
-                self.config['cache_enabled'] = True
-            elif cache is False:
-                self.session = requests.Session()
-                self.config['cache_enabled'] = False
-            elif isinstance(cache, text_type):
-                # Specified cache path
-                self.session = requests_cache.CachedSession(
-                    expire_after=21600,  # 6 hours
-                    backend='sqlite',
-                    cache_name=os.path.join(cache, "tvdb_api"),
-                    )
-            else:
-                self.session = cache
-                try:
-                    self.session.get
-                except AttributeError:
-                    raise ValueError("cache argument must be True/False, string as cache path or requests.Session-type object (e.g from requests_cache.CachedSession)")
+        if cache is True:
+            self.session = requests_cache.CachedSession(
+                expire_after=21600,  # 6 hours
+                backend='sqlite',
+                cache_name=self._getTempDir(),
+                include_get_headers=True
+                )
+            self.config['cache_enabled'] = True
+        elif cache is False:
+            self.session = requests.Session()
+            self.config['cache_enabled'] = False
+        elif isinstance(cache, (str, unicode)):
+            # Specified cache path
+            self.session = requests_cache.CachedSession(
+                expire_after=21600,  # 6 hours
+                backend='sqlite',
+                cache_name=os.path.join(cache, "tvdb_api"),
+                include_get_headers=True
+                )
         else:
-            # For backwards compatibility in Python 2.x
-            if cache is True:
-                self.config['cache_enabled'] = True
-                self.config['cache_location'] = self._getTempDir()
-                self.urlopener = urllib2.build_opener(
-                    CacheHandler(self.config['cache_location'])
-                )
-
-            elif cache is False:
-                self.config['cache_enabled'] = False
-                self.urlopener = urllib2.build_opener()  # default opener with no caching
-
-            elif isinstance(cache, basestring):
-                self.config['cache_enabled'] = True
-                self.config['cache_location'] = cache
-                self.urlopener = urllib2.build_opener(
-                    CacheHandler(self.config['cache_location'])
-                )
-
-            elif isinstance(cache, urllib2.OpenerDirector):
-                # If passed something from urllib2.build_opener, use that
-                log().debug("Using %r as urlopener" % cache)
-                self.config['cache_enabled'] = True
-                self.urlopener = cache
-
-            else:
-                raise ValueError("Invalid value for Cache %r (type was %s)" % (cache, type(cache)))
+            self.session = cache
+            try:
+                self.session.get
+            except AttributeError:
+                raise ValueError("cache argument must be True/False, string as cache path or requests.Session-type object (e.g from requests_cache.CachedSession)")
 
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
@@ -563,7 +530,7 @@ class Tvdb:
         if not self.__authorized:
             self.authorize()
 
-        r = requests.get(url, headers=self.headers).json()
+        r = self.session.get(url, headers=self.headers).json()
         r_data = r.get('data')
         links = r.get('links')
 
@@ -580,7 +547,7 @@ class Tvdb:
         return data
 
     def authorize(self):
-        r = requests.post('https://api.thetvdb.com/login', json=self.config['auth_payload'], headers=self.headers)
+        r = self.session.post('https://api.thetvdb.com/login', json=self.config['auth_payload'], headers=self.headers)
         token = r.json().get('token')
         self.headers['Authorization'] = "Bearer %s" % token.encode('utf8')
         self.__authorized = True

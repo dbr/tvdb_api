@@ -238,6 +238,25 @@ class Episode(dict):
         try:
             return dict.__getitem__(self, key)
         except KeyError:
+            v1_compatibility = {
+                'episodenumber': 'airedEpisodeNumber',
+                'firstaired': 'firstAired',
+                'seasonnumber': 'airedSeason'
+            }
+            if key in v1_compatibility:
+                import warnings
+                msg = "v1 usage is deprecated, please use new names: old: '%s', new:'%s'"
+                warnings.warn(msg %(key, v1_compatibility[key]), category=DeprecationWarning)
+                try:
+                    value = dict.__getitem__(self, v1_compatibility[key])
+                    if key in ['episodenumber', 'seasonnumber']:
+                        # This was a string in v1
+                        return str(value)
+                    else:
+                        return value
+                except:
+                    # We either return something or we get the exception below
+                    pass
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
 
     def search(self, term=None, key=None):

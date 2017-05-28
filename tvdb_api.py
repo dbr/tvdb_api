@@ -804,9 +804,9 @@ class Tvdb:
             if elem_seasnum is None or elem_epno is None:
                 log().warning("An episode has incomplete season/episode number (season: %r, episode: %r)" % (
                     elem_seasnum, elem_epno))
-                log().debug(
-                    " ".join(
-                        "%r is %r" % (child.tag, child.text) for child in cur_ep.getchildren()))
+                #log().debug(
+                #    " ".join(
+                #         "%r is %r" % (child.tag, child.text) for child in cur_ep.getchildren()))
                 # TODO: Should this happen?
                 continue  # Skip to next episode
 

@@ -1,10 +1,14 @@
 language: python
+
 python:
   - 2.6
   - 2.7
   - 3.3
   - 3.4
 
-install: pip install nose && python setup.py install
+install:
+  - python setup.py install
+  - pip install -U pytest
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -U urllib3[secure]; fi
 
-script: nosetests
+script: pytest

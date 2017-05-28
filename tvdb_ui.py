@@ -93,7 +93,7 @@ class ConsoleUI(BaseUI):
         print("TVDB Search Results:")
         for i, cshow in enumerate(toshow):
             i_show = i + 1 # Start at more human readable number 1 (not 0)
-            log().debug('Showing allSeries[%s], series %s)' % (i_show, allSeries[i]['seriesname']))
+            log().debug('Showing allSeries[%s], series %s)' % (i_show, allSeries[i]['seriesName']))
             if i == 0:
                 extra = " (default)"
             else:
@@ -101,7 +101,7 @@ class ConsoleUI(BaseUI):
 
             output = "%s -> %s [%s] # http://thetvdb.com/?tab=series&id=%s&lid=%s%s" % (
                 i_show,
-                cshow['seriesname'],
+                cshow['seriesName'],
                 cshow['language'],
                 str(cshow['id']),
                 cshow['lid'],

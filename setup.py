@@ -28,7 +28,7 @@ Basic usage is:
 >>> ep = t['My Name Is Earl'][1][22]
 >>> ep
 <Episode 01x22 - Stole a Badge>
->>> ep['episodename']
+>>> ep['episodeName']
 u'Stole a Badge'
 """,
 
@@ -45,6 +45,8 @@ classifiers=[
     "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3.3",
     "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
     "Topic :: Multimedia",
     "Topic :: Utilities",
     "Topic :: Software Development :: Libraries :: Python Modules",

@@ -31,7 +31,7 @@ Example usage:
 u'Cabin Fever'
 """
 __author__ = "dbr/Ben"
-__version__ = "1.10"
+__version__ = "2.0-dev"
 
 
 IS_PY2 = sys.version_info[0] == 2

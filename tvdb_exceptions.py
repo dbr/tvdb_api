@@ -9,7 +9,7 @@
 """
 
 __author__ = "dbr/Ben"
-__version__ = "1.10"
+__version__ = "2.0-dev"
 
 import logging
 

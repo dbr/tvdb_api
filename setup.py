@@ -9,7 +9,7 @@ _modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
 
 setup(
 name = 'tvdb_api',
-version='1.10',
+version='2.0-dev',
 
 author='dbr/Ben',
 description='Interface to thetvdb.com',

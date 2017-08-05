@@ -6,9 +6,6 @@ IS_PY2 = sys.version_info[0] == 2
 _requirements = ['requests_cache', 'requests']
 _modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
 
-if IS_PY2:
-    _modules.append('tvdb_cache')
-
 
 setup(
 name = 'tvdb_api',

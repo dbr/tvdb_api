@@ -427,9 +427,9 @@ class Tvdb:
             }
         else:
             self.config['auth_payload'] = {
-                "apikey": "199FD9384384C73A",
-                "userkey": "9BBA332F483717C1",
-                "username": "pelmen"
+                "apikey": "0629B785CE550C8D",
+                "userkey": "",
+                "username": ""
             }
 
         self.config['debug_enabled'] = debug  # show debugging messages

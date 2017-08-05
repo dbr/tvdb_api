@@ -1,7 +1,26 @@
 import sys
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
-IS_PY2 = sys.version_info[0] == 2
+
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
 
 _requirements = ['requests_cache', 'requests']
 _modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
@@ -31,6 +50,9 @@ u'Stole a Badge'
 
 py_modules = _modules,
 install_requires = _requirements,
+
+tests_require=['pytest'],
+cmdclass = {'test': PyTest},
 
 classifiers=[
     "Intended Audience :: Developers",

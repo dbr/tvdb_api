@@ -92,6 +92,16 @@ class Show(dict):
         )
 
     def __getitem__(self, key):
+        v1_compatibility = {
+            'seriesname': 'seriesName',
+        }
+
+        if key in v1_compatibility:
+            import warnings
+            msg = "v1 usage is deprecated, please use new names: old: '%s', new: '%s'" % (
+                key, v1_compatibility[key])
+            key = v1_compatibility[key]
+
         if key in self:
             # Key is an episode, return it
             return dict.__getitem__(self, key)

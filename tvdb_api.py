@@ -354,19 +354,15 @@ class Tvdb:
                  >>> import logging
                  >>> logging.basicConfig(level = logging.DEBUG)
 
-        cache (True/False/str/unicode/urllib2 opener):
-            Retrieved XML are persisted to to disc. If true, stores in
-            tvdb_api folder under your systems TEMP_DIR, if set to
-            str/unicode instance it will use this as the cache
-            location. If False, disables caching.  Can also be passed
-            an arbitrary Python object, which is used as a urllib2
-            opener, which should be created by urllib2.build_opener
+        cache (True/False/str/requests_cache.CachedSession):
 
-            In Python 3, True/False enable or disable default
-            caching. Passing string specified directory where to store
-            the "tvdb.sqlite3" cache file. Also a custom
+            Retrieved URLs can be persisted to to disc.
+
+            True/False enable or disable default caching. Passing
+            string specifies the directory where to store the
+            "tvdb.sqlite3" cache file. Alternatively a custom
             requests.Session instance can be passed (e.g maybe a
-            customised instance of requests_cache.CachedSession)
+            customised instance of `requests_cache.CachedSession`)
 
         banners (True/False):
             Retrieves the banners for a show. These are accessed

@@ -1,0 +1,25 @@
+environment:
+
+  matrix:
+    # http://www.appveyor.com/docs/installed-software#python
+
+    - PYTHON: C:\Python26
+    - PYTHON: C:\Python26-x64
+    - PYTHON: C:\Python27
+    - PYTHON: C:\Python27-x64
+    - PYTHON: C:\Python33
+    - PYTHON: C:\Python33-x64
+    - PYTHON: C:\Python34
+    - PYTHON: C:\Python34-x64
+    - PYTHON: C:\Python35
+    - PYTHON: C:\Python35-x64
+    - PYTHON: C:\Python36
+    - PYTHON: C:\Python36-x64
+
+#install:
+#  - "%PYTHON%\\python.exe -m pip install wheel"
+
+build: off
+
+test_script:
+  - "build.cmd %PYTHON%\\python.exe setup.py test"

@@ -71,6 +71,11 @@ class tvdb_userabort(tvdb_exception):
     """
     pass
 
+class tvdb_notauthorized(tvdb_exception):
+    """An authorization error with thetvdb.com
+    """
+    pass
+
 class tvdb_shownotfound(tvdb_exception):
     """Show cannot be found on thetvdb.com (non-existant show)
     """
@@ -85,6 +90,20 @@ class tvdb_episodenotfound(tvdb_exception):
     """Episode cannot be found on thetvdb.com
     """
     pass
+
+class tvdb_resourcenotfound(tvdb_exception):
+    """Resource cannot be found on thetvdb.com
+    """
+    pass
+
+class tvdb_invalidlanguage(tvdb_exception):
+    """invalid language given on thetvdb.com
+    """
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 class tvdb_attributenotfound(tvdb_exception):
     """Raised if an episode does not have the requested
@@ -508,6 +527,27 @@ class Actor(dict):
     def __repr__(self):
         return "<Actor %r>" % self.get("name")
 
+import hashlib
+from requests_cache.backends.base import _to_bytes, _DEFAULT_HEADERS
+import types
+def create_key(self, request):
+    if self._ignored_parameters:
+        url, body = self._remove_ignored_parameters(request)
+    else:
+        url, body = request.url, request.body
+    key = hashlib.sha256()
+    key.update(_to_bytes(request.method.upper()))
+    key.update(_to_bytes(url))
+    if request.body:
+        key.update(_to_bytes(body))
+    else:
+        if self._include_get_headers and request.headers != _DEFAULT_HEADERS:
+            for name, value in sorted(request.headers.items()):
+                # include only Accept-Language as it is important for context
+                if name in ['Accept-Language']:
+                    key.update(_to_bytes(name))
+                    key.update(_to_bytes(value))
+    return key.hexdigest()
 
 class Tvdb:
     """Create easy-to-use interface to name of season/episode name
@@ -593,6 +633,20 @@ class Tvdb:
             tvdb_api in a larger application)
             See http://thetvdb.com/?tab=apiregister to get your own key
 
+        username (str/unicode):
+            Override the default thetvdb.com username. By default it will use
+            tvdb_api's own username (fine for small scripts), but you can use your
+            own key if desired - this is recommended if you are embedding
+            tvdb_api in a larger application)
+            See http://thetvdb.com/ to register an account
+
+        userkey (str/unicode):
+            Override the default thetvdb.com userkey. By default it will use
+            tvdb_api's own userkey (fine for small scripts), but you can use your
+            own key if desired - this is recommended if you are embedding
+            tvdb_api in a larger application)
+            See http://thetvdb.com/ to register an account
+
         forceConnect (bool):
             If true it will always try to connect to theTVDB.com even if we
             recently timed out. By default it will wait one minute before
@@ -614,8 +668,8 @@ class Tvdb:
         if apikey and username and userkey:
             self.config['auth_payload'] = {
                 "apikey": apikey,
-                "userkey": username,
-                "username": userkey
+                "username": username,
+                "userkey": userkey
             }
         else:
             self.config['auth_payload'] = {
@@ -643,6 +697,8 @@ class Tvdb:
                 cache_name=self._getTempDir(),
                 include_get_headers=True
                 )
+            self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
+            self.session.remove_expired_responses()
             self.config['cache_enabled'] = True
         elif cache is False:
             self.session = requests.Session()
@@ -655,6 +711,8 @@ class Tvdb:
                 cache_name=os.path.join(cache, "tvdb_api"),
                 include_get_headers=True
                 )
+            self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
+            self.session.remove_expired_responses()
         else:
             self.session = cache
             try:
@@ -739,14 +797,56 @@ class Tvdb:
 
     def _loadUrl(self, url, data=None, recache=False, language=None):
         """Return response from The TVDB API"""
-        # TODO: обрабатывать исключения
-        # TODO: обновлять токен
-        if not self.__authorized:
-            self.authorize()
 
-        r = self.session.get(url, headers=self.headers).json()
+        if not language:
+            language = self.config['language']
+        if language not in self.config['valid_languages']:
+            raise ValueError("Invalid language %s, options are: %s" % (
+                language, self.config['valid_languages']
+            ))
+        self.headers['Accept-Language'] = language
+
+        # TODO: обрабатывать исключения (Handle Exceptions)
+        # TODO: обновлять токен (Update Token)
+        # encoded url is used for hashing in the cache so
+        # python 2 and 3 generate the same hash
+        if not self.__authorized:
+            # only authorize of we haven't before and we
+            # don't have the url in the cache
+            fake_session_for_key = requests.Session()
+            fake_session_for_key.headers['Accept-Language'] = language
+            cache_key = None
+            try:
+                # in case the session class has no cache object, fail gracefully
+                cache_key = self.session.cache.create_key(fake_session_for_key.prepare_request(requests.Request('GET', url)))
+            except:
+                pass
+            if not cache_key or not self.session.cache.has_key(cache_key):
+                self.authorize()
+
+        response = self.session.get(url, headers=self.headers)
+        r = response.json()
+        log().debug("loadurl: %s lid=%s" % (url, language))
+        log().debug("response:")
+        log().debug(r)
+        error = r.get('Error')
+        errors = r.get('errors')
         r_data = r.get('data')
         links = r.get('links')
+
+        if error:
+            if error == u'Resource not found':
+                # raise(tvdb_resourcenotfound)
+                # handle no data at a different level so it is more specific
+                pass
+            if error == u'Not Authorized':
+                raise(tvdb_notauthorized)
+        if errors:
+            if u'invalidLanguage' in errors:
+                # raise(tvdb_invalidlanguage(errors[u'invalidLanguage']))
+                # invalidLanguage does not mean there is no data
+                # there is just less data
+                pass
 
         if data and isinstance(data, list):
             data.extend(r_data)
@@ -761,8 +861,14 @@ class Tvdb:
         return data
 
     def authorize(self):
+        log().debug("auth")
         r = self.session.post('https://api.thetvdb.com/login', json=self.config['auth_payload'], headers=self.headers)
-        token = r.json().get('token')
+        r_json = r.json()
+        error = r_json.get('Error')
+        if error:
+            if error == u'Not Authorized':
+                raise(tvdb_notauthorized)
+        token = r_json.get('token')
         self.headers['Authorization'] = "Bearer %s" % text_type(token)
         self.__authorized = True
 
@@ -817,6 +923,7 @@ class Tvdb:
         allSeries = []
         for series in seriesEt:
             series['lid'] = self.config['langabbv_to_id'][self.config['language']]
+            series['language'] = self.config['language']
             log().debug('Found series %(seriesName)s' % series)
             allSeries.append(series)
 
@@ -881,6 +988,8 @@ class Tvdb:
                     banners[btype][btype2][bid] = {}
 
                 banners[btype][btype2][bid]['bannerpath'] = banner_info['fileName']
+                banners[btype][btype2][bid]['resolution'] = banner_info['resolution']
+                banners[btype][btype2][bid]['subKey'] = banner_info['subKey']
 
                 for k, v in list(banners[btype][btype2][bid].items()):
                     if k.endswith("path"):
@@ -889,6 +998,7 @@ class Tvdb:
                         new_url = self.config['url_artworkPrefix'] % v
                         banners[btype][btype2][bid][new_key] = new_url
 
+            banners[btype]['raw'] = banners_info
             self._setShowData(sid, "_banners", banners)
 
     def _parseActors(self, sid):
@@ -963,6 +1073,8 @@ class Tvdb:
                     value = self.config['url_artworkPrefix'] % (value)
 
             self._setShowData(sid, tag, value)
+        # set language
+        self._setShowData(sid, u'language', self.config['language'])
 
         # Parse banners
         if self.config['banners_enabled']:

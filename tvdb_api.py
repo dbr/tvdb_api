@@ -4,17 +4,6 @@
 # project:tvdb_api
 # repository:http://github.com/dbr/tvdb_api
 # license:unlicense (http://unlicense.org/)
-import sys
-import os
-import time
-import requests
-import requests_cache
-import getpass
-import tempfile
-import warnings
-import logging
-import datetime
-
 
 """Simple-to-use Python interface to The TVDB's API (thetvdb.com)
 
@@ -25,8 +14,25 @@ Example usage:
 >>> t['Lost'][4][11]['episodeName']
 u'Cabin Fever'
 """
+
 __author__ = "dbr/Ben"
 __version__ = "2.0-dev"
+
+
+import sys
+import os
+import time
+import types
+import getpass
+import tempfile
+import warnings
+import logging
+import datetime
+import hashlib
+
+import requests
+import requests_cache
+from requests_cache.backends.base import _to_bytes, _DEFAULT_HEADERS
 
 
 IS_PY2 = sys.version_info[0] == 2
@@ -325,6 +331,12 @@ class Show(dict):
             )
 
     def airedOn(self, date):
+        """Deprecated: use aired_on instead
+        """
+        warnings.warn("Show.airedOn method renamed to aired_on", category=DeprecationWarning)
+        return self.aired_on(date)
+
+    def aired_on(self, date):
         ret = self.search(str(date), 'firstAired')
         if len(ret) == 0:
             raise tvdb_episodenotfound(
@@ -456,7 +468,6 @@ class Episode(dict):
                 'episodename': 'episodeName',
             }
             if key in v1_compatibility:
-                import warnings
                 msg = "v1 usage is deprecated, please use new names: old: '%s', new: '%s'" % (
                     key, v1_compatibility[key])
                 warnings.warn(msg, category=DeprecationWarning)
@@ -527,10 +538,23 @@ class Actor(dict):
     def __repr__(self):
         return "<Actor %r>" % self.get("name")
 
-import hashlib
-from requests_cache.backends.base import _to_bytes, _DEFAULT_HEADERS
-import types
+
 def create_key(self, request):
+    """A new cache_key algo is required as the authentication token
+    changes with each run. Also there are other header params which
+    also change with each request (e.g. timestamp). Excluding all
+    headers means that Accept-Language is excluded which means
+    different language requests will return the cached response from
+    the wrong language.
+
+    The _loadurl part checks the cache before a get is performed so
+    that an auth token can be obtained. If the response is already in
+    the cache, the auth token is not required. This prevents the need
+    to do a get which may access the host and fail because the session
+    is not yet not authorized. It is not necessary to authorize if the
+    cache is to be used thus saving host and network traffic.
+    """
+
     if self._ignored_parameters:
         url, body = self._remove_ignored_parameters(request)
     else:
@@ -548,6 +572,7 @@ def create_key(self, request):
                     key.update(_to_bytes(name))
                     key.update(_to_bytes(value))
     return key.hexdigest()
+
 
 class Tvdb:
     """Create easy-to-use interface to name of season/episode name

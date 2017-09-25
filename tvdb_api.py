@@ -864,10 +864,16 @@ class Tvdb:
                 # raise(tvdb_resourcenotfound)
                 # handle no data at a different level so it is more specific
                 pass
-            if error == u'Not Authorized':
+            elif error == u'Not Authorized':
                 raise(tvdb_notauthorized)
+            elif error.startswith(u"ID: ") and error.endswith("not found"):
+                # FIXME: Refactor error out of in this method
+                raise tvdb_shownotfound("%s" % error)
+            else:
+                raise tvdb_error("%s" % error)
+
         if errors:
-            if u'invalidLanguage' in errors:
+            if errors and u'invalidLanguage' in errors:
                 # raise(tvdb_invalidlanguage(errors[u'invalidLanguage']))
                 # invalidLanguage does not mean there is no data
                 # there is just less data

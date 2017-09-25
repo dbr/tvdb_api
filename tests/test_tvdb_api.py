@@ -101,6 +101,12 @@ class TestTvdbErrors:
         with pytest.raises(tvdb_shownotfound):
             self.t['the fake show thingy']
 
+    def test_shownotfound(self):
+        """Checks exception is thrown when episode doesn't exist.
+        """
+        with pytest.raises(tvdb_shownotfound):
+            self.t[999999999999999]
+
     def test_episodenotfound(self):
         """Checks exception is raised for non-existent episode
         """

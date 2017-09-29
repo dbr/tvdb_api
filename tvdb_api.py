@@ -403,6 +403,9 @@ class Show(dict):
 
         return results
 
+    def get_field(self, key):
+        return self.data.get(key)
+
 
 class Season(dict):
     def __init__(self, show=None):
@@ -440,6 +443,9 @@ class Season(dict):
                     searchresult
                 )
         return results
+
+    def get_field(self, key):
+        return self.get(key) or self.show.data.get(key)
 
 
 class Episode(dict):
@@ -518,6 +524,19 @@ class Episode(dict):
                 continue
             if cur_value.find(text_type(term)) > -1:
                 return self
+
+    def get_field(self, key):
+        """Return the value of a key including parent structures in the search.
+
+        Example:
+
+        >>> t = Tvdb()
+        >>> show = t['Homeland']
+        >>> ep = show[1][1]
+        >>> ep.get_field('seriesname')
+        u'Homeland'
+        """
+        return self.get(key) or self.season.get(key) or self.season.show.data.get(key)
 
 
 class Actors(list):

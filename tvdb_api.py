@@ -809,6 +809,7 @@ class Tvdb:
         """Returns the [system temp dir]/tvdb_api-u501 (or
         tvdb_api-myuser)
         """
+        py_major = sys.version_info.major
         if hasattr(os, 'getuid'):
             uid = "u%d" % (os.getuid())
         else:
@@ -816,9 +817,9 @@ class Tvdb:
             try:
                 uid = getpass.getuser()
             except ImportError:
-                return os.path.join(tempfile.gettempdir(), "tvdb_api")
+                return os.path.join(tempfile.gettempdir(), "tvdb_api-py%s" % (py_major))
 
-        return os.path.join(tempfile.gettempdir(), "tvdb_api-%s" % (uid))
+        return os.path.join(tempfile.gettempdir(), "tvdb_api-%s-py%s" % (uid, py_major))
 
     def _loadUrl(self, url, data=None, recache=False, language=None):
         """Return response from The TVDB API"""

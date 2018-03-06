@@ -809,7 +809,7 @@ class Tvdb:
         """Returns the [system temp dir]/tvdb_api-u501 (or
         tvdb_api-myuser)
         """
-        py_major = sys.version_info.major
+        py_major = sys.version_info[0] # Prefix with major version as 2 and 3 write incompatible caches
         if hasattr(os, 'getuid'):
             uid = "u%d" % (os.getuid())
         else:

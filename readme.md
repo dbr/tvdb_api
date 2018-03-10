@@ -8,6 +8,11 @@ It supports Python 2.6, 2.7, and 3.3 onwards
 
 [![Build Status](https://secure.travis-ci.org/dbr/tvdb_api.png?branch=master)](http://travis-ci.org/dbr/tvdb_api)
 
+
+[tvdb]: http://thetvdb.com
+[tvnamer]: http://github.com/dbr/tvnamer
+
+
 ## To install
 
 You can easily install `tvdb_api` via `easy_install`
@@ -107,5 +112,18 @@ Remember a simple list of actors is accessible via the default Show data:
     >>> t['scrubs']['actors']
     u'|Zach Braff|Donald Faison|Sarah Chalke|Judy Reyes|John C. McGinley|Neil Flynn|Ken Jenkins|Christa Miller|Aloma Wright|Robert Maschio|Sam Lloyd|Travis Schuldt|Johnny Kastl|Heather Graham|Michael Mosley|Kerry Bish\xe9|Dave Franco|Eliza Coupe|'
 
-[tvdb]: http://thetvdb.com
-[tvnamer]: http://github.com/dbr/tvnamer
+
+# Changelog
+
+## `2.1` - 2018-03-10
+
+- Began keeping change log
+- Correctly errors when failing to find show by ID -
+  [issue #54](https://github.com/dbr/tvdb_api/issues/54)
+- Web cache filename contains major version of Python to support
+  side-by-side usage of `tvdb_api` in Python 2 and 3
+
+## `2.0` - 2017-09-16
+
+- Switch to TheTVDB new JSON based API -
+  [issue #57](https://github.com/dbr/tvdb_api/issues/57)

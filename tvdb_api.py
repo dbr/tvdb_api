@@ -716,19 +716,23 @@ class Tvdb:
         self.config['dvdorder'] = dvdorder
 
         if cache is True:
+            cache_dir = self._getTempDir()
+            log().debug("Caching using requests_cache to %s" % cache_dir)
             self.session = requests_cache.CachedSession(
                 expire_after=21600,  # 6 hours
                 backend='sqlite',
-                cache_name=self._getTempDir(),
+                cache_name=cache_dir,
                 include_get_headers=True
                 )
             self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
             self.session.remove_expired_responses()
             self.config['cache_enabled'] = True
         elif cache is False:
+            log().debug("Caching disabled")
             self.session = requests.Session()
             self.config['cache_enabled'] = False
         elif isinstance(cache, str):
+            log().debug("Caching using requests_cache to specified directory %s" % cache)
             # Specified cache path
             self.session = requests_cache.CachedSession(
                 expire_after=21600,  # 6 hours
@@ -739,6 +743,7 @@ class Tvdb:
             self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
             self.session.remove_expired_responses()
         else:
+            log().debug("Using specified requests.Session")
             self.session = cache
             try:
                 self.session.get
@@ -811,7 +816,7 @@ class Tvdb:
         """
         py_major = sys.version_info[0] # Prefix with major version as 2 and 3 write incompatible caches
         if hasattr(os, 'getuid'):
-            uid = "u%d" % (os.getuid())
+            uid = "-u%d" % (os.getuid())
         else:
             # For Windows
             try:

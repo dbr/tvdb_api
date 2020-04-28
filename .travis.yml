@@ -1,16 +1,15 @@
 language: python
-
 python:
-  - 2.6
   - 2.7
-  - 3.3
-  - 3.4
   - 3.5
   - 3.6
+  - 3.7
+  - 3.8
+  - pypy
+  - pypy3
 
-install:
-  - python setup.py install
-  - pip install -U pytest
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -U urllib3[secure]; fi
-
-script: pytest
+script:
+  # pytest==4.6 fallback for Python 2.7
+  - pip install pytest==5.4 || pip install pytest==4.6
+  - python setup.py develop
+  - python -m pytest

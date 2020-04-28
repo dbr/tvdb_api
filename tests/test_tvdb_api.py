@@ -52,12 +52,12 @@ class TestTvdbBasic:
     def test_show_iter(self):
         """Iterating over a show returns each seasons
         """
-        assert len([season for season in self.t['Life on Mars']]) == 2
+        assert len([season for season in self.t['scrubs']]) == 10
 
     def test_season_iter(self):
         """Iterating over a show returns episodes
         """
-        assert len([episode for episode in self.t['Life on Mars'][1]]) == 8
+        assert len([episode for episode in self.t['scrubs'][1]]) == 24
 
     def test_get_episode_overview(self):
         """Checks episode overview is retrieved correctly.
@@ -160,8 +160,8 @@ class TestTvdbSearch:
         assert len(self.t['CNNNN'].search('CNNNN', key='episodeName')) == 3
 
     def test_aired_on(self):
-        """Tests airedOn show method"""
-        sr = self.t['Scrubs'].airedOn(datetime.date(2001, 10, 2))
+        """Tests aired_on show method"""
+        sr = self.t['Scrubs'].aired_on(datetime.date(2001, 10, 2))
         assert len(sr) == 1
         assert sr[0]['episodeName'] == u'My First Day'
 
@@ -411,7 +411,7 @@ class TestTvdbShowOrdering:
         assert u'The Train Job' == self.t_air['Firefly'][1][1]['episodeName']
         assert u'Serenity' == self.t_dvd['Firefly'][1][1]['episodeName']
 
-        assert u'The Cat & the Claw (Part 1)' == self.t_air['Batman The Animated Series'][1][1]['episodeName']
+        assert u'The Cat and the Claw (1)' == self.t_air['Batman The Animated Series'][1][1]['episodeName']
         assert u'On Leather Wings' == self.t_dvd['Batman The Animated Series'][1][1]['episodeName']
 
 

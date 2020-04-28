@@ -3,6 +3,7 @@
 ## `2.2` - unreleased
 
 - Include cache location info in debug logging
+- Drop support for Python 2.6 (EOL 2016), 3.3 (EOL 2013), 3.4 (EOL 2019)
 
 ## `2.1` - 2018-03-10
 

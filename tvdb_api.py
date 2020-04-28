@@ -580,7 +580,6 @@ class Tvdb:
     def __init__(self,
                  interactive=False,
                  select_first=False,
-                 debug=False,
                  cache=True,
                  banners=False,
                  actors=False,
@@ -591,7 +590,8 @@ class Tvdb:
                  username=None,
                  userkey=None,
                  forceConnect=False,
-                 dvdorder=False):
+                 dvdorder=False,
+                 ):
 
         """interactive (True/False):
             When True, uses built-in console UI is used to select the correct show.
@@ -601,12 +601,6 @@ class Tvdb:
             Automatically selects the first series search result (rather
             than showing the user a list of more than one series).
             Is overridden by interactive = False, or specifying a custom_ui
-
-        debug (True/False) DEPRECATED:
-             Replaced with proper use of logging module. To show debug messages:
-
-                 >>> import logging
-                 >>> logging.basicConfig(level = logging.DEBUG)
 
         cache (True/False/str/requests_cache.CachedSession):
 
@@ -733,14 +727,6 @@ class Tvdb:
 
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
-
-        if self.config['debug_enabled']:
-            warnings.warn(
-                "The debug argument to tvdb_api.__init__ will be removed in the next version. "
-                "To enable debug messages, use the following code before importing: "
-                "import logging; logging.basicConfig(level=logging.DEBUG)"
-            )
-            logging.basicConfig(level=logging.DEBUG)
 
         # List of language from http://thetvdb.com/api/0629B785CE550C8D/languages.xml
         # Hard-coded here as it is realtively static, and saves another HTTP request, as

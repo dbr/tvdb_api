@@ -6,6 +6,8 @@
   Keys are easy to register via https://thetvdb.com/api-information
 - Include cache location info in debug logging
 - Drop support for Python 2.6 (EOL 2016), 3.3 (EOL 2013), 3.4 (EOL 2019)
+- Remove deprecated `Tvdb(debug=...)` argument - use logging module instead.
+  E.g `logging.basicConfig(level=logging.DEBUG)`
 
 ## `2.1` - 2018-03-10
 

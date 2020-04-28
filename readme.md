@@ -1,5 +1,5 @@
 # `tvdb_api`
-[![Build Status](https://secure.travis-ci.org/dbr/tvdb_api.png?branch=master)](http://travis-ci.org/dbr/tvdb_api)
+[![Build Status](https://travis-ci.org/dbr/tvdb_api.svg?branch=master)](https://travis-ci.org/dbr/tvdb_api)
 
 `tvdb_api` is an easy to use interface to [thetvdb.com][tvdb]
 

@@ -21,6 +21,11 @@ from tvdb_api import (tvdb_shownotfound, tvdb_seasonnotfound,
                       tvdb_episodenotfound, tvdb_attributenotfound)
 
 
+# API key for tvdb_api test cases.
+# Other keys can easily be registered at https://thetvdb.com/api-information
+TVDB_API_TEST_KEY = "d48665c58c1a3c3bcd0c78da82df4fab"
+
+
 class TestTvdbBasic:
     # Used to store the cached instance of Tvdb()
     t = None
@@ -28,7 +33,7 @@ class TestTvdbBasic:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=True, banners=False, apikey=TVDB_API_TEST_KEY)
 
     def test_different_case(self):
         """Checks the auto-correction of show names is working.
@@ -87,7 +92,7 @@ class TestTvdbErrors:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=True, banners=False, apikey=TVDB_API_TEST_KEY)
 
     def test_seasonnotfound(self):
         """Checks exception is thrown when season doesn't exist.
@@ -128,7 +133,7 @@ class TestTvdbSearch:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=True, banners=False, apikey=TVDB_API_TEST_KEY)
 
     def test_search_len(self):
         """There should be only one result matching
@@ -173,7 +178,7 @@ class TestTvdbData:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=True, banners=False, apikey=TVDB_API_TEST_KEY)
 
     def test_episode_data(self):
         """Check the firstaired value is retrieved
@@ -188,7 +193,7 @@ class TestTvdbMisc:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=True, banners=False, apikey=TVDB_API_TEST_KEY)
 
     def test_repr_show(self):
         """Check repr() of Season
@@ -219,14 +224,14 @@ class TestTvdbLanguages:
     def test_episode_name_french(self):
         """Check episode data is in French (language="fr")
         """
-        t = tvdb_api.Tvdb(cache = True, language = "fr")
+        t = tvdb_api.Tvdb(cache = True, language = "fr", apikey=TVDB_API_TEST_KEY)
         assert t['scrubs'][1][1]['episodeName'] == "Mon premier jour"
         assert t['scrubs']['overview'].startswith(u"J.D. est un jeune m\xe9decin qui d\xe9bute")
 
     def test_episode_name_spanish(self):
         """Check episode data is in Spanish (language="es")
         """
-        t = tvdb_api.Tvdb(cache = True, language = "es")
+        t = tvdb_api.Tvdb(cache = True, language = "es", apikey=TVDB_API_TEST_KEY)
         assert t['scrubs'][1][1]['episodeName'] == u'Mi primer día'
         assert t['scrubs']['overview'].startswith(u'Scrubs es una divertida comedia')
 
@@ -235,10 +240,12 @@ class TestTvdbLanguages:
         """
         t_en = tvdb_api.Tvdb(
             cache=True,
-            language = "en")
+            language = "en",
+            apikey=TVDB_API_TEST_KEY)
         t_it = tvdb_api.Tvdb(
             cache=True,
-            language = "it")
+            language = "it",
+            apikey=TVDB_API_TEST_KEY)
 
         assert t_en['dexter'][1][2]['episodeName'] == "Crocodile"
         assert t_it['dexter'][1][2]['episodeName'] == "Lacrime di coccodrillo"
@@ -248,7 +255,7 @@ class TestTvdbUnicode:
     def test_search_in_chinese(self):
         """Check searching for show with language=zh returns Chinese seriesname
         """
-        t = tvdb_api.Tvdb(cache=True, language="zh")
+        t = tvdb_api.Tvdb(cache=True, language="zh", apikey=TVDB_API_TEST_KEY)
         show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
         assert type(show) == tvdb_api.Show
         assert show['seriesName'] == u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
@@ -257,7 +264,7 @@ class TestTvdbUnicode:
     def test_search_in_all_languages(self):
         """Check search_all_languages returns Chinese show, with language=en
         """
-        t = tvdb_api.Tvdb(cache=True, search_all_languages=True, language="en")
+        t = tvdb_api.Tvdb(cache=True, search_all_languages=True, language="en", apikey=TVDB_API_TEST_KEY)
         show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
         assert type(show) == tvdb_api.Show
         assert show['seriesName'] == u'Virtues Of Harmony II'
@@ -270,7 +277,7 @@ class TestTvdbBanners:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=True)
+            cls.t = tvdb_api.Tvdb(cache=True, banners=True, apikey=TVDB_API_TEST_KEY)
 
     def test_have_banners(self):
         """Check banners at least one banner is found
@@ -306,7 +313,7 @@ class TestTvdbActors:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, actors=True)
+            cls.t = tvdb_api.Tvdb(cache=True, actors=True, apikey=TVDB_API_TEST_KEY)
 
     def test_actors_is_correct_datatype(self):
         """Check show/_actors key exists and is correct type"""
@@ -385,7 +392,7 @@ class TestTvdbById:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, actors=True)
+            cls.t = tvdb_api.Tvdb(cache=True, actors=True, apikey=TVDB_API_TEST_KEY)
 
     def test_actors_is_correct_datatype(self):
         """Check show/_actors key exists and is correct type"""
@@ -400,10 +407,10 @@ class TestTvdbShowOrdering:
     @classmethod
     def setup_class(cls):
         if cls.t_dvd is None:
-            cls.t_dvd = tvdb_api.Tvdb(cache=True, dvdorder=True)
+            cls.t_dvd = tvdb_api.Tvdb(cache=True, dvdorder=True, apikey=TVDB_API_TEST_KEY)
 
         if cls.t_air is None:
-            cls.t_air = tvdb_api.Tvdb(cache=True)
+            cls.t_air = tvdb_api.Tvdb(cache=True, apikey=TVDB_API_TEST_KEY)
 
     def test_ordering(self):
         """Test Tvdb.search method
@@ -422,7 +429,7 @@ class TestTvdbShowSearch:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True)
+            cls.t = tvdb_api.Tvdb(cache=True, apikey=TVDB_API_TEST_KEY)
 
     def test_search(self):
         """Test Tvdb.search method
@@ -438,7 +445,7 @@ class TestTvdbAltNames:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, actors=True)
+            cls.t = tvdb_api.Tvdb(cache=True, actors=True, apikey=TVDB_API_TEST_KEY)
 
     def test_1(self):
         """Tests basic access of series name alias

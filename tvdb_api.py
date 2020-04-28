@@ -649,25 +649,16 @@ class Tvdb:
             show in and language
 
         apikey (str/unicode):
-            Override the default thetvdb.com API key. By default it will use
-            tvdb_api's own key (fine for small scripts), but you can use your
-            own key if desired - this is recommended if you are embedding
-            tvdb_api in a larger application)
-            See http://thetvdb.com/?tab=apiregister to get your own key
+            Your API key for TheTVDB. You can easily register a key with in
+            a few minutes:
+            https://thetvdb.com/api-information
 
-        username (str/unicode):
-            Override the default thetvdb.com username. By default it will use
-            tvdb_api's own username (fine for small scripts), but you can use your
-            own key if desired - this is recommended if you are embedding
-            tvdb_api in a larger application)
-            See http://thetvdb.com/ to register an account
+        username (str/unicode or None):
+            Specify a user account to use for actions which require
+            authentication (e.g marking a series as favourite, submitting ratings)
 
-        userkey (str/unicode):
-            Override the default thetvdb.com userkey. By default it will use
-            tvdb_api's own userkey (fine for small scripts), but you can use your
-            own key if desired - this is recommended if you are embedding
-            tvdb_api in a larger application)
-            See http://thetvdb.com/ to register an account
+        userkey (str/unicode, or None):
+            User authentication key relating to "username".
 
         forceConnect (bool):
             If true it will always try to connect to theTVDB.com even if we
@@ -687,20 +678,13 @@ class Tvdb:
 
         self.config = {}
 
-        if apikey and username and userkey:
-            self.config['auth_payload'] = {
+        if apikey is None:
+            raise ValueError("apikey argument is now required - an API key can be easily registered at https://thetvdb.com/api-information")
+        self.config['auth_payload'] = {
                 "apikey": apikey,
-                "username": username,
-                "userkey": userkey
-            }
-        else:
-            self.config['auth_payload'] = {
-                "apikey": "0629B785CE550C8D",
-                "userkey": "",
-                "username": ""
-            }
-
-        self.config['debug_enabled'] = debug  # show debugging messages
+                "username": username or "",
+                "userkey": userkey or "",
+        }
 
         self.config['custom_ui'] = custom_ui
 

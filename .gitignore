@@ -2,3 +2,5 @@
 *.pyc
 *.egg-info/*
 dist/*.tar.gz
+/.mypy_cache
+/.coverage

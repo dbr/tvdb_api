@@ -192,14 +192,11 @@ class ConsoleUI(BaseUI):
             else:
                 extra = ""
 
-            lid_map = dict((v, k) for (k, v) in self.config['langabbv_to_id'].items())
-
-            output = "%s -> %s [%s] # http://thetvdb.com/?tab=series&id=%s&lid=%s%s" % (
+            output = "%s -> %s [%s] # http://thetvdb.com/?tab=series&id=%s%s" % (
                 i_show,
                 cshow['seriesName'],
                 lid_map[cshow['lid']],
                 str(cshow['id']),
-                cshow['lid'],
                 extra
             )
             if IS_PY2:
@@ -765,21 +762,22 @@ class Tvdb:
         # Hard-coded here as it is realtively static, and saves another HTTP request, as
         # recommended on http://thetvdb.com/wiki/index.php/API:languages.xml
         self.config['valid_languages'] = [
-            "da", "fi", "nl", "de", "it", "es", "fr", "pl", "hu", "el", "tr",
-            "ru", "he", "ja", "pt", "zh", "cs", "sl", "hr", "ko", "en", "sv",
-            "no"
+            'aa', 'ab', 'af', 'ak', 'am', 'ar', 'an', 'as', 'av', 'ae', 'ay', 'az', 'ba',
+            'bm', 'be', 'bn', 'bh', 'bi', 'bo', 'bs', 'br', 'bg', 'ca', 'cs', 'ch', 'ce',
+            'cu', 'cv', 'kw', 'co', 'cr', 'cy', 'da', 'de', 'dv', 'dz', 'el', 'en', 'eo',
+            'et', 'eu', 'ee', 'fo', 'fa', 'fj', 'fi', 'fr', 'fy', 'ff', 'gd', 'ga', 'gl',
+            'gv', 'gn', 'gu', 'ht', 'ha', 'he', 'hz', 'hi', 'ho', 'hr', 'hu', 'hy', 'ig',
+            'io', 'ii', 'iu', 'ie', 'ia', 'id', 'ik', 'is', 'it', 'jv', 'ja', 'kl', 'kn',
+            'ks', 'ka', 'kr', 'kk', 'km', 'ki', 'rw', 'ky', 'kv', 'kg', 'ko', 'kj', 'ku',
+            'lo', 'la', 'lv', 'li', 'ln', 'lt', 'lb', 'lu', 'lg', 'mh', 'ml', 'mr', 'mk',
+            'mg', 'mt', 'mn', 'mi', 'ms', 'my', 'na', 'nv', 'nr', 'nd', 'ng', 'ne', 'nl',
+            'no', 'ny', 'oc', 'oj', 'or', 'om', 'os', 'pa', 'pi', 'pl', 'pt', 'pt', 'ps',
+            'qu', 'rm', 'ro', 'rn', 'ru', 'sg', 'sa', 'si', 'sk', 'sl', 'se', 'sm', 'sn',
+            'sd', 'so', 'st', 'es', 'sq', 'sc', 'sr', 'ss', 'su', 'sw', 'sv', 'ty', 'ta',
+            'tt', 'te', 'tg', 'tl', 'th', 'ti', 'to', 'tn', 'ts', 'tk', 'tr', 'tw', 'ug',
+            'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh',
+            'zu',
         ]
-
-        # thetvdb.com should be based around numeric language codes,
-        # but to link to a series like http://thetvdb.com/?tab=series&id=79349&lid=16
-        # requires the language ID, thus this mapping is required (mainly
-        # for usage in tvdb_ui - internally tvdb_api will use the language abbreviations)
-        self.config['langabbv_to_id'] = {
-            'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16,
-            'ru': 22, 'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18,
-            'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11, 'hu': 19,
-            'ja': 25, 'he': 24, 'ko': 32, 'sv': 8, 'sl': 30
-        }
 
         if language is None:
             self.config['language'] = 'en'
@@ -857,7 +855,7 @@ class Tvdb:
 
         response = self.session.get(url, headers=self.headers)
         r = response.json()
-        log().debug("loadurl: %s lid=%s" % (url, language))
+        log().debug("loadurl: %s language=%s" % (url, language))
         log().debug("response:")
         log().debug(r)
         error = r.get('Error')
@@ -959,7 +957,6 @@ class Tvdb:
 
         allSeries = []
         for series in seriesEt:
-            series['lid'] = self.config['langabbv_to_id'][self.config['language']]
             series['language'] = self.config['language']
             log().debug('Found series %(seriesName)s' % series)
             allSeries.append(series)

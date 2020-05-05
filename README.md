@@ -29,10 +29,30 @@ The [`tvnamer`][tvnamer] command-line tool can also be installed via `easy_insta
 
 ## Basic usage
 
+First initialise an instance of the `Tvdb` class with your API key:
+
     import tvdb_api
-    t = tvdb_api.Tvdb()
+    t = tvdb_api.Tvdb() 
+
+Note you must specify the apikey argument here, for example:
+
+    t = Tvdb(apikey="ENTER YOUR API KEY HERE") # doctest:+SKIP
+
+See https://thetvdb.com/api-information to register a key.
+
+Then to use the A
     episode = t['My Name Is Earl'][1][3] # get season 1, episode 3 of show
     print episode['episodename'] # Print episode name
+
+## Registering an API key
+
+You must have an API key from <http://thetvdb.com> in order to use this module.
+
+Registering for a key is easy to do and can be done within a few minutes - see the following page for details:
+
+<https://thetvdb.com/api-information>
+
+Note: In `tvdb_api` v2 a default key was included for convenience. However over time this key became very heavily used and this causes problems for TheTVDB.com admins. This old shared key will be deprecated and removed at some point soon.
 
 ## Advanced usage
 

@@ -8,14 +8,11 @@
 - Drop support for Python 2.6 (EOL 2016), 3.3 (EOL 2013), 3.4 (EOL 2019)
 - Removed deprecated `Tvdb(debug=...)` argument - use logging module instead.
   E.g `logging.basicConfig(level=logging.DEBUG)`
-- Removed long deprecated `tvdb_ui` and `tvdb_exceptions` module - everything in these are accessible via the `tvdb_api` module
-
-## `2.1` - 2018-03-10
-
-- Began keeping change log
+- Removed long deprecated `tvdb_ui` and `tvdb_exceptions` modules.
+  Everything in these are accessible via the `tvdb_api` module
 - Correctly errors when failing to find show by ID -
   [issue #54](https://github.com/dbr/tvdb_api/issues/54)
-- Web cache filename contains major version of Python to support
+- Web-cache filename contains major version of Python to support
   side-by-side usage of `tvdb_api` in Python 2 and 3
 
 ## `2.0` - 2017-09-16

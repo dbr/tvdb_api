@@ -1158,13 +1158,13 @@ class Tvdb:
         The dict index should be the show id
         """
         if isinstance(key, int_types):
-            # Item is integer, treat as show id
-            if key not in self.shows:
-                self._getShowData(key, self.config['language'])
-            return self.shows[key]
+            sid = key
+        else:
+            sid = self._nameToSid(key)
+            log().debug('Got series id %s' % sid)
 
-        sid = self._nameToSid(key)
-        log().debug('Got series id %s' % sid)
+        if sid not in self.shows:
+            self._getShowData(sid, self.config['language'])
         return self.shows[sid]
 
     def __repr__(self):

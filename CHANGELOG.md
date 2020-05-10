@@ -14,6 +14,9 @@
   [issue #54](https://github.com/dbr/tvdb_api/issues/54)
 - Web-cache filename contains major version of Python to support
   side-by-side usage of `tvdb_api` in Python 2 and 3
+- Fix bug causing occasional `KeyError` when looking up lots of shows.
+  [PR #65](https://github.com/dbr/tvdb_api/pull/65)
+
 
 ## `2.0` - 2017-09-16
 

@@ -4,8 +4,12 @@ from setuptools import setup
 # Load README
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+if sys.version_info[0] == 2:
+    with open(path.join(this_directory, 'README.md')) as f:
+        long_description = f.read().decode("utf-8")
+else:
+    with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+        long_description = f.read()
 
 setup(
     name = 'tvdb_api',

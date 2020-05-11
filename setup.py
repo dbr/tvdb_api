@@ -1,50 +1,40 @@
 import sys
 from setuptools import setup
 
-
-_requirements = ['requests_cache', 'requests']
-_modules = ['tvdb_api', 'tvdb_ui', 'tvdb_exceptions']
-
+# Load README
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
-name = 'tvdb_api',
-version='2.0-dev',
+    name = 'tvdb_api',
+    version='3.0',
 
-author='dbr/Ben',
-description='Interface to thetvdb.com',
-url='http://github.com/dbr/tvdb_api/tree/master',
-license='unlicense',
+    author='dbr/Ben',
+    description='Interface to thetvdb.com',
+    url='http://github.com/dbr/tvdb_api',
+    license='unlicense',
 
-long_description="""\
-An easy to use API interface to TheTVDB.com
-Basic usage is:
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 
->>> import tvdb_api
->>> t = tvdb_api.Tvdb()
->>> ep = t['My Name Is Earl'][1][22]
->>> ep
-<Episode 01x22 - Stole a Badge>
->>> ep['episodeName']
-u'Stole a Badge'
-""",
+    py_modules = ['tvdb_api'],
+    install_requires = ['requests_cache', 'requests'],
 
-py_modules = _modules,
-install_requires = _requirements,
-
-classifiers=[
-    "Intended Audience :: Developers",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.6",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3.3",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Topic :: Multimedia",
-    "Topic :: Utilities",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-]
+    classifiers=[
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Topic :: Multimedia",
+        "Topic :: Utilities",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ]
 )

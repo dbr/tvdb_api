@@ -13,12 +13,11 @@ else:
 
 setup(
     name = 'tvdb_api',
-    version='3.0',
+    version='3.0.1',
 
     author='dbr/Ben',
     description='Interface to thetvdb.com',
     url='http://github.com/dbr/tvdb_api',
-    license='unlicense',
 
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -40,5 +39,6 @@ setup(
         "Topic :: Multimedia",
         "Topic :: Utilities",
         "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: Public Domain",
     ]
 )

@@ -1,5 +1,9 @@
 # Changelog
 
+## `3.0.1` - 2020-05-11
+
+- Reupload to PyPI to hopefully fix markdown rendering on PyPI page (may be related to [this bug](https://github.com/pypa/warehouse/issues/3664))
+
 ## `3.0` - 2020-05-11
 
 - Important: Your own API key is now required to use this module. The default shared API key has been removed.

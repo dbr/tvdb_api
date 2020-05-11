@@ -16,7 +16,7 @@ u'Cabin Fever'
 """
 
 __author__ = "dbr/Ben"
-__version__ = "3.0"
+__version__ = "3.0.1"
 
 
 import sys

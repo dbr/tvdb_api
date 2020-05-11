@@ -14,18 +14,13 @@ It supports Python 2.7, and 3.5 onwards
 
 ## To install
 
-You can easily install `tvdb_api` via `easy_install`
+You can easily install `tvdb_api` via `pip`
 
-    easy_install tvdb_api
+    pip install --upgrade tvdb_api
 
 You may need to use sudo, depending on your setup:
 
-    sudo easy_install tvdb_api
-
-The [`tvnamer`][tvnamer] command-line tool can also be installed via `easy_install`, this installs `tvdb_api` as a dependancy:
-
-    easy_install tvnamer
-
+    sudo pip install --upgrade tvdb_api
 
 ## Basic usage
 
@@ -40,7 +35,8 @@ Note you must specify the apikey argument here, for example:
 
 See https://thetvdb.com/api-information to register a key.
 
-Then to use the A
+Then to use the API:
+
     episode = t['My Name Is Earl'][1][3] # get season 1, episode 3 of show
     print episode['episodename'] # Print episode name
 

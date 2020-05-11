@@ -1,6 +1,6 @@
 # Changelog
 
-## `3.0` - unreleased
+## `3.0` - 2020-05-11
 
 - Important: Your own API key is now required to use this module. The default shared API key has been removed.
   Keys are easy to register via https://thetvdb.com/api-information

@@ -13,7 +13,7 @@ else:
 
 setup(
     name = 'tvdb_api',
-    version='3.0.1',
+    version='3.0.2',
 
     author='dbr/Ben',
     description='Interface to thetvdb.com',

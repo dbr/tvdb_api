@@ -1,5 +1,9 @@
 # Changelog
 
+## `3.0.2` - 2020-05-16
+
+- Bug fix for `ConsoleUI` error `NameError: global name 'lid_map' is not defined`
+
 ## `3.0.1` - 2020-05-11
 
 - Reupload to PyPI to hopefully fix markdown rendering on PyPI page (may be related to [this bug](https://github.com/pypa/warehouse/issues/3664))

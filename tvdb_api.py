@@ -195,7 +195,7 @@ class ConsoleUI(BaseUI):
             output = "%s -> %s [%s] # http://thetvdb.com/?tab=series&id=%s%s" % (
                 i_show,
                 cshow['seriesName'],
-                lid_map[cshow['lid']],
+                cshow['language'],
                 str(cshow['id']),
                 extra
             )

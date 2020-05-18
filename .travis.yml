@@ -11,8 +11,15 @@ python:
 env:
   TVDB_API_KEY: d48665c58c1a3c3bcd0c78da82df4fab # API key for tvdb_api test use only. New keys can easily be registere at https://thetvdb.com/api-information
 
-script:
-  # pytest==4.6 fallback for Python 2.7
-  - pip install pytest==5.4 || pip install pytest==4.6
+install:
+  - pip install -r requirements-dev.txt
   - python setup.py develop
-  - python -m pytest
+
+jobs:
+  include:
+    - name: "Tests"
+      script: python -m pytest
+    - name: "Formatting"
+      script: black --check
+    - name: "Linting"
+      script: flake8

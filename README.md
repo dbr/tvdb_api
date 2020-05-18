@@ -1,5 +1,5 @@
 # `tvdb_api`
-[![Build Status](https://travis-ci.org/dbr/tvdb_api.svg?branch=master)](https://travis-ci.org/dbr/tvdb_api)
+[![PyPI][pypi-img]][pypi-link] [![Build Status][travis-img]][travis-link] [![codecov][coverage-img]][coverage-link]
 
 `tvdb_api` is an easy to use interface to [thetvdb.com][tvdb]
 
@@ -10,6 +10,12 @@ It supports Python 2.7, and 3.5 onwards
 
 [tvdb]: http://thetvdb.com
 [tvnamer]: http://github.com/dbr/tvnamer
+[travis-link]: https://travis-ci.org/dbr/tvdb_api
+[travis-img]: https://travis-ci.org/dbr/tvdb_api.svg?branch=master
+[pypi-link]: https://pypi.org/project/tvdb-api/
+[pypi-img]: https://img.shields.io/pypi/v/tvdb_api
+[coverage-link]: https://codecov.io/gh/dbr/tvdb_api
+[coverage-img]: https://codecov.io/gh/dbr/tvdb_api/branch/master/graph/badge.svg
 
 
 ## To install

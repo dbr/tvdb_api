@@ -12,7 +12,7 @@ else:
         long_description = f.read()
 
 setup(
-    name = 'tvdb_api',
+    name='tvdb_api',
     version='3.0.2',
 
     author='dbr/Ben',
@@ -22,8 +22,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
 
-    py_modules = ['tvdb_api'],
-    install_requires = ['requests_cache', 'requests'],
+    py_modules=['tvdb_api'],
+    install_requires=['requests_cache', 'requests'],
 
     classifiers=[
         "Intended Audience :: Developers",

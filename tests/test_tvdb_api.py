@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-#encoding:utf-8
-#author:dbr/Ben
-#project:tvdb_api
-#repository:http://github.com/dbr/tvdb_api
-#license:unlicense (http://unlicense.org/)
+# encoding:utf-8
+
+# author:dbr/Ben
+# project:tvdb_api
+# repository:http://github.com/dbr/tvdb_api
+# license:unlicense (http://unlicense.org/)
 
 """Unittests for tvdb_api
 """
@@ -16,9 +17,13 @@ import pytest
 # Force parent directory onto path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import tvdb_api
-from tvdb_api import (tvdb_shownotfound, tvdb_seasonnotfound,
-                      tvdb_episodenotfound, tvdb_attributenotfound)
+import tvdb_api  # noqa: E402
+from tvdb_api import (  # noqa: E402
+    tvdb_shownotfound,
+    tvdb_seasonnotfound,
+    tvdb_episodenotfound,
+    tvdb_attributenotfound,
+)
 
 
 class TestTvdbBasic:
@@ -62,7 +67,9 @@ class TestTvdbBasic:
     def test_get_episode_overview(self):
         """Checks episode overview is retrieved correctly.
         """
-        assert self.t['Battlestar Galactica (2003)'][1][6]['overview'].startswith('When a new copy of Doral, a Cylon who had been previously') == True
+        assert self.t['Battlestar Galactica (2003)'][1][6]['overview'].startswith(
+            'When a new copy of Doral, a Cylon who had been previously'
+        )
 
     def test_get_parent(self):
         """Check accessing series from episode instance
@@ -101,7 +108,7 @@ class TestTvdbErrors:
         with pytest.raises(tvdb_shownotfound):
             self.t['the fake show thingy']
 
-    def test_shownotfound(self):
+    def test_shownotfound_by_id(self):
         """Checks exception is thrown when episode doesn't exist.
         """
         with pytest.raises(tvdb_shownotfound):
@@ -139,12 +146,15 @@ class TestTvdbSearch:
         """Checks you can get the episode name of a search result
         """
         assert self.t['Scrubs'].search('my first')[0]['episodeName'] == 'My First Day'
-        assert self.t['My Name Is Earl'].search('Faked My Own Death')[0]['episodeName'] == 'Faked My Own Death'
+        assert (
+            self.t['My Name Is Earl'].search('Faked My Own Death')[0]['episodeName']
+            == 'Faked My Own Death'
+        )
 
     def test_search_multiresults(self):
         """Checks search can return multiple results
         """
-        assert (len(self.t['Scrubs'].search('my first')) >= 3) == True
+        assert len(self.t['Scrubs'].search('my first')) >= 3
 
     def test_search_no_params_error(self):
         """Checks not supplying search info raises TypeError"""
@@ -193,7 +203,10 @@ class TestTvdbMisc:
     def test_repr_show(self):
         """Check repr() of Season
         """
-        assert repr(self.t['CNNNN']).replace("u'", "'") == "<Show 'Chaser Non-Stop News Network (CNNNN)' (containing 3 seasons)>"
+        assert (
+            repr(self.t['CNNNN']).replace("u'", "'")
+            == "<Show 'Chaser Non-Stop News Network (CNNNN)' (containing 3 seasons)>"
+        )
 
     def test_repr_season(self):
         """Check repr() of Season
@@ -219,26 +232,22 @@ class TestTvdbLanguages:
     def test_episode_name_french(self):
         """Check episode data is in French (language="fr")
         """
-        t = tvdb_api.Tvdb(cache = True, language = "fr")
+        t = tvdb_api.Tvdb(cache=True, language="fr")
         assert t['scrubs'][1][1]['episodeName'] == "Mon premier jour"
         assert t['scrubs']['overview'].startswith(u"J.D. est un jeune m\xe9decin qui d\xe9bute")
 
     def test_episode_name_spanish(self):
         """Check episode data is in Spanish (language="es")
         """
-        t = tvdb_api.Tvdb(cache = True, language = "es")
+        t = tvdb_api.Tvdb(cache=True, language="es")
         assert t['scrubs'][1][1]['episodeName'] == u'Mi primer día'
         assert t['scrubs']['overview'].startswith(u'Scrubs es una divertida comedia')
 
     def test_multilanguage_selection(self):
         """Check selected language is used
         """
-        t_en = tvdb_api.Tvdb(
-            cache=True,
-            language = "en")
-        t_it = tvdb_api.Tvdb(
-            cache=True,
-            language = "it")
+        t_en = tvdb_api.Tvdb(cache=True, language="en")
+        t_it = tvdb_api.Tvdb(cache=True, language="it")
 
         assert t_en['dexter'][1][2]['episodeName'] == "Crocodile"
         assert t_it['dexter'][1][2]['episodeName'] == "Lacrime di coccodrillo"
@@ -275,7 +284,7 @@ class TestTvdbBanners:
     def test_have_banners(self):
         """Check banners at least one banner is found
         """
-        assert (len(self.t['scrubs']['_banners']) > 0) == True
+        assert len(self.t['scrubs']['_banners']) > 0
 
     def test_banner_url(self):
         """Checks banner URLs start with http://
@@ -284,20 +293,20 @@ class TestTvdbBanners:
             for res, res_data in banner_data.items():
                 if res != 'raw':
                     for bid, banner_info in res_data.items():
-                        assert banner_info['_bannerpath'].startswith("http://") == True
+                        assert banner_info['_bannerpath'].startswith("http://")
 
     @pytest.mark.skip('В новом API нет картинки у эпизода')
     def test_episode_image(self):
         """Checks episode 'filename' image is fully qualified URL
         """
-        assert self.t['scrubs'][1][1]['filename'].startswith("http://") == True
+        assert self.t['scrubs'][1][1]['filename'].startswith("http://")
 
     @pytest.mark.skip('В новом API у сериала кроме банера больше нет картинок')
     def test_show_artwork(self):
         """Checks various image URLs within season data are fully qualified
         """
         for key in ['banner', 'fanart', 'poster']:
-            assert self.t['scrubs'][key].startswith("http://") == True
+            assert self.t['scrubs'][key].startswith("http://")
 
 
 class TestTvdbActors:
@@ -310,12 +319,12 @@ class TestTvdbActors:
 
     def test_actors_is_correct_datatype(self):
         """Check show/_actors key exists and is correct type"""
-        assert isinstance(self.t['scrubs']['_actors'], tvdb_api.Actors) == True
+        assert isinstance(self.t['scrubs']['_actors'], tvdb_api.Actors)
 
     def test_actors_has_actor(self):
         """Check show has at least one Actor
         """
-        assert isinstance(self.t['scrubs']['_actors'][0], tvdb_api.Actor) == True
+        assert isinstance(self.t['scrubs']['_actors'][0], tvdb_api.Actor)
 
     def test_actor_has_name(self):
         """Check first actor has a name"""
@@ -330,13 +339,14 @@ class TestTvdbActors:
             if actor['image'] is not None:
                 # Actor's image can be None, it displays as the placeholder
                 # image on thetvdb.com
-                assert actor['image'].startswith("http://") == True
+                assert actor['image'].startswith("http://")
 
 
 class TestTvdbDoctest:
     def test_doctest(self):
         """Check docstring examples works"""
         import doctest
+
         doctest.testmod(tvdb_api)
 
 
@@ -363,12 +373,16 @@ class TestTvdbCustomCaching:
 
     def test_custom_request_session(self):
         from requests import Session as OriginalSession
+
         class Used(Exception):
             pass
+
         class CustomCacheForTest(OriginalSession):
             call_count = 0
+
             def request(self, *args, **kwargs):
                 raise Used("Hurray")
+
         c = CustomCacheForTest()
         t = tvdb_api.Tvdb(cache=c)
         try:
@@ -411,7 +425,10 @@ class TestTvdbShowOrdering:
         assert u'The Train Job' == self.t_air['Firefly'][1][1]['episodeName']
         assert u'Serenity' == self.t_dvd['Firefly'][1][1]['episodeName']
 
-        assert u'The Cat and the Claw (1)' == self.t_air['Batman The Animated Series'][1][1]['episodeName']
+        assert (
+            u'The Cat and the Claw (1)'
+            == self.t_air['Batman The Animated Series'][1][1]['episodeName']
+        )
         assert u'On Leather Wings' == self.t_dvd['Batman The Animated Series'][1][1]['episodeName']
 
 
@@ -446,6 +463,7 @@ class TestTvdbAltNames:
         results = self.t.search("Don't Trust the B---- in Apartment 23")
         series = results[0]
         assert 'Apartment 23' in series['aliases']
+
 
 if __name__ == '__main__':
     pytest.main()

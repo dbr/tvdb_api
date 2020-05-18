@@ -4,3 +4,4 @@
 dist/*.tar.gz
 /.mypy_cache
 /.coverage
+/htmlcov

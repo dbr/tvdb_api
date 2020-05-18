@@ -331,6 +331,7 @@ class Show(dict):
                 v1_compatibility[key],
             )
             key = v1_compatibility[key]
+            warnings.warn(msg)
 
         if key in self:
             # Key is an episode, return it

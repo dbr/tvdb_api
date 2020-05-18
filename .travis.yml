@@ -18,8 +18,8 @@ install:
   - python setup.py develop
 
 stages:
-  - linting
   - test
+  - linting
 
 jobs:
   include:

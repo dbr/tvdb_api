@@ -11,9 +11,6 @@ python:
 env:
   TVDB_API_KEY: d48665c58c1a3c3bcd0c78da82df4fab # API key for tvdb_api test use only. New keys can easily be registere at https://thetvdb.com/api-information
 
-stages:
-  - Test
-
 install:
   - pip install codecov
   - pip install -r requirements-dev.txt
@@ -28,16 +25,14 @@ after_success:
 jobs:
   include:
 
-    - stage: Test
-      name: "Formatting"
+    - name: "Formatting"
       python: 3.8
       install:
-        - pip install -r requirements-dev.txt
-      script: black --check tvdb_api.py tests/*.py
+        - pip install black==19.10b0
+      script: black --diff --check tvdb_api.py tests/*.py
       after_success: ignore
 
-    - stage: linting
-      name: "Linting"
+    - name: "Linting"
       python: 3.8
       install:
         - pip install -r requirements-dev.txt

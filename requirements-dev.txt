@@ -1,4 +1,5 @@
-pytest==5.4
+pytest==5.4; python_version>'2'
+pytest==4.6; python_version=='2.7'
 coverage
 pytest-cov==2.8
 flake8==3.8

@@ -59,6 +59,7 @@ lastTimeout = None
 def log():
     return logging.getLogger("tvdb_api")
 
+
 # Exceptions
 
 
@@ -880,10 +881,11 @@ class Tvdb:
                 # FIXME: Can this just check for hasattr(self.session, "cache") instead?
                 pass
 
-            if not cache_key or not self.session.cache.has_key(  # noqa: not a dict, has_key is part of requests-cache API
-                cache_key
-            ):
+            # fmt: off
+            # No fmt because mangles noqa comment - https://github.com/psf/black/issues/195
+            if not cache_key or not self.session.cache.has_key(cache_key): # noqa: not a dict, has_key is part of requests-cache API
                 self.authorize()
+            # fmt: on
 
         response = self.session.get(url, headers=self.headers)
         r = response.json()

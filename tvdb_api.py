@@ -839,7 +839,7 @@ class Tvdb:
             if errors and u'invalidLanguage' in errors:
                 # raise(tvdb_invalidlanguage(errors[u'invalidLanguage']))
                 # invalidLanguage does not mean there is no data
-                # there is just less data
+                # there is just less data (missing translations)
                 pass
 
         if data and isinstance(data, list):

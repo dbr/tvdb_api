@@ -264,13 +264,6 @@ class TestTvdbLanguages:
         assert t_en['dexter'][1][2]['episodeName'] == "Crocodile"
         assert t_it['dexter'][1][2]['episodeName'] == "Lacrime di coccodrillo"
 
-    def test_invalid_lang(self):
-        """Check selected language is used
-        """
-        t_nonsense = tvdb_api.Tvdb(cache=True, language="xx")
-
-        assert t_nonsense['dexter'][1][2]['episodeName'] == "Crocodile"
-
 
 class TestTvdbUnicode:
     def test_search_in_chinese(self):

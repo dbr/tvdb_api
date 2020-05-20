@@ -736,7 +736,7 @@ class Tvdb:
             self.config['language'] = language
 
         # The following url_ configs are based of the
-        # http://thetvdb.com/wiki/index.php/Programmers_API
+        # https://api.thetvdb.com/swagger
         self.config['base_url'] = "http://thetvdb.com"
         self.config['api_url'] = "https://api.thetvdb.com"
 

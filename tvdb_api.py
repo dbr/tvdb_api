@@ -902,8 +902,9 @@ class Tvdb:
                 # raise(tvdb_resourcenotfound)
                 # handle no data at a different level so it is more specific
                 pass
-            elif error == u'Not Authorized':
-                raise (tvdb_notauthorized)
+            elif error.lower() == u'not authorized':
+                # Note: Error string sometimes comes back as "Not authorized" or "Not Authorized"
+                raise tvdb_notauthorized()
             elif error.startswith(u"ID: ") and error.endswith("not found"):
                 # FIXME: Refactor error out of in this method
                 raise tvdb_shownotfound("%s" % error)

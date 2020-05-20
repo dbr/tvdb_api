@@ -615,11 +615,10 @@ class Tvdb:
             A callable subclass of tvdb_ui.BaseUI (overrides interactive option)
 
         language (2 character language abbreviation):
-            The language of the returned data. Is also the language search
-            uses. Default is "en" (English). For full list, run..
-
-            >>> Tvdb().config['valid_languages'] #doctest: +ELLIPSIS
-            ['da', 'fi', 'nl', ...]
+            The 2 digit language abbreviation used for the returned data,
+            and is also used when searching. For a complete list, call
+            the `Tvdb.available_languages` method.
+            Default is "en" (English).
 
         search_all_languages (True/False):
             By default, Tvdb will only search in the language specified using
@@ -731,40 +730,10 @@ class Tvdb:
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
 
-        # List of language from http://thetvdb.com/api/0629B785CE550C8D/languages.xml
-        # Hard-coded here as it is realtively static, and saves another HTTP request, as
-        # recommended on http://thetvdb.com/wiki/index.php/API:languages.xml
-
-        # fmt: off
-        self.config['valid_languages'] = [
-            'aa', 'ab', 'af', 'ak', 'am', 'ar', 'an', 'as', 'av', 'ae', 'ay', 'az', 'ba',
-            'bm', 'be', 'bn', 'bh', 'bi', 'bo', 'bs', 'br', 'bg', 'ca', 'cs', 'ch', 'ce',
-            'cu', 'cv', 'kw', 'co', 'cr', 'cy', 'da', 'de', 'dv', 'dz', 'el', 'en', 'eo',
-            'et', 'eu', 'ee', 'fo', 'fa', 'fj', 'fi', 'fr', 'fy', 'ff', 'gd', 'ga', 'gl',
-            'gv', 'gn', 'gu', 'ht', 'ha', 'he', 'hz', 'hi', 'ho', 'hr', 'hu', 'hy', 'ig',
-            'io', 'ii', 'iu', 'ie', 'ia', 'id', 'ik', 'is', 'it', 'jv', 'ja', 'kl', 'kn',
-            'ks', 'ka', 'kr', 'kk', 'km', 'ki', 'rw', 'ky', 'kv', 'kg', 'ko', 'kj', 'ku',
-            'lo', 'la', 'lv', 'li', 'ln', 'lt', 'lb', 'lu', 'lg', 'mh', 'ml', 'mr', 'mk',
-            'mg', 'mt', 'mn', 'mi', 'ms', 'my', 'na', 'nv', 'nr', 'nd', 'ng', 'ne', 'nl',
-            'no', 'ny', 'oc', 'oj', 'or', 'om', 'os', 'pa', 'pi', 'pl', 'pt', 'pt', 'ps',
-            'qu', 'rm', 'ro', 'rn', 'ru', 'sg', 'sa', 'si', 'sk', 'sl', 'se', 'sm', 'sn',
-            'sd', 'so', 'st', 'es', 'sq', 'sc', 'sr', 'ss', 'su', 'sw', 'sv', 'ty', 'ta',
-            'tt', 'te', 'tg', 'tl', 'th', 'ti', 'to', 'tn', 'ts', 'tk', 'tr', 'tw', 'ug',
-            'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh',
-            'zu',
-        ]
-        # fmt: on
-
         if language is None:
             self.config['language'] = 'en'
         else:
-            if language not in self.config['valid_languages']:
-                raise ValueError(
-                    "Invalid language %s, options are: %s"
-                    % (language, self.config['valid_languages'])
-                )
-            else:
-                self.config['language'] = language
+            self.config['language'] = language
 
         # The following url_ configs are based of the
         # http://thetvdb.com/wiki/index.php/Programmers_API
@@ -814,10 +783,6 @@ class Tvdb:
 
         if not language:
             language = self.config['language']
-        if language not in self.config['valid_languages']:
-            raise ValueError(
-                "Invalid language %s, options are: %s" % (language, self.config['valid_languages'])
-            )
         self.headers['Accept-Language'] = language
 
         # TODO: Handle Exceptions
@@ -981,6 +946,14 @@ class Tvdb:
                 ui = ConsoleUI(config=self.config)
 
         return ui.selectSeries(allSeries)
+
+    def available_languages(self):
+        """Returns a list of the available language abbreviations
+        which can be used in Tvdb(language="...") etc
+        """
+        et = self._getetsrc("https://api.thetvdb.com/languages")
+        languages = [x['abbreviation'] for x in et]
+        return sorted(languages)
 
     def _parseBanners(self, sid):
         """Parses banners XML, from

@@ -71,6 +71,13 @@ class TestTvdbBasic:
             'When a new copy of Doral, a Cylon who had been previously'
         )
 
+        try:
+            self.t['Battlestar Galactica (2003)']['something nonsensical']
+        except tvdb_attributenotfound:
+            pass  # good
+        else:
+            raise AssertionError("Expected attribute error")
+
     def test_get_parent(self):
         """Check accessing series from episode instance
         """
@@ -175,6 +182,13 @@ class TestTvdbSearch:
         assert len(sr) == 1
         assert sr[0]['episodeName'] == u'My First Day'
 
+        try:
+            sr = self.t['Scrubs'].aired_on(datetime.date(1801, 1, 1))
+        except tvdb_episodenotfound:
+            pass  # Good
+        else:
+            raise AssertionError("expected episode not found exception")
+
 
 class TestTvdbData:
     # Used to store the cached instance of Tvdb()
@@ -218,14 +232,12 @@ class TestTvdbMisc:
         """
         assert repr(self.t['CNNNN'][1][1]).replace("u'", "'") == "<Episode 01x01 - 'Terror Alert'>"
 
-    def test_have_all_languages(self):
-        """Check valid_languages is up-to-date (compared to languages.xml)
+    def test_available_langs(self):
+        """Check available_languages returns something sane looking
         """
-        et = self.t._getetsrc("https://api.thetvdb.com/languages")
-
-        languages = [x['abbreviation'] for x in et]
-
-        assert sorted(languages) == sorted(self.t.config['valid_languages'])
+        langs = self.t.available_languages()
+        print(langs)
+        assert "en" in langs
 
 
 class TestTvdbLanguages:
@@ -251,6 +263,13 @@ class TestTvdbLanguages:
 
         assert t_en['dexter'][1][2]['episodeName'] == "Crocodile"
         assert t_it['dexter'][1][2]['episodeName'] == "Lacrime di coccodrillo"
+
+    def test_invalid_lang(self):
+        """Check selected language is used
+        """
+        t_nonsense = tvdb_api.Tvdb(cache=True, language="xx")
+
+        assert t_nonsense['dexter'][1][2]['episodeName'] == "Crocodile"
 
 
 class TestTvdbUnicode:

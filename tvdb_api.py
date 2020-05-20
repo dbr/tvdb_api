@@ -771,10 +771,7 @@ class Tvdb:
             uid = "-u%d" % (os.getuid())
         else:
             # For Windows
-            try:
-                uid = getpass.getuser()
-            except ImportError:
-                return os.path.join(tempfile.gettempdir(), "tvdb_api-py%s" % (py_major))
+            uid = getpass.getuser()
 
         return os.path.join(tempfile.gettempdir(), "tvdb_api-%s-py%s" % (uid, py_major))
 

@@ -323,18 +323,6 @@ class Show(dict):
         )
 
     def __getitem__(self, key):
-        v1_compatibility = {
-            'seriesname': 'seriesName',
-        }
-
-        if key in v1_compatibility:
-            msg = "v1 usage is deprecated, please use new names: old: '%s', new: '%s'" % (
-                key,
-                v1_compatibility[key],
-            )
-            key = v1_compatibility[key]
-            warnings.warn(msg)
-
         if key in self:
             # Key is an episode, return it
             return dict.__getitem__(self, key)
@@ -351,12 +339,6 @@ class Show(dict):
             # If it's not numeric, it must be an attribute name, which
             # doesn't exist, so attribute error.
             raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
-
-    def airedOn(self, date):
-        """Deprecated: use aired_on instead
-        """
-        warnings.warn("Show.airedOn method renamed to aired_on", category=DeprecationWarning)
-        return self.aired_on(date)
 
     def aired_on(self, date):
         ret = self.search(str(date), 'firstAired')
@@ -477,30 +459,7 @@ class Episode(dict):
         try:
             return dict.__getitem__(self, key)
         except KeyError:
-            v1_compatibility = {
-                'episodenumber': 'airedEpisodeNumber',
-                'firstaired': 'firstAired',
-                'seasonnumber': 'airedSeason',
-                'episodename': 'episodeName',
-            }
-            if key in v1_compatibility:
-                msg = "v1 usage is deprecated, please use new names: old: '%s', new: '%s'" % (
-                    key,
-                    v1_compatibility[key],
-                )
-                warnings.warn(msg, category=DeprecationWarning)
-                try:
-                    value = dict.__getitem__(self, v1_compatibility[key])
-                    if key in ['episodenumber', 'seasonnumber']:
-                        # This was a string in v1
-                        return str(value)
-                    else:
-                        return value
-                except KeyError:
-                    # We either return something or we get the exception below
-                    pass
-
-                    raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
+            raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
 
     def search(self, term=None, key=None):
         """Search episode data for term, if it matches, return the Episode (self).

@@ -5,6 +5,5 @@ ignore =
     N802,
     N806,
     N803,
-    N816,
 
     W503, # Contradicts PEP8

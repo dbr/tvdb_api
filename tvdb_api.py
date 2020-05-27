@@ -898,20 +898,20 @@ class Tvdb:
         """
         series = url_quote(series.encode("utf-8"))
         log().debug("Searching for show %s" % series)
-        seriesEt = self._getetsrc(self.config['url_getSeries'] % (series))
-        if not seriesEt:
+        series_resp = self._getetsrc(self.config['url_getSeries'] % (series))
+        if not series_resp:
             log().debug('Series result returned zero')
             raise tvdb_shownotfound(
                 "Show-name search returned zero results (cannot find show on TVDB)"
             )
 
-        allSeries = []
-        for series in seriesEt:
+        all_series = []
+        for series in series_resp:
             series['language'] = self.config['language']
             log().debug('Found series %(seriesName)s' % series)
-            allSeries.append(series)
+            all_series.append(series)
 
-        return allSeries
+        return all_series
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -919,7 +919,7 @@ class Tvdb:
         series. If not, and interactive == True, ConsoleUI is used, if not
         BaseUI is used to select the first result.
         """
-        allSeries = self.search(series)
+        all_series = self.search(series)
 
         if self.config['custom_ui'] is not None:
             log().debug("Using custom UI %s" % (repr(self.config['custom_ui'])))
@@ -932,7 +932,7 @@ class Tvdb:
                 log().debug('Interactively selecting show using ConsoleUI')
                 ui = ConsoleUI(config=self.config)
 
-        return ui.selectSeries(allSeries)
+        return ui.selectSeries(all_series)
 
     def available_languages(self):
         """Returns a list of the available language abbreviations
@@ -961,9 +961,9 @@ class Tvdb:
         This interface will be improved in future versions.
         """
         log().debug('Getting season banners for %s' % (sid))
-        bannersEt = self._getetsrc(self.config['url_seriesBanner'] % sid)
+        banners_resp = self._getetsrc(self.config['url_seriesBanner'] % sid)
         banners = {}
-        for cur_banner in bannersEt.keys():
+        for cur_banner in banners_resp.keys():
             banners_info = self._getetsrc(self.config['url_seriesBannerInfo'] % (sid, cur_banner))
             for banner_info in banners_info:
                 bid = banner_info.get('id')
@@ -1019,19 +1019,17 @@ class Tvdb:
         data from the XML)
         """
         log().debug("Getting actors for %s" % (sid))
-        actorsEt = self._getetsrc(self.config['url_actorsInfo'] % (sid))
+        actors_resp = self._getetsrc(self.config['url_actorsInfo'] % (sid))
 
         cur_actors = Actors()
-        for curActorItem in actorsEt:
-            curActor = Actor()
-            for curInfo in curActorItem.keys():
-                tag = curInfo
-                value = curActorItem[curInfo]
+        for cur_actor_item in actors_resp:
+            cur_actor = Actor()
+            for tag, value in cur_actor_item.items():
                 if value is not None:
                     if tag == "image":
                         value = self.config['url_artworkPrefix'] % (value)
-                curActor[tag] = value
-            cur_actors.append(curActor)
+                cur_actor[tag] = value
+            cur_actors.append(cur_actor)
         self._setShowData(sid, '_actors', cur_actors)
 
     def _getShowData(self, sid, language):
@@ -1052,11 +1050,8 @@ class Tvdb:
 
         # Parse show information
         log().debug('Getting all series data for %s' % (sid))
-        seriesInfoEt = self._getetsrc(self.config['url_seriesInfo'] % sid)
-        for curInfo in seriesInfoEt.keys():
-            tag = curInfo
-            value = seriesInfoEt[curInfo]
-
+        series_info_resp = self._getetsrc(self.config['url_seriesInfo'] % sid)
+        for tag, value in series_info_resp.items():
             if value is not None:
                 if tag in ['banner', 'fanart', 'poster']:
                     value = self.config['url_artworkPrefix'] % (value)
@@ -1078,9 +1073,9 @@ class Tvdb:
 
         url = self.config['url_epInfo'] % sid
 
-        epsEt = self._getetsrc(url, language=language)
+        eps_resp = self._getetsrc(url, language=language)
 
-        for cur_ep in epsEt:
+        for cur_ep in eps_resp:
 
             if self.config['dvdorder']:
                 log().debug('Using DVD ordering.')

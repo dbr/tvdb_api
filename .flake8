@@ -3,7 +3,6 @@ max-line-length = 100
 ignore =
     N801, # FIXME: tidy up camel case naming mess then re-enable these
     N802,
-    N806,
     N803,
 
     W503, # Contradicts PEP8

@@ -570,7 +570,7 @@ class Tvdb:
         apikey=None,
         username=None,
         userkey=None,
-        forceConnect=False,
+        forceConnect=None,
         dvdorder=False,
     ):
 
@@ -634,12 +634,15 @@ class Tvdb:
         userkey (str/unicode, or None):
             User authentication key relating to "username".
 
-        forceConnect (bool):
-            If true it will always try to connect to theTVDB.com even if we
-            recently timed out. By default it will wait one minute before
-            trying again, and any requests within that one minute window will
-            return an exception immediately.
+        forceConnect:
+            DEPRECATED. Disabled the timeout-throttling logic. Now has no function
         """
+
+        if forceConnect is not None:
+            warnings.warn(
+                "forceConnect argument is deprecated and will be removed soon",
+                category=DeprecationWarning,
+            )
 
         self.shows = ShowContainer()  # Holds all Show classes
         self.corrections = {}  # Holds show-name to show_id mapping

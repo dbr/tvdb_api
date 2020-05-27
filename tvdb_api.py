@@ -27,7 +27,6 @@ import getpass
 import tempfile
 import warnings
 import logging
-import datetime
 import hashlib
 
 import requests
@@ -52,8 +51,6 @@ if IS_PY2:
 else:
     int_types = int
     text_type = str
-
-lastTimeout = None
 
 
 def log():
@@ -643,16 +640,6 @@ class Tvdb:
             trying again, and any requests within that one minute window will
             return an exception immediately.
         """
-
-        global lastTimeout
-
-        # if we're given a lastTimeout that is less than 1 min just give up
-        if (
-            not forceConnect
-            and lastTimeout is not None
-            and datetime.datetime.now() - lastTimeout < datetime.timedelta(minutes=1)
-        ):
-            raise tvdb_error("We recently timed out, so giving up early this time")
 
         self.shows = ShowContainer()  # Holds all Show classes
         self.corrections = {}  # Holds show-name to show_id mapping

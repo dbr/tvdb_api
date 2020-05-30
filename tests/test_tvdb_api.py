@@ -11,6 +11,7 @@
 
 import os
 import sys
+import types
 import datetime
 import pytest
 
@@ -26,6 +27,92 @@ from tvdb_api import (  # noqa: E402
 )
 
 
+import requests_cache.backends  # noqa: E402
+import requests_cache.backends.base  # noqa: E402
+
+
+try:
+    from collections.abc import MutableMapping
+except ImportError:
+    from collections import MutableMapping
+
+import json  # noqa: E402
+import pickle  # noqa: E402
+
+
+# By default tests use persistent (commited to Git) cache.
+# Setting this env-var allows the cache to be populated.
+# This is necessary if, say, adding new test case or TVDB response changes.
+# It is recommended to clear the cache directory before re-populating the cache.
+ALLOW_CACHE_WRITE_ENV_VAR = "TVDB_API_TESTS_ALLOW_CACHE_WRITE"
+ALLOW_CACHE_WRITE = os.getenv(ALLOW_CACHE_WRITE_ENV_VAR, "0") == "1"
+
+
+class FileCacheDict(MutableMapping):
+    def __init__(self, base_dir):
+        self._base_dir = base_dir
+
+    def __getitem__(self, key):
+        path = os.path.join(self._base_dir, key)
+        try:
+            with open(path, "rb") as f:
+                data = pickle.load(f)
+                return data
+        except FileNotFoundError:
+            if not ALLOW_CACHE_WRITE:
+                raise RuntimeError("No cache file found %s" % path)
+            raise KeyError
+
+    def __setitem__(self, key, item):
+        if ALLOW_CACHE_WRITE:
+            path = os.path.join(self._base_dir, key)
+            with open(path, "wb") as f:
+                f.write(pickle.dumps(item))
+        else:
+            raise RuntimeError(
+                "Requested uncached URL and $%s not set to 1" % (ALLOW_CACHE_WRITE_ENV_VAR)
+            )
+
+    def __delitem__(self, key):
+        if not self.connection.hdel(self._self_key, json.dumps(key)):
+            raise KeyError
+
+    def __len__(self):
+        return self.connection.hlen(self._self_key)
+
+    def __iter__(self):
+        for v in self.connection.hkeys(self._self_key):
+            yield json.loads(bytes(v))
+
+    def clear(self):
+        self.connection.delete(self._self_key)
+
+    def __str__(self):
+        return str(dict(self.items()))
+
+
+class FileCache(requests_cache.backends.base.BaseCache):
+    def __init__(self, _name, fc_base_dir, **options):
+        super(FileCache, self).__init__(**options)
+        self.responses = FileCacheDict(base_dir=fc_base_dir)
+        self.keys_map = FileCacheDict(base_dir=fc_base_dir)
+
+
+requests_cache.backends.registry['tvdb_api_file_cache'] = FileCache
+
+
+def get_test_cache_session():
+    here = os.path.dirname(os.path.abspath(__file__))
+    sess = requests_cache.CachedSession(
+        backend="tvdb_api_file_cache",
+        fc_base_dir=os.path.join(here, "httpcache"),
+        include_get_headers=True,
+        allowable_codes=(200, 404),
+    )
+    sess.cache.create_key = types.MethodType(tvdb_api.create_key, sess.cache)
+    return sess
+
+
 class TestTvdbBasic:
     # Used to store the cached instance of Tvdb()
     t = None
@@ -33,7 +120,7 @@ class TestTvdbBasic:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), banners=False)
 
     def test_different_case(self):
         """Checks the auto-correction of show names is working.
@@ -67,12 +154,12 @@ class TestTvdbBasic:
     def test_get_episode_overview(self):
         """Checks episode overview is retrieved correctly.
         """
-        assert self.t['Battlestar Galactica (2003)'][1][6]['overview'].startswith(
-            'When a new copy of Doral, a Cylon who had been previously'
+        assert self.t['Scrubs'][1][6]['overview'].startswith(
+            'Dr. Cox is still facing the threat of suspension'
         )
 
         try:
-            self.t['Battlestar Galactica (2003)']['something nonsensical']
+            self.t['Scrubs']['something nonsensical']
         except tvdb_attributenotfound:
             pass  # good
         else:
@@ -81,7 +168,7 @@ class TestTvdbBasic:
     def test_get_parent(self):
         """Check accessing series from episode instance
         """
-        show = self.t['Battlestar Galactica (2003)']
+        show = self.t['Scrubs']
         season = show[1]
         episode = show[1][1]
 
@@ -101,13 +188,13 @@ class TestTvdbErrors:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), banners=False)
 
     def test_seasonnotfound(self):
         """Checks exception is thrown when season doesn't exist.
         """
         with pytest.raises(tvdb_seasonnotfound):
-            self.t['CNNNN'][10]
+            self.t['Scrubs'][42]
 
     def test_shownotfound(self):
         """Checks exception is thrown when episode doesn't exist.
@@ -119,7 +206,7 @@ class TestTvdbErrors:
         """Checks exception is thrown when episode doesn't exist.
         """
         with pytest.raises(tvdb_shownotfound):
-            self.t[999999999999999]
+            self.t[9999999999999999999999999]
 
     def test_episodenotfound(self):
         """Checks exception is raised for non-existent episode
@@ -131,8 +218,8 @@ class TestTvdbErrors:
         """Checks exception is thrown for if an attribute isn't found.
         """
         with pytest.raises(tvdb_attributenotfound):
-            self.t['CNNNN'][1][6]['afakeattributething']
-            self.t['CNNNN']['afakeattributething']
+            self.t['Scrubs'][1][6]['afakeattributething']
+            self.t['Scrubs']['afakeattributething']
 
 
 class TestTvdbSearch:
@@ -142,7 +229,7 @@ class TestTvdbSearch:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), banners=False)
 
     def test_search_len(self):
         """There should be only one result matching
@@ -197,7 +284,7 @@ class TestTvdbData:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), banners=False)
 
     def test_episode_data(self):
         """Check the firstaired value is retrieved
@@ -212,7 +299,7 @@ class TestTvdbMisc:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=False)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), banners=False)
 
     def test_repr_show(self):
         """Check repr() of Season
@@ -244,22 +331,22 @@ class TestTvdbLanguages:
     def test_episode_name_french(self):
         """Check episode data is in French (language="fr")
         """
-        t = tvdb_api.Tvdb(cache=True, language="fr")
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="fr")
         assert t['scrubs'][1][1]['episodeName'] == "Mon premier jour"
         assert t['scrubs']['overview'].startswith(u"J.D. est un jeune m\xe9decin qui d\xe9bute")
 
     def test_episode_name_spanish(self):
         """Check episode data is in Spanish (language="es")
         """
-        t = tvdb_api.Tvdb(cache=True, language="es")
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="es")
         assert t['scrubs'][1][1]['episodeName'] == u'Mi primer día'
         assert t['scrubs']['overview'].startswith(u'Scrubs es una divertida comedia')
 
     def test_multilanguage_selection(self):
         """Check selected language is used
         """
-        t_en = tvdb_api.Tvdb(cache=True, language="en")
-        t_it = tvdb_api.Tvdb(cache=True, language="it")
+        t_en = tvdb_api.Tvdb(cache=get_test_cache_session(), language="en")
+        t_it = tvdb_api.Tvdb(cache=get_test_cache_session(), language="it")
 
         assert t_en['dexter'][1][2]['episodeName'] == "Crocodile"
         assert t_it['dexter'][1][2]['episodeName'] == "Lacrime di coccodrillo"
@@ -269,7 +356,7 @@ class TestTvdbUnicode:
     def test_search_in_chinese(self):
         """Check searching for show with language=zh returns Chinese seriesname
         """
-        t = tvdb_api.Tvdb(cache=True, language="zh")
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="zh")
         show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
         assert type(show) == tvdb_api.Show
         assert show['seriesName'] == u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
@@ -278,7 +365,7 @@ class TestTvdbUnicode:
     def test_search_in_all_languages(self):
         """Check search_all_languages returns Chinese show, with language=en
         """
-        t = tvdb_api.Tvdb(cache=True, search_all_languages=True, language="en")
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), search_all_languages=True, language="en")
         show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
         assert type(show) == tvdb_api.Show
         assert show['seriesName'] == u'Virtues Of Harmony II'
@@ -291,7 +378,7 @@ class TestTvdbBanners:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, banners=True)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), banners=True)
 
     def test_have_banners(self):
         """Check banners at least one banner is found
@@ -327,7 +414,7 @@ class TestTvdbActors:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, actors=True)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), actors=True)
 
     def test_actors_is_correct_datatype(self):
         """Check show/_actors key exists and is correct type"""
@@ -411,7 +498,7 @@ class TestTvdbById:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, actors=True)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), actors=True)
 
     def test_actors_is_correct_datatype(self):
         """Check show/_actors key exists and is correct type"""
@@ -419,29 +506,19 @@ class TestTvdbById:
 
 
 class TestTvdbShowOrdering:
-    # Used to store the cached instance of Tvdb()
-    t_dvd = None
-    t_air = None
-
-    @classmethod
-    def setup_class(cls):
-        if cls.t_dvd is None:
-            cls.t_dvd = tvdb_api.Tvdb(cache=True, dvdorder=True)
-
-        if cls.t_air is None:
-            cls.t_air = tvdb_api.Tvdb(cache=True)
-
     def test_ordering(self):
         """Test Tvdb.search method
         """
-        assert u'The Train Job' == self.t_air['Firefly'][1][1]['episodeName']
-        assert u'Serenity' == self.t_dvd['Firefly'][1][1]['episodeName']
+        t_dvd = tvdb_api.Tvdb(cache=get_test_cache_session(), dvdorder=True)
+        t_air = tvdb_api.Tvdb(cache=get_test_cache_session())
+
+        assert u'The Train Job' == t_air['Firefly'][1][1]['episodeName']
+        assert u'Serenity' == t_dvd['Firefly'][1][1]['episodeName']
 
         assert (
-            u'The Cat and the Claw (1)'
-            == self.t_air['Batman The Animated Series'][1][1]['episodeName']
+            u'The Cat and the Claw (1)' == t_air['Batman The Animated Series'][1][1]['episodeName']
         )
-        assert u'On Leather Wings' == self.t_dvd['Batman The Animated Series'][1][1]['episodeName']
+        assert u'On Leather Wings' == t_dvd['Batman The Animated Series'][1][1]['episodeName']
 
 
 class TestTvdbShowSearch:
@@ -451,7 +528,7 @@ class TestTvdbShowSearch:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session())
 
     def test_search(self):
         """Test Tvdb.search method
@@ -467,7 +544,7 @@ class TestTvdbAltNames:
     @classmethod
     def setup_class(cls):
         if cls.t is None:
-            cls.t = tvdb_api.Tvdb(cache=True, actors=True)
+            cls.t = tvdb_api.Tvdb(cache=get_test_cache_session(), actors=True)
 
     def test_1(self):
         """Tests basic access of series name alias

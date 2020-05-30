@@ -40,6 +40,13 @@ import json  # noqa: E402
 import pickle  # noqa: E402
 
 
+IS_PY2 = sys.version_info[0] == 2
+
+if IS_PY2:
+    # Not really but good enough for backwards-compat here
+    FileNotFoundError = IOError
+
+
 # By default tests use persistent (commited to Git) cache.
 # Setting this env-var allows the cache to be populated.
 # This is necessary if, say, adding new test case or TVDB response changes.

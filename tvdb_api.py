@@ -569,7 +569,7 @@ class Tvdb:
         apikey=None,
         username=None,
         userkey=None,
-        forceConnect=None,
+        forceConnect=None,  # noqa
         dvdorder=False,
     ):
 

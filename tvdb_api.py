@@ -53,8 +53,7 @@ else:
     text_type = str
 
 
-def log():
-    return logging.getLogger("tvdb_api")
+LOG = logging.getLogger("tvdb_api")
 
 
 # Exceptions
@@ -208,7 +207,7 @@ class ConsoleUI(BaseUI):
         print("TVDB Search Results:")
         for i, cshow in enumerate(toshow):
             i_show = i + 1  # Start at more human readable number 1 (not 0)
-            log().debug('Showing allSeries[%s], series %s)' % (i_show, allSeries[i]['seriesName']))
+            LOG.debug('Showing allSeries[%s], series %s)' % (i_show, allSeries[i]['seriesName']))
             if i == 0:
                 extra = " (default)"
             else:
@@ -247,16 +246,16 @@ class ConsoleUI(BaseUI):
             except EOFError:
                 raise tvdb_userabort("User aborted (EOF received)")
 
-            log().debug('Got choice of: %s' % (ans))
+            LOG.debug('Got choice of: %s' % (ans))
             try:
                 selected_id = int(ans) - 1  # The human entered 1 as first result, not zero
             except ValueError:  # Input was not number
                 if len(ans.strip()) == 0:
                     # Default option
-                    log().debug('Default option, returning first series')
+                    LOG.debug('Default option, returning first series')
                     return allSeries[0]
                 if ans == "q":
-                    log().debug('Got quit command (q)')
+                    LOG.debug('Got quit command (q)')
                     raise tvdb_userabort("User aborted ('q' quit command)")
                 elif ans == "?":
                     print("## Help")
@@ -269,13 +268,13 @@ class ConsoleUI(BaseUI):
                 elif ans.lower() in ["a", "all"]:
                     self._displaySeries(allSeries, limit=None)
                 else:
-                    log().debug('Unknown keypress %s' % (ans))
+                    LOG.debug('Unknown keypress %s' % (ans))
             else:
-                log().debug('Trying to return ID: %d' % (selected_id))
+                LOG.debug('Trying to return ID: %d' % (selected_id))
                 try:
                     return allSeries[selected_id]
                 except IndexError:
-                    log().debug('Invalid show number entered!')
+                    LOG.debug('Invalid show number entered!')
                     print("Invalid number (%s) selected!")
                     self._displaySeries(allSeries)
 
@@ -679,7 +678,7 @@ class Tvdb:
 
         if cache is True:
             cache_dir = self._getTempDir()
-            log().debug("Caching using requests_cache to %s" % cache_dir)
+            LOG.debug("Caching using requests_cache to %s" % cache_dir)
             self.session = requests_cache.CachedSession(
                 expire_after=21600,  # 6 hours
                 backend='sqlite',
@@ -690,11 +689,11 @@ class Tvdb:
             self.session.remove_expired_responses()
             self.config['cache_enabled'] = True
         elif cache is False:
-            log().debug("Caching disabled")
+            LOG.debug("Caching disabled")
             self.session = requests.Session()
             self.config['cache_enabled'] = False
         elif isinstance(cache, str):
-            log().debug("Caching using requests_cache to specified directory %s" % cache)
+            LOG.debug("Caching using requests_cache to specified directory %s" % cache)
             # Specified cache path
             self.session = requests_cache.CachedSession(
                 expire_after=21600,  # 6 hours
@@ -705,7 +704,7 @@ class Tvdb:
             self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
             self.session.remove_expired_responses()
         else:
-            log().debug("Using specified requests.Session")
+            LOG.debug("Using specified requests.Session")
             self.session = cache
             try:
                 self.session.get
@@ -800,9 +799,9 @@ class Tvdb:
 
         response = self.session.get(url, headers=self.headers)
         r = response.json()
-        log().debug("loadurl: %s language=%s" % (url, language))
-        log().debug("response:")
-        log().debug(r)
+        LOG.debug("loadurl: %s language=%s" % (url, language))
+        LOG.debug("response:")
+        LOG.debug(r)
         error = r.get('Error')
         errors = r.get('errors')
         r_data = r.get('data')
@@ -842,7 +841,7 @@ class Tvdb:
         return data
 
     def authorize(self):
-        log().debug("auth")
+        LOG.debug("auth")
         r = self.session.post(
             'https://api.thetvdb.com/login', json=self.config['auth_payload'], headers=self.headers
         )
@@ -897,10 +896,10 @@ class Tvdb:
         and returns the result list
         """
         series = url_quote(series.encode("utf-8"))
-        log().debug("Searching for show %s" % series)
+        LOG.debug("Searching for show %s" % series)
         series_resp = self._getetsrc(self.config['url_getSeries'] % (series))
         if not series_resp:
-            log().debug('Series result returned zero')
+            LOG.debug('Series result returned zero')
             raise tvdb_shownotfound(
                 "Show-name search returned zero results (cannot find show on TVDB)"
             )
@@ -908,7 +907,7 @@ class Tvdb:
         all_series = []
         for series in series_resp:
             series['language'] = self.config['language']
-            log().debug('Found series %(seriesName)s' % series)
+            LOG.debug('Found series %(seriesName)s' % series)
             all_series.append(series)
 
         return all_series
@@ -922,14 +921,14 @@ class Tvdb:
         all_series = self.search(series)
 
         if self.config['custom_ui'] is not None:
-            log().debug("Using custom UI %s" % (repr(self.config['custom_ui'])))
+            LOG.debug("Using custom UI %s" % (repr(self.config['custom_ui'])))
             ui = self.config['custom_ui'](config=self.config)
         else:
             if not self.config['interactive']:
-                log().debug('Auto-selecting first search result using BaseUI')
+                LOG.debug('Auto-selecting first search result using BaseUI')
                 ui = BaseUI(config=self.config)
             else:
-                log().debug('Interactively selecting show using ConsoleUI')
+                LOG.debug('Interactively selecting show using ConsoleUI')
                 ui = ConsoleUI(config=self.config)
 
         return ui.selectSeries(all_series)
@@ -960,7 +959,7 @@ class Tvdb:
 
         This interface will be improved in future versions.
         """
-        log().debug('Getting season banners for %s' % (sid))
+        LOG.debug('Getting season banners for %s' % (sid))
         banners_resp = self._getetsrc(self.config['url_seriesBanner'] % sid)
         banners = {}
         for cur_banner in banners_resp.keys():
@@ -986,7 +985,7 @@ class Tvdb:
                 for k, v in list(banners[btype][btype2][bid].items()):
                     if k.endswith("path"):
                         new_key = "_%s" % k
-                        log().debug("Transforming %s to %s" % (k, new_key))
+                        LOG.debug("Transforming %s to %s" % (k, new_key))
                         new_url = self.config['url_artworkPrefix'] % v
                         banners[btype][btype2][bid][new_key] = new_url
 
@@ -1018,7 +1017,7 @@ class Tvdb:
         Any key starting with an underscore has been processed (not the raw
         data from the XML)
         """
-        log().debug("Getting actors for %s" % (sid))
+        LOG.debug("Getting actors for %s" % (sid))
         actors_resp = self._getetsrc(self.config['url_actorsInfo'] % (sid))
 
         cur_actors = Actors()
@@ -1039,17 +1038,17 @@ class Tvdb:
         """
 
         if self.config['language'] is None:
-            log().debug('Config language is none, using show language')
+            LOG.debug('Config language is none, using show language')
             if language is None:
                 raise tvdb_error("config['language'] was None, this should not happen")
         else:
-            log().debug(
+            LOG.debug(
                 'Configured language %s override show language of %s'
                 % (self.config['language'], language)
             )
 
         # Parse show information
-        log().debug('Getting all series data for %s' % (sid))
+        LOG.debug('Getting all series data for %s' % (sid))
         series_info_resp = self._getetsrc(self.config['url_seriesInfo'] % sid)
         for tag, value in series_info_resp.items():
             if value is not None:
@@ -1069,7 +1068,7 @@ class Tvdb:
             self._parseActors(sid)
 
         # Parse episode data
-        log().debug('Getting all episodes of %s' % (sid))
+        LOG.debug('Getting all episodes of %s' % (sid))
 
         url = self.config['url_epInfo'] % sid
 
@@ -1078,7 +1077,7 @@ class Tvdb:
         for cur_ep in eps_resp:
 
             if self.config['dvdorder']:
-                log().debug('Using DVD ordering.')
+                LOG.debug('Using DVD ordering.')
                 use_dvd = (
                     cur_ep.get('dvdSeason') is not None
                     and cur_ep.get('dvdEpisodeNumber') is not None
@@ -1092,7 +1091,7 @@ class Tvdb:
                 elem_seasnum, elem_epno = cur_ep['airedSeason'], cur_ep['airedEpisodeNumber']
 
             if elem_seasnum is None or elem_epno is None:
-                log().warning(
+                LOG.warning(
                     "An episode has incomplete season/episode number (season: %r, episode: %r)"
                     % (elem_seasnum, elem_epno)
                 )
@@ -1116,13 +1115,13 @@ class Tvdb:
         the correct SID.
         """
         if name in self.corrections:
-            log().debug('Correcting %s to %s' % (name, self.corrections[name]))
+            LOG.debug('Correcting %s to %s' % (name, self.corrections[name]))
             sid = self.corrections[name]
         else:
-            log().debug('Getting show %s' % name)
+            LOG.debug('Getting show %s' % name)
             selected_series = self._getSeries(name)
             sid = selected_series['id']
-            log().debug('Got %(seriesName)s, id %(id)s' % selected_series)
+            LOG.debug('Got %(seriesName)s, id %(id)s' % selected_series)
 
             self.corrections[name] = sid
             self._getShowData(selected_series['id'], self.config['language'])
@@ -1137,7 +1136,7 @@ class Tvdb:
             sid = key
         else:
             sid = self._nameToSid(key)
-            log().debug('Got series id %s' % sid)
+            LOG.debug('Got series id %s' % sid)
 
         if sid not in self.shows:
             self._getShowData(sid, self.config['language'])

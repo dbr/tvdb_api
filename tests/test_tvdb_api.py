@@ -74,7 +74,8 @@ class FileCacheDict(MutableMapping):
         if ALLOW_CACHE_WRITE:
             path = os.path.join(self._base_dir, key)
             with open(path, "wb") as f:
-                f.write(pickle.dumps(item))
+                # Dump with protocol 2 to allow Python 2.7 support
+                f.write(pickle.dumps(item, protocol=2))
         else:
             raise RuntimeError(
                 "Requested uncached URL and $%s not set to 1" % (ALLOW_CACHE_WRITE_ENV_VAR)
@@ -213,7 +214,7 @@ class TestTvdbErrors:
         """Checks exception is thrown when episode doesn't exist.
         """
         with pytest.raises(tvdb_shownotfound):
-            self.t[9999999999999999999999999]
+            self.t[999999999999999999999999]
 
     def test_episodenotfound(self):
         """Checks exception is raised for non-existent episode

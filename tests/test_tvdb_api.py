@@ -82,18 +82,16 @@ class FileCacheDict(MutableMapping):
             )
 
     def __delitem__(self, key):
-        if not self.connection.hdel(self._self_key, json.dumps(key)):
-            raise KeyError
+        raise RuntimeError("Removing items from test-cache not supported")
 
     def __len__(self):
-        return self.connection.hlen(self._self_key)
+        raise NotImplementedError()
 
     def __iter__(self):
-        for v in self.connection.hkeys(self._self_key):
-            yield json.loads(bytes(v))
+        raise NotImplementedError()
 
     def clear(self):
-        self.connection.delete(self._self_key)
+        raise NotImplementedError()
 
     def __str__(self):
         return str(dict(self.items()))
@@ -111,13 +109,16 @@ requests_cache.backends.registry['tvdb_api_file_cache'] = FileCache
 
 def get_test_cache_session():
     here = os.path.dirname(os.path.abspath(__file__))
-    sess = requests_cache.CachedSession(
-        backend="tvdb_api_file_cache",
-        fc_base_dir=os.path.join(here, "httpcache"),
-        include_get_headers=True,
-        allowable_codes=(200, 404),
-    )
-    sess.cache.create_key = types.MethodType(tvdb_api.create_key, sess.cache)
+    if IS_PY2:
+        sess = requests_cache.CachedSession()
+    else:
+        sess = requests_cache.CachedSession(
+            backend="tvdb_api_file_cache",
+            fc_base_dir=os.path.join(here, "httpcache"),
+            include_get_headers=True,
+            allowable_codes=(200, 404),
+        )
+        sess.cache.create_key = types.MethodType(tvdb_api.create_key, sess.cache)
     return sess
 
 

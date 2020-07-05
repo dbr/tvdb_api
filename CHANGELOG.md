@@ -1,5 +1,11 @@
 # Changelog
 
+## unreleased
+
+- Rename exceptions to conventional PEP8 naming syntax, e.g `tvdb_error` becomes `TvdbError`, `tvdb_episodenotfound` becomes `TvdbEpisodeNotFound` etc. All exceptions have changed. Backwards-compatible bindings to old names exist until next version.
+- Deprecate `Tvdb(forceConnect=...)` argument - had no effect in recent versions, and argument removed in next version.
+- New `TvdbDataNotFound` exception allows catching of all missing-data exceptions in on (`TvdbShowNotFound`, `TvdbSeasonNotFound`, `TvdbEpisodeNotFound`, `TvdbResourceNotFound` are now all subclasses of this)
+
 ## `3.0.2` - 2020-05-16
 
 - Bug fix for `ConsoleUI` error `NameError: global name 'lid_map' is not defined`

@@ -109,16 +109,14 @@ requests_cache.backends.registry['tvdb_api_file_cache'] = FileCache
 
 def get_test_cache_session():
     here = os.path.dirname(os.path.abspath(__file__))
-    if IS_PY2:
-        sess = requests_cache.CachedSession()
-    else:
-        sess = requests_cache.CachedSession(
-            backend="tvdb_api_file_cache",
-            fc_base_dir=os.path.join(here, "httpcache"),
-            include_get_headers=True,
-            allowable_codes=(200, 404),
-        )
-        sess.cache.create_key = types.MethodType(tvdb_api.create_key, sess.cache)
+    additional = "_py2" if sys.version_info[0] == 2 else ""
+    sess = requests_cache.CachedSession(
+        backend="tvdb_api_file_cache",
+        fc_base_dir=os.path.join(here, "httpcache%s" % additional),
+        include_get_headers=True,
+        allowable_codes=(200, 404),
+    )
+    sess.cache.create_key = types.MethodType(tvdb_api.create_key, sess.cache)
     return sess
 
 
@@ -564,4 +562,9 @@ class TestTvdbAltNames:
 
 
 if __name__ == '__main__':
-    pytest.main()
+    cache = get_test_cache_session()
+    t = tvdb_api.Tvdb(cache=cache)
+    t['scrubs'][1][2]
+    t = tvdb_api.Tvdb(cache=cache)
+    t['scrubs'][1][2]
+    # pytest.main()

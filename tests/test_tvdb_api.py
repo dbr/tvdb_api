@@ -36,7 +36,6 @@ try:
 except ImportError:
     from collections import MutableMapping
 
-import json  # noqa: E402
 import pickle  # noqa: E402
 
 

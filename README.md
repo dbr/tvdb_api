@@ -10,8 +10,8 @@ It supports Python 2.7, and 3.5 onwards
 
 [tvdb]: http://thetvdb.com
 [tvnamer]: http://github.com/dbr/tvnamer
-[travis-link]: https://travis-ci.org/dbr/tvdb_api
-[travis-img]: https://travis-ci.org/dbr/tvdb_api.svg?branch=master
+[travis-link]: https://travis-ci.com/dbr/tvdb_api
+[travis-img]: https://travis-ci.com/dbr/tvdb_api.svg?branch=master
 [pypi-link]: https://pypi.org/project/tvdb-api/
 [pypi-img]: https://img.shields.io/pypi/v/tvdb_api
 [coverage-link]: https://codecov.io/gh/dbr/tvdb_api

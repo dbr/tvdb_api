@@ -818,7 +818,7 @@ class Tvdb:
         links = r.get('links')
 
         if error:
-            if error == u'Resource not found':
+            if error == u'Resource not found' or error == u'not found':
                 # raise(tvdb_resourcenotfound)
                 # handle no data at a different level so it is more specific
                 pass

@@ -1139,7 +1139,7 @@ class Tvdb:
         return sid
 
     def __getitem__(self, key):
-        """Handles tvdb_instance['seriesname'] calls.
+        """Handles tvdb_instance['seriesName'] calls.
         The dict index should be the show id
         """
         if isinstance(key, int_types):
@@ -1165,7 +1165,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
 
     tvdb_instance = Tvdb(interactive=False, cache=False)
-    print(tvdb_instance['Lost']['seriesname'])
+    print(tvdb_instance['Lost']['seriesName'])
     print(tvdb_instance['Lost'][1][4]['episodename'])
 
 

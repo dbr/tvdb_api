@@ -5,6 +5,7 @@
 - Rename exceptions to conventional PEP8 naming syntax, e.g `tvdb_error` becomes `TvdbError`, `tvdb_episodenotfound` becomes `TvdbEpisodeNotFound` etc. All exceptions have changed. Backwards-compatible bindings to old names exist until next version.
 - Deprecate `Tvdb(forceConnect=...)` argument - had no effect in recent versions, and argument removed in next version.
 - New `TvdbDataNotFound` exception allows catching of all missing-data exceptions in on (`TvdbShowNotFound`, `TvdbSeasonNotFound`, `TvdbEpisodeNotFound`, `TvdbResourceNotFound` are now all subclasses of this)
+- Fix `ImportError: cannot import name '_to_bytes'` error due to change in [requests-cache 0.6.0](https://github.com/reclosedev/requests-cache/blob/master/HISTORY.md#060-2021-04-09) - [issue #92](https://github.com/dbr/tvdb_api/issues/92)
 
 ## `3.0.2` - 2020-05-16
 

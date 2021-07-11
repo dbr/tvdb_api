@@ -96,7 +96,7 @@ class TvdbDataNotFound(TvdbBaseException):
 
 
 class TvdbShowNotFound(TvdbDataNotFound):
-    """Show cannot be found on thetvdb.com (non-existant show)
+    """Show cannot be found on thetvdb.com (non-existent show)
     """
 
     pass

@@ -31,7 +31,11 @@ import hashlib
 
 import requests
 import requests_cache
-from requests_cache.backends.base import _to_bytes, _DEFAULT_HEADERS
+
+_DEFAULT_HEADERS = requests.utils.default_headers()
+
+def _to_bytes(s, encoding='utf-8'):
+    return s if isinstance(s, bytes) else bytes(s, encoding)
 
 
 IS_PY2 = sys.version_info[0] == 2

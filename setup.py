@@ -23,7 +23,7 @@ setup(
     long_description_content_type='text/markdown',
 
     py_modules=['tvdb_api'],
-    install_requires=['requests_cache<0.6.0', 'requests'],
+    install_requires=['requests_cache', 'requests'],
 
     classifiers=[
         "Intended Audience :: Developers",

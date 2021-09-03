@@ -46,7 +46,7 @@ if IS_PY2:
     FileNotFoundError = IOError
 
 
-# By default tests use persistent (commited to Git) cache.
+# By default tests use persistent (committed to Git) cache.
 # Setting this env-var allows the cache to be populated.
 # This is necessary if, say, adding new test case or TVDB response changes.
 # It is recommended to clear the cache directory before re-populating the cache.

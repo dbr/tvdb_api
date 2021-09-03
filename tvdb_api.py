@@ -1032,7 +1032,10 @@ class Tvdb:
         data from the XML)
         """
         LOG.debug("Getting actors for %s" % (sid))
-        actors_resp = self._getetsrc(self.config['url_actorsInfo'] % (sid))
+        try:
+            actors_resp = self._getetsrc(self.config['url_actorsInfo'] % (sid))
+        except tvdb_error:
+            actors_resp = []
 
         cur_actors = Actors()
         for cur_actor_item in actors_resp:

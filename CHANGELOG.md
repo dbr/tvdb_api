@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Support newer requests-cache version (0.6 onwards)
+  [PR #97](https://github.com/dbr/tvdb_api/pull/97)
+
 ## `3.1` - 2021-04-29
 
 - Rename exceptions to conventional PEP8 naming syntax, e.g `tvdb_error` becomes `TvdbError`, `tvdb_episodenotfound` becomes `TvdbEpisodeNotFound` etc. All exceptions have changed. Backwards-compatible bindings to old names exist until next version (i.e will be removed in version 3.2)

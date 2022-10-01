@@ -528,7 +528,7 @@ class Actor(dict):
         return "<Actor %r>" % self.get("name")
 
 
-def create_key(self, request):
+def create_key(self, request, **kwargs):
     """A new cache_key algo is required as the authentication token
     changes with each run. Also there are other header params which
     also change with each request (e.g. timestamp). Excluding all

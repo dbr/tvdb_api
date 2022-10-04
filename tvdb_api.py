@@ -22,12 +22,10 @@ __version__ = "3.1.0"
 import sys
 import os
 import time
-import types
 import getpass
 import tempfile
 import warnings
 import logging
-import hashlib
 from urllib.parse import quote as url_quote
 
 import requests

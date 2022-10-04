@@ -200,7 +200,7 @@ class TestTvdbSearch:
         """Tests aired_on show method"""
         sr = self.t['Scrubs'].aired_on(datetime.date(2001, 10, 2))
         assert len(sr) == 1
-        assert sr[0]['episodeName'] == u'My First Day'
+        assert sr[0]['episodeName'] == 'My First Day'
 
         try:
             sr = self.t['Scrubs'].aired_on(datetime.date(1801, 1, 1))
@@ -272,8 +272,8 @@ class TestTvdbLanguages:
         """Check episode data is in Spanish (language="es")
         """
         t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="es")
-        assert t['scrubs'][1][1]['episodeName'] == u'Mi primer día'
-        assert t['scrubs']['overview'].startswith(u'Scrubs es una divertida comedia')
+        assert t['scrubs'][1][1]['episodeName'] == 'Mi primer día'
+        assert t['scrubs']['overview'].startswith('Scrubs es una divertida comedia')
 
     def test_multilanguage_selection(self):
         """Check selected language is used
@@ -290,9 +290,9 @@ class TestTvdbUnicode:
         """Check searching for show with language=zh returns Chinese seriesname
         """
         t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="zh")
-        show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
+        show = t['T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
         assert type(show) == tvdb_api.Show
-        assert show['seriesName'] == u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
+        assert show['seriesName'] == 'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
 
 
 class TestTvdbBanners:
@@ -433,13 +433,13 @@ class TestTvdbShowOrdering:
         t_dvd = tvdb_api.Tvdb(cache=get_test_cache_session(), dvdorder=True)
         t_air = tvdb_api.Tvdb(cache=get_test_cache_session())
 
-        assert u'The Train Job' == t_air['Firefly'][1][1]['episodeName']
-        assert u'Serenity' == t_dvd['Firefly'][1][1]['episodeName']
+        assert 'The Train Job' == t_air['Firefly'][1][1]['episodeName']
+        assert 'Serenity' == t_dvd['Firefly'][1][1]['episodeName']
 
         assert (
-            u'The Cat and the Claw (1)' == t_air['Batman The Animated Series'][1][1]['episodeName']
+            'The Cat and the Claw (1)' == t_air['Batman The Animated Series'][1][1]['episodeName']
         )
-        assert u'On Leather Wings' == t_dvd['Batman The Animated Series'][1][1]['episodeName']
+        assert 'On Leather Wings' == t_dvd['Batman The Animated Series'][1][1]['episodeName']
 
 
 class TestTvdbShowSearch:

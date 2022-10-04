@@ -126,8 +126,8 @@ class BaseUI(object):
     contains the the keys "name" (human readable show name), and "sid" (the shows
     ID as on thetvdb.com). For example:
 
-    [{'name': u'Lost', 'sid': u'73739'},
-     {'name': u'Lost Universe', 'sid': u'73181'}]
+    [{'name': 'Lost', 'sid': '73739'},
+     {'name': 'Lost Universe', 'sid': '73181'}]
 
     The "selectSeries" method must return the appropriate dict, or it can raise
     TvdbUserAbort (if the selection is aborted), TvdbShowNotFound (if the show
@@ -288,7 +288,7 @@ class Show(dict):
 
     def __repr__(self):
         return "<Show %r (containing %s seasons)>" % (
-            self.data.get(u'seriesName', 'instance'),
+            self.data.get('seriesName', 'instance'),
             len(self),
         )
 
@@ -341,19 +341,19 @@ class Show(dict):
         containing "my first day":
 
         >>> t['Scrubs'].search("my first day")
-        [<Episode 01x01 - u'My First Day'>]
+        [<Episode 01x01 - 'My First Day'>]
         >>>
 
         Search for "My Name Is Earl" episode named "Faked His Own Death":
 
         >>> t['My Name Is Earl'].search('Faked My Own Death', key='episodeName')
-        [<Episode 01x04 - u'Faked My Own Death'>]
+        [<Episode 01x04 - 'Faked My Own Death'>]
         >>>
 
         To search Scrubs for all episodes with "mentor" in the episode name:
 
         >>> t['scrubs'].search('mentor', key='episodeName')
-        [<Episode 01x02 - u'My Mentor'>, <Episode 03x15 - u'My Tormented Mentor'>]
+        [<Episode 01x02 - 'My Mentor'>, <Episode 03x15 - 'My Tormented Mentor'>]
         >>>
 
         # Using search results
@@ -397,7 +397,7 @@ class Season(dict):
 
         >>> t = Tvdb()
         >>> t['scrubs'][1].search('first day')
-        [<Episode 01x01 - u'My First Day'>]
+        [<Episode 01x01 - 'My First Day'>]
         >>>
 
         See Show.search documentation for further information on search
@@ -417,9 +417,9 @@ class Episode(dict):
         self.season = season
 
     def __repr__(self):
-        seasno = self.get(u'airedSeason', 0)
-        epno = self.get(u'airedEpisodeNumber', 0)
-        epname = self.get(u'episodeName')
+        seasno = self.get('airedSeason', 0)
+        epno = self.get('airedEpisodeNumber', 0)
+        epname = self.get('episodeName')
         if epname is not None:
             return "<Episode %02dx%02d - %r>" % (seasno, epno, epname)
         else:
@@ -492,7 +492,7 @@ class Tvdb:
     """Create easy-to-use interface to name of season/episode name
     >>> t = Tvdb()
     >>> t['Scrubs'][1][24]['episodeName']
-    u'My Last Day'
+    'My Last Day'
     """
 
     def __init__(
@@ -534,7 +534,7 @@ class Tvdb:
             via the _banners key of a Show(), for example:
 
             >>> Tvdb(banners=True)['scrubs']['_banners'].keys()
-            [u'fanart', u'poster', u'seasonwide', u'season', u'series']
+            ['fanart', 'poster', 'seasonwide', 'season', 'series']
 
         actors (True/False):
             Retrieves a list of the actors for a show. These are accessed
@@ -542,7 +542,7 @@ class Tvdb:
 
             >>> t = Tvdb(actors=True)
             >>> t['scrubs']['_actors'][0]['name']
-            u'John C. McGinley'
+            'John C. McGinley'
 
         custom_ui (tvdb_ui.BaseUI subclass):
             A callable subclass of tvdb_ui.BaseUI (overrides interactive option)
@@ -727,11 +727,11 @@ class Tvdb:
         links = r.get('links')
 
         if error:
-            if error == u'Resource not found':
+            if error == 'Resource not found':
                 # raise(TvdbResourceNotFound)
                 # handle no data at a different level so it is more specific
                 pass
-            elif error.lower() == u'not authorized':
+            elif error.lower() == 'not authorized':
                 # Note: Error string sometimes comes back as "Not authorized" or "Not Authorized"
                 raise TvdbNotAuthorized()
             elif error.startswith(u"ID: ") and error.endswith("not found"):
@@ -741,8 +741,8 @@ class Tvdb:
                 raise TvdbError("%s" % error)
 
         if errors:
-            if errors and u'invalidLanguage' in errors:
-                # raise(TvdbError(errors[u'invalidLanguage']))
+            if errors and 'invalidLanguage' in errors:
+                # raise(TvdbError(errors['invalidLanguage']))
                 # invalidLanguage does not mean there is no data
                 # there is just less data (missing translations)
                 pass
@@ -767,7 +767,7 @@ class Tvdb:
         r_json = r.json()
         error = r_json.get('Error')
         if error:
-            if error == u'Not Authorized':
+            if error == 'Not Authorized':
                 raise (TvdbNotAuthorized)
         token = r_json.get('token')
         self.headers['Authorization'] = "Bearer %s" % str(token)
@@ -868,9 +868,9 @@ class Tvdb:
 
         >>> t = Tvdb(banners = True)
         >>> t['scrubs']['_banners'].keys()
-        [u'fanart', u'poster', u'seasonwide', u'season', u'series']
+        ['fanart', 'poster', 'seasonwide', 'season', 'series']
         >>> t['scrubs']['_banners']['poster']['680x1000'][35308]['_bannerpath']
-        u'http://thetvdb.com/banners/posters/76156-2.jpg'
+        'http://thetvdb.com/banners/posters/76156-2.jpg'
         >>>
 
         Any key starting with an underscore has been processed (not the raw
@@ -924,14 +924,14 @@ class Tvdb:
         >>> type(actors[0])
         <class 'tvdb_api.Actor'>
         >>> actors[0]
-        <Actor u'John C. McGinley'>
+        <Actor 'John C. McGinley'>
         >>> sorted(actors[0].keys())
-        [u'id', u'image', u'imageAdded', u'imageAuthor', u'lastUpdated', u'name', u'role',
-        u'seriesId', u'sortOrder']
+        ['id', 'image', 'imageAdded', 'imageAuthor', 'lastUpdated', 'name', 'role',
+        'seriesId', 'sortOrder']
         >>> actors[0]['name']
-        u'John C. McGinley'
+        'John C. McGinley'
         >>> actors[0]['image']
-        u'http://thetvdb.com/banners/actors/43638.jpg'
+        'http://thetvdb.com/banners/actors/43638.jpg'
 
         Any key starting with an underscore has been processed (not the raw
         data from the XML)
@@ -976,7 +976,7 @@ class Tvdb:
 
             self._set_show_data(sid, tag, value)
         # set language
-        self._set_show_data(sid, u'language', self.config['language'])
+        self._set_show_data(sid, 'language', self.config['language'])
 
         # Parse banners
         if self.config['banners_enabled']:

@@ -24,7 +24,6 @@ import os
 import time
 import getpass
 import tempfile
-import warnings
 import logging
 from urllib.parse import quote as url_quote
 

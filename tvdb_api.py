@@ -197,16 +197,21 @@ class ConsoleUI(BaseUI):
             print(output)
 
     def selectSeries(self, allSeries):
-        self._display_series(allSeries)
+        """Deprecated: use `select_series` method instead
+        """
+        return self._selectSeries(all_series=allSeries)
 
-        if len(allSeries) == 1:
+    def select_series(self, all_series):
+        self._display_series(all_series)
+
+        if len(all_series) == 1:
             # Single result, return it!
             print("Automatically selecting only result")
-            return allSeries[0]
+            return all_series[0]
 
         if self.config['select_first'] is True:
             print("Automatically returning first search result")
-            return allSeries[0]
+            return all_series[0]
 
         while True:  # return breaks this loop
             try:
@@ -224,7 +229,7 @@ class ConsoleUI(BaseUI):
                 if len(ans.strip()) == 0:
                     # Default option
                     LOG.debug('Default option, returning first series')
-                    return allSeries[0]
+                    return all_series[0]
                 if ans == "q":
                     LOG.debug('Got quit command (q)')
                     raise TvdbUserAbort("User aborted ('q' quit command)")
@@ -237,17 +242,17 @@ class ConsoleUI(BaseUI):
                     print("# q - abort tvnamer")
                     print("# Press return with no input to select first result")
                 elif ans.lower() in ["a", "all"]:
-                    self._display_series(allSeries, limit=None)
+                    self._display_series(all_series, limit=None)
                 else:
                     LOG.debug('Unknown keypress %s' % (ans))
             else:
                 LOG.debug('Trying to return ID: %d' % (selected_id))
                 try:
-                    return allSeries[selected_id]
+                    return all_series[selected_id]
                 except IndexError:
                     LOG.debug('Invalid show number entered!')
                     print("Invalid number (%s) selected!")
-                    self._display_series(allSeries)
+                    self._display_series(all_series)
 
 
 # Main API

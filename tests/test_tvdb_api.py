@@ -30,14 +30,6 @@ import requests_cache.backends
 import requests_cache.backends.base
 
 
-# By default tests use persistent (committed to Git) cache.
-# Setting this env-var allows the cache to be populated.
-# This is necessary if, say, adding new test case or TVDB response changes.
-# It is recommended to clear the cache directory before re-populating the cache.
-ALLOW_CACHE_WRITE_ENV_VAR = "TVDB_API_TESTS_ALLOW_CACHE_WRITE"
-ALLOW_CACHE_WRITE = os.getenv(ALLOW_CACHE_WRITE_ENV_VAR, "0") == "1"
-
-
 def get_test_cache_session():
     here = os.path.dirname(os.path.abspath(__file__))
     cacher = requests_cache.FileCache(

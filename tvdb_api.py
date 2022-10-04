@@ -494,41 +494,6 @@ class Actor(dict):
         return "<Actor %r>" % self.get("name")
 
 
-def create_key(self, request):
-    """A new cache_key algo is required as the authentication token
-    changes with each run. Also there are other header params which
-    also change with each request (e.g. timestamp). Excluding all
-    headers means that Accept-Language is excluded which means
-    different language requests will return the cached response from
-    the wrong language.
-
-    The _loadurl part checks the cache before a get is performed so
-    that an auth token can be obtained. If the response is already in
-    the cache, the auth token is not required. This prevents the need
-    to do a get which may access the host and fail because the session
-    is not yet not authorized. It is not necessary to authorize if the
-    cache is to be used thus saving host and network traffic.
-    """
-
-    if self._ignored_parameters:
-        url, body = self._remove_ignored_parameters(request)
-    else:
-        url, body = request.url, request.body
-    key = hashlib.sha256()
-    key.update(_to_bytes(request.method.upper()))
-    key.update(_to_bytes(url))
-    if request.body:
-        key.update(_to_bytes(body))
-    else:
-        if self._include_get_headers and request.headers != _DEFAULT_HEADERS:
-            for name, value in sorted(request.headers.items()):
-                # include only Accept-Language as it is important for context
-                if name in ['Accept-Language']:
-                    key.update(_to_bytes(name))
-                    key.update(_to_bytes(value))
-    return key.hexdigest()
-
-
 class Tvdb:
     """Create easy-to-use interface to name of season/episode name
     >>> t = Tvdb()
@@ -665,7 +630,6 @@ class Tvdb:
                 cache_name=cache_dir,
                 include_get_headers=True,
             )
-            self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
             self.session.remove_expired_responses()
             self.config['cache_enabled'] = True
         elif cache is False:
@@ -681,7 +645,6 @@ class Tvdb:
                 cache_name=os.path.join(cache, "tvdb_api"),
                 include_get_headers=True,
             )
-            self.session.cache.create_key = types.MethodType(create_key, self.session.cache)
             self.session.remove_expired_responses()
         else:
             LOG.debug("Using specified requests.Session")

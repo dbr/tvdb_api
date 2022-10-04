@@ -464,7 +464,7 @@ class Episode(dict):
 
         term = str(term).lower()
         for cur_key, cur_value in self.items():
-            cur_key = str()(cur_key)
+            cur_key = str(cur_key)
             cur_value = str(cur_value).lower()
             if key is not None and cur_key != key:
                 # Do not search this key

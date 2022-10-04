@@ -683,7 +683,7 @@ class Tvdb:
 
         return os.path.join(tempfile.gettempdir(), "tvdb_api-%s-py%s" % (uid, py_major))
 
-    def _load_url(self, url, data=None, recache=False, language=None):
+    def _load_url(self, url, data=None, language=None):
         """Return response from The TVDB API"""
 
         if not language:
@@ -696,7 +696,7 @@ class Tvdb:
         # encoded url is used for hashing in the cache so
         # python 2 and 3 generate the same hash
         if not self.__authorized:
-            # only authorize of we haven't before and we
+            # only authorize if we haven't before and we
             # don't have the url in the cache
             fake_session_for_key = requests.Session()
             fake_session_for_key.headers['Accept-Language'] = language
@@ -735,13 +735,12 @@ class Tvdb:
                 # Note: Error string sometimes comes back as "Not authorized" or "Not Authorized"
                 raise TvdbNotAuthorized()
             elif error.startswith(u"ID: ") and error.endswith("not found"):
-                # FIXME: Refactor error out of in this method
                 raise TvdbShowNotFound("%s" % error)
             else:
                 raise TvdbError("%s" % error)
 
         if errors:
-            if errors and 'invalidLanguage' in errors:
+            if 'invalidLanguage' in errors:
                 # raise(TvdbError(errors['invalidLanguage']))
                 # invalidLanguage does not mean there is no data
                 # there is just less data (missing translations)
@@ -755,7 +754,7 @@ class Tvdb:
         if links and links['next']:
             url = url.split('?')[0]
             _url = url + "?page=%s" % links['next']
-            self._load_url(_url, data)
+            self._load_url(_url, data=data)
 
         return data
 

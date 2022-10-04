@@ -507,7 +507,6 @@ class Tvdb:
         apikey=None,
         username=None,
         userkey=None,
-        forceConnect=None,  # noqa
         dvdorder=False,
     ):
 
@@ -570,16 +569,7 @@ class Tvdb:
 
         userkey (str/unicode, or None):
             User authentication key relating to "username".
-
-        forceConnect:
-            DEPRECATED. Disabled the timeout-throttling logic. Now has no function
         """
-
-        if forceConnect is not None:
-            warnings.warn(
-                "forceConnect argument is deprecated and will be removed soon",
-                category=DeprecationWarning,
-            )
 
         self.shows = ShowContainer()  # Holds all Show classes
         self.corrections = {}  # Holds show-name to show_id mapping

@@ -1,0 +1,43 @@
+{
+  "_content": "dm?0EbYUVoTYDm5Y-wS0Wpg4rTU{(7VqtD>WpW}qA}?ZLZf<3Ab1!FdVQ^?^V_|GBI59IfH!Wu_YH(*FEFxxUa&vS+X>w&`B03^6FfcPMFflDKF(ND?X=EZgI59IfH!LD)ZDD6+B03^3VqtD>WpZ;baBp*TWpZ;bHDhFCWH>Q3V=*>1VlHZMXCf>jZe?_LZ*prQIwDk7LLf?EWMv{OB5-eWbY*fPIwCJ(VQy|^a&s?mZ*z2Ia&s>=V`OAxI59P2F*Y`0E^2URA}k_vWpZg{b53DxWg<EvRKu)pXdq5!#<1bLooOIQY2mwvZXm>v;kuz|A}k_vY;|WMIwE#ya&&cNb1iRXEofnKZEtRQEoo^YEFyDsVRUtKB03^PZe(R-B7I$b",
+  "created_at": "2022-10-04T02:22:42.666686",
+  "elapsed": 0.349996,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "308",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 02:22:42 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Miss from cloudfront",
+    "Via": "1.1 404908a44b28b9941efc528aa5e2c114.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "N3xSOv1yEwPokWzUDBelbmwsF_r4w_uWIT2VYfqpPNvVpIwMEywKjg=="
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "zh",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NjIsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE2Mn0.WEnmgosFqOfzrM4edIxBqXeMdcftsBVnEFsAYbREdmZko8vyYHoJUcGB-kVM0sPsOdBtKm1CUR667tcl357WutNonYfh3yoaetLXbVi5wzF16o56S7wMUQvo6VbBq5IsQJGeZ8oNP04SMjZjTNKzcCKsLO0IFI7gult9qWjF2c1yWO57FvIEJoeGg7dJKPi4I0byohP99I3xAfXqCDKz7hCvRj-1dxvyJrIO8uPcZ0gdumv8a4q7H2ZIEF4JtNAxVno2Ncf7xXbYQz7UGUaMUyQyVzoYFE75JYxJbjzjbKz5TnhvcMojvsNUEhg330td_1mfHEKzG_c7uTiVjZzgbw"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/search/series?name=T%C3%ACnh%20Ng%C6%B0%E1%BB%9Di%20Hi%E1%BB%87n%20%C4%90%E1%BA%A1i"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/search/series?name=T%C3%ACnh%20Ng%C6%B0%E1%BB%9Di%20Hi%E1%BB%87n%20%C4%90%E1%BA%A1i"
+}

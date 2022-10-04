@@ -1,0 +1,43 @@
+{
+  "_content": "dm=@0a&K}XIwDeKb8mHWV`U(2Z*(ALZ*^{DB7F",
+  "created_at": "2022-10-04T02:22:33.607432",
+  "elapsed": 0.410349,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "30",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 02:22:33 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Error from cloudfront",
+    "Via": "1.1 fe252828480d3aff57bbecb4f3bec932.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "_PDZPQvkeo_8L4-XyXIXqbfwhzQJrWT2lnARK0BMJ3M3Pq7jfLCmOQ=="
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "Not Found",
+    "status": 404,
+    "version": 11
+  },
+  "reason": "Not Found",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NTMsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE1M30.OQ_JjA8A6N4dI3sARufgTNdfahLsXiDePo5OBKaI5joUIuBvRtK2RbTKV4gvUu2ce3iVJdokRU153rShz4kYXGvk_pS-ZqsEG2RVkOFETMzeyrGGhq_SmprQrw00Lzl96rFy2kdlk-y7IO6kkGKgjFu3a-_5LqcPPmyRbO9tsV86ToMNW7yUYX3yo8ae0IGqda3wmZCVrnNKROysXO5sFHItwFIRxzS3Xi0JwvVjOVFZBLfYECSUdOktwCMOos-i4-Rpi0jyRjHt4mB-m7UfB3AZExCDoDQuMKepLFNa2f_Xw-vJbuoZD62LitRoIDU5fzHLRchZA8zZmPP3U91zZQ"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/search/series?name=the%20fake%20show%20thingy"
+  },
+  "status_code": 404,
+  "url": "https://api.thetvdb.com/search/series?name=the%20fake%20show%20thingy"
+}

@@ -86,7 +86,7 @@ All data exposed by [thetvdb.com][tvdb] is accessible via the `Show` class. A Sh
 For example, to find out what network Scrubs is aired:
 
     >>> t['scrubs']['network']
-    u'ABC'
+    'ABC'
 
 The data is stored in an attribute named `data`, within the Show instance:
 
@@ -96,7 +96,7 @@ The data is stored in an attribute named `data`, within the Show instance:
 Although each element is also accessible via `t['scrubs']` for ease-of-use:
 
     >>> t['scrubs']['rating']
-    u'9.0'
+    '9.0'
 
 This is the recommended way of retrieving "one-off" data (for example, if you are only interested in "seriesname"). If you wish to iterate over all data, or check if a particular show has a specific piece of data, use the `data` attribute,
 
@@ -126,9 +126,9 @@ Extended actor data is accessible similarly:
     >>> actors[0].keys()
     ['sortorder', 'image', 'role', 'id', 'name']
     >>> actors[0]['role']
-    u'Dr. John Michael "J.D." Dorian'
+    'Dr. John Michael "J.D." Dorian'
 
 Remember a simple list of actors is accessible via the default Show data:
 
     >>> t['scrubs']['actors']
-    u'|Zach Braff|Donald Faison|Sarah Chalke|Judy Reyes|John C. McGinley|Neil Flynn|Ken Jenkins|Christa Miller|Aloma Wright|Robert Maschio|Sam Lloyd|Travis Schuldt|Johnny Kastl|Heather Graham|Michael Mosley|Kerry Bish\xe9|Dave Franco|Eliza Coupe|'
+    '|Zach Braff|Donald Faison|Sarah Chalke|Judy Reyes|John C. McGinley|Neil Flynn|Ken Jenkins|Christa Miller|Aloma Wright|Robert Maschio|Sam Lloyd|Travis Schuldt|Johnny Kastl|Heather Graham|Michael Mosley|Kerry Bish\xe9|Dave Franco|Eliza Coupe|'

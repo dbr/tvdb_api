@@ -1,0 +1,44 @@
+{
+  "_content": "dm?0EbYUVoTYDm5Y-wS0Wpg4rTOv()AWmUzWgtm&AVpzvY#=ByFfcVKB3&#ZVqtD>WpW}qA}?ZLZf<3Ab1!FdVQ^?^V_|GBH#IXkH!Wu_YH(*FEFxxUa&vS+X>w&`B03^6FfcVOFgYzUFd{4>X=EZgH#IXkH!LD)ZDD6+B03^3VqtD>WpZ;baBp*TWpZ;bH#IXkH!U<SYH(*FEFx}Yba!uZYa%)#PC`Q>EFy1qWpZ|DWp^SvB1K_xY#>N!V{2u3CvzZdX=Y_0Xkl|8Vr6A+AZB%JY#?uDAaHMQav)=9Z)sy?b0A@EWFT#6b97;AWpgYbVQyp~b#QNPAY^HCV{dk4a%pa7AarP9bRcMDAZc?TbZBKDXm4y}WpW^IW*}i8cWG{JX>MmAY;SaQWpa5SbZKL2WppecMPYJmAZc?TXlZmHVtF88AY);2AYpD~AarPDAarSCYh`pGVr*}Bb0BYZbRchLAZTfGAZTH3WFTR4AZTSEY-we4Aa!nIZ*FsAX>WCNAZczObZBKDb98cLWppkeS7>Q$Wgv28V{dk4a%pa7AZczObZBKDXm4|HX>?(1AYpD~Aa`MOV`yn^XCQQCY-M(7b7^mGEFeW;a%>=IVRIm1AZuZAZE0g5WpHV5Xkl)7EFg4fVQy=4AarjaLt%1rZ*Cw&VQhIUAa`hQAYpWLa%p09bY*iOXlZjGb9G~5Wpi^NbZ;PJZ)t94AZKrHWFTg5av*PXXk~J9E+9c5Y-wj`bRc4NY+@j1Z)I~JZ*CxIZXiWra%?AaAY^H6AZTS_WGo<IZe$>6Wgv59baNnYb#x$fZy<7MXJ~XFWp-t9c_4RkZ*FHGXk{R1VRIm4Z*FBSAV_5(cWG>FAar$dZXjrBb0BALZ)6~5Z*p{XZe<{8Zgg)TVIXX2W@R8_Xkl(=X>MmAWp-t5bSxlYb0BDCAaiAOb0BYZbRcwZAaZGEXmlW9Y-}KOXk{RGa&K;Db0B7NZ*3rGX>%ZOVRLjYAVg(zaA|a9AZTfGAaiA9ZE0?2Y<VDTX>DnAWn>^}ZggdAY-wj@ZewLEAZTSEX>%ZNWMpi4AZ2D|Wn*+{c4Z)8Ze$>6VRIm1Aa-wQV`U&=Ze$>Hba`xLAa7<MXlZjGZ+C7kA}k_sZ*z2Iaw0k+FJfVCZe?<FFK};jbY*gLFE=$aIX5jdE^2URA}k_vWpZg{b53DxWg<EvO?e<rVQpm~Npm1YVRCFDEFyDkb!Q?vB5ipsZeeX@EopNtWnpq`A}k_vbYXOLb0Rt-MQ&teWFmcCeE",
+  "created_at": "2022-10-04T02:22:30.026258",
+  "elapsed": 0.553241,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 02:22:29 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Content-Encoding": "gzip",
+    "Vary": "Accept-Encoding,Accept-Language",
+    "X-Cache": "Miss from cloudfront",
+    "Via": "1.1 7fd2b3d3ec0618823a468ffef67f53ea.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "-m_bNUZNEfVHplOZ7S8TAXWMCmG5SJqYWiVCY0zBMw8bSQ6Ikw3rPA=="
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NDcsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE0N30.gPznlS-wEleFpA6zGWBONb_MWzw7kt-XBqj8YkROC9Pq114r7uHAqyzN-5-2eBiJ1odtSGn3o0sXxDX75G8o3Qef2U9KJ8qaQwBTIHwm-6Espa8CTyURZhuoemYcerjoPkX9TVCzE831j9gSGCrJ8X-cP2ZBeMxv8s41_emu2eAd87tSUurgUja53DA9sVqcTx3mi8HJhmDkUqI0f0h84wJnuVKvyEmD8V6pI__e06MrMgJwEy-apQoehG0yMl0KysxyntwryqA3TuBYza9oGFiHWL4uZKVM_k9Cy14K7WzSACs5-7VRXn3vWDWC1RNPqlDWmrK7zupASZpD7zpXUQ"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/search/series?name=My%20Name%20Is%20Earl"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/search/series?name=My%20Name%20Is%20Earl"
+}

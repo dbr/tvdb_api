@@ -1,0 +1,43 @@
+{
+  "_content": "dm?0EbYUVoTYDm5Y-wS0Wpg4rTOvVlVRCeBWo~pJGBYA9B1CU)Cv+fGa&>cbAarPDAVMH%ZXiK$bRaS_A}k_AZ*C`aAXIX7b95kdXk{QmX>?;~AZczOL2zMmbZupBbRaS_B3&#ZVqtD>WpW}qA}?ZLZf<3Ab1!FdVQ^?^V_|GBGBh|iF)}S@G%jjzXCf>jW@&PBbU|ryWn>~cA~G;BGA%GPEio}7EFx)SB04fOI5;sfEFx)bVP|C`IwCJ(VQy|^a&s?mZ*z2Ia&s>-G&ndhGA%PMYH(*FEFx}Yba!uZYa%)#K|(_yC{<G_A}k_rc4cyQX=QgJIwC`8Y;R>CX>%Z9AWmg>AX#s6Yano8a&&nhXK8Y5Aa`kWXdrZGWgu;Da$#(9Aa7<MVIXj6a$$63E+A8AWguf=b#rBNAartXbz*E~AZBlJAZTTBAZ}r4c4Z)QZDDL|AarkcZXj}RZ*6U1bY(0cN_B2!EFfWSWFSLmY;R>Jb0A`6b95kPa%p95WGo;`VQpn|AXZ^+AVg(yAVOtjYc3)zB5-eWbY*fPIwCJ(VQy|^a&s?mZ*z2Ia&s>-G&ndhGA%PMYH(*FEFyDda%p9APGN0jB03^OZ*C`aAXIX7b95kdXk{QmEiElAAZczOL2zMmbZupBbRaS_A}k_vY;|WMIwE9mZgeela&>cbEp%vQEn+QcZY^POVRCeBWo~pWGBYA9B6D<MbaitgIwD1GWMyO`eO-M",
+  "created_at": "2022-10-04T02:23:34.538347",
+  "elapsed": 0.414134,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "583",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 02:23:34 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Miss from cloudfront",
+    "Via": "1.1 1a03e9a4fd8952cd0e6076f8464b0ae4.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "9LJlqAC4pvLlgOKaEc7VxGUPfEXgVRKsC7gShtrV1s0ol_KBG5UdqQ=="
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTUwMTQsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDIxNH0.upspf_taI_ZYPliysxeXyydwD0CU65OgcVuyvBcrfG99iK_D6YO-JRKzz14fnrT2NNCNn6UZdTUuQLFibUEcRLgHf2123tgEZOHDWleA6Xl9TttN68H5DySGJeYHncOk1jxHFdx8yzmhDrH-Cd5lOblaI5wpNqRU1_KWjc-q5l_B7xpVlx4rp9j8HSGO_FL8to1RiRBqtUoJMnd5BJJczLNgIrWevB8OfC-KUecbVb5BaTJ96eK__550j1menQD5o-5-9eXQroPQucoWR3w5LaYmDrhR_xn8FuN7KfnVgvhywbrwFsj0D_J1b8FVN10CuA6mOO6OABRd4npAYuT03A"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/search/series?name=Don%27t%20Trust%20the%20B----%20in%20Apartment%2023"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/search/series?name=Don%27t%20Trust%20the%20B----%20in%20Apartment%2023"
+}

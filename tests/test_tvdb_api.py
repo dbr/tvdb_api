@@ -11,111 +11,38 @@
 
 import os
 import sys
-import types
 import datetime
+import unittest.mock
+
 import pytest
+import requests_cache.backends
+import requests_cache.backends.base
 
 # Force parent directory onto path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import tvdb_api  # noqa: E402
-from tvdb_api import (  # noqa: E402
-    tvdb_shownotfound,
-    tvdb_seasonnotfound,
-    tvdb_episodenotfound,
-    tvdb_attributenotfound,
+import tvdb_api
+from tvdb_api import (
+    TvdbShowNotFound,
+    TvdbSeasonNotFound,
+    TvdbEpisodeNotFound,
+    TvdbAttributeNotFound,
 )
-
-
-import requests_cache.backends  # noqa: E402
-import requests_cache.backends.base  # noqa: E402
-
-
-try:
-    from collections.abc import MutableMapping
-except ImportError:
-    from collections import MutableMapping
-
-import pickle  # noqa: E402
-
-
-IS_PY2 = sys.version_info[0] == 2
-
-if IS_PY2:
-    # Not really but good enough for backwards-compat here
-    FileNotFoundError = IOError
-
-
-# By default tests use persistent (committed to Git) cache.
-# Setting this env-var allows the cache to be populated.
-# This is necessary if, say, adding new test case or TVDB response changes.
-# It is recommended to clear the cache directory before re-populating the cache.
-ALLOW_CACHE_WRITE_ENV_VAR = "TVDB_API_TESTS_ALLOW_CACHE_WRITE"
-ALLOW_CACHE_WRITE = os.getenv(ALLOW_CACHE_WRITE_ENV_VAR, "0") == "1"
-
-
-class FileCacheDict(MutableMapping):
-    def __init__(self, base_dir):
-        self._base_dir = base_dir
-
-    def __getitem__(self, key):
-        path = os.path.join(self._base_dir, key)
-        try:
-            with open(path, "rb") as f:
-                data = pickle.load(f)
-                return data
-        except FileNotFoundError:
-            if not ALLOW_CACHE_WRITE:
-                raise RuntimeError("No cache file found %s" % path)
-            raise KeyError
-
-    def __setitem__(self, key, item):
-        if ALLOW_CACHE_WRITE:
-            path = os.path.join(self._base_dir, key)
-            with open(path, "wb") as f:
-                # Dump with protocol 2 to allow Python 2.7 support
-                f.write(pickle.dumps(item, protocol=2))
-        else:
-            raise RuntimeError(
-                "Requested uncached URL and $%s not set to 1" % (ALLOW_CACHE_WRITE_ENV_VAR)
-            )
-
-    def __delitem__(self, key):
-        raise RuntimeError("Removing items from test-cache not supported")
-
-    def __len__(self):
-        raise NotImplementedError()
-
-    def __iter__(self):
-        raise NotImplementedError()
-
-    def clear(self):
-        raise NotImplementedError()
-
-    def __str__(self):
-        return str(dict(self.items()))
-
-
-class FileCache(requests_cache.backends.base.BaseCache):
-    def __init__(self, _name, fc_base_dir, **options):
-        super(FileCache, self).__init__(**options)
-        self.responses = FileCacheDict(base_dir=fc_base_dir)
-        self.keys_map = FileCacheDict(base_dir=fc_base_dir)
-
-
-requests_cache.backends.registry['tvdb_api_file_cache'] = FileCache
 
 
 def get_test_cache_session():
     here = os.path.dirname(os.path.abspath(__file__))
-    additional = "_py2" if sys.version_info[0] == 2 else ""
+    cacher = requests_cache.FileCache(
+        cache_name=os.path.join(here, "http_cache"),
+        serializer='json',
+    )
     sess = requests_cache.CachedSession(
-        backend="tvdb_api_file_cache",
-        fc_base_dir=os.path.join(here, "httpcache%s" % additional),
+        backend=cacher,
+        serializer='json',
         include_get_headers=True,
         allowable_codes=(200, 404),
+        match_headers=['Accept-Language'],
     )
-    sess.cache.create_key = types.MethodType(tvdb_api.create_key, sess.cache)
     return sess
 
 
@@ -166,7 +93,7 @@ class TestTvdbBasic:
 
         try:
             self.t['Scrubs']['something nonsensical']
-        except tvdb_attributenotfound:
+        except TvdbAttributeNotFound:
             pass  # good
         else:
             raise AssertionError("Expected attribute error")
@@ -199,31 +126,31 @@ class TestTvdbErrors:
     def test_seasonnotfound(self):
         """Checks exception is thrown when season doesn't exist.
         """
-        with pytest.raises(tvdb_seasonnotfound):
+        with pytest.raises(TvdbSeasonNotFound):
             self.t['Scrubs'][42]
 
     def test_shownotfound(self):
         """Checks exception is thrown when episode doesn't exist.
         """
-        with pytest.raises(tvdb_shownotfound):
+        with pytest.raises(TvdbShowNotFound):
             self.t['the fake show thingy']
 
     def test_shownotfound_by_id(self):
         """Checks exception is thrown when episode doesn't exist.
         """
-        with pytest.raises(tvdb_shownotfound):
+        with pytest.raises(TvdbShowNotFound):
             self.t[999999999999999999999999]
 
     def test_episodenotfound(self):
         """Checks exception is raised for non-existent episode
         """
-        with pytest.raises(tvdb_episodenotfound):
+        with pytest.raises(TvdbEpisodeNotFound):
             self.t['Scrubs'][1][30]
 
     def test_attributenamenotfound(self):
         """Checks exception is thrown for if an attribute isn't found.
         """
-        with pytest.raises(tvdb_attributenotfound):
+        with pytest.raises(TvdbAttributeNotFound):
             self.t['Scrubs'][1][6]['afakeattributething']
             self.t['Scrubs']['afakeattributething']
 
@@ -273,11 +200,11 @@ class TestTvdbSearch:
         """Tests aired_on show method"""
         sr = self.t['Scrubs'].aired_on(datetime.date(2001, 10, 2))
         assert len(sr) == 1
-        assert sr[0]['episodeName'] == u'My First Day'
+        assert sr[0]['episodeName'] == 'My First Day'
 
         try:
             sr = self.t['Scrubs'].aired_on(datetime.date(1801, 1, 1))
-        except tvdb_episodenotfound:
+        except TvdbEpisodeNotFound:
             pass  # Good
         else:
             raise AssertionError("expected episode not found exception")
@@ -311,7 +238,7 @@ class TestTvdbMisc:
         """Check repr() of Season
         """
         assert (
-            repr(self.t['CNNNN']).replace("u'", "'")
+            repr(self.t['CNNNN'])
             == "<Show 'Chaser Non-Stop News Network (CNNNN)' (containing 3 seasons)>"
         )
 
@@ -323,7 +250,7 @@ class TestTvdbMisc:
     def test_repr_episode(self):
         """Check repr() of Episode
         """
-        assert repr(self.t['CNNNN'][1][1]).replace("u'", "'") == "<Episode 01x01 - 'Terror Alert'>"
+        assert repr(self.t['CNNNN'][1][1]) == "<Episode 01x01 - 'Terror Alert'>"
 
     def test_available_langs(self):
         """Check available_languages returns something sane looking
@@ -345,8 +272,8 @@ class TestTvdbLanguages:
         """Check episode data is in Spanish (language="es")
         """
         t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="es")
-        assert t['scrubs'][1][1]['episodeName'] == u'Mi primer día'
-        assert t['scrubs']['overview'].startswith(u'Scrubs es una divertida comedia')
+        assert t['scrubs'][1][1]['episodeName'] == 'Mi primer día'
+        assert t['scrubs']['overview'].startswith('Scrubs es una divertida comedia')
 
     def test_multilanguage_selection(self):
         """Check selected language is used
@@ -363,18 +290,9 @@ class TestTvdbUnicode:
         """Check searching for show with language=zh returns Chinese seriesname
         """
         t = tvdb_api.Tvdb(cache=get_test_cache_session(), language="zh")
-        show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
+        show = t['T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
         assert type(show) == tvdb_api.Show
-        assert show['seriesName'] == u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
-
-    @pytest.mark.skip('Новое API не возвращает сразу все языки')
-    def test_search_in_all_languages(self):
-        """Check search_all_languages returns Chinese show, with language=en
-        """
-        t = tvdb_api.Tvdb(cache=get_test_cache_session(), search_all_languages=True, language="en")
-        show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
-        assert type(show) == tvdb_api.Show
-        assert show['seriesName'] == u'Virtues Of Harmony II'
+        assert show['seriesName'] == 'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
 
 
 class TestTvdbBanners:
@@ -400,13 +318,11 @@ class TestTvdbBanners:
                     for bid, banner_info in res_data.items():
                         assert banner_info['_bannerpath'].startswith("http://")
 
-    @pytest.mark.skip('В новом API нет картинки у эпизода')
     def test_episode_image(self):
         """Checks episode 'filename' image is fully qualified URL
         """
         assert self.t['scrubs'][1][1]['filename'].startswith("http://")
 
-    @pytest.mark.skip('В новом API у сериала кроме банера больше нет картинок')
     def test_show_artwork(self):
         """Checks various image URLs within season data are fully qualified
         """
@@ -451,7 +367,6 @@ class TestTvdbDoctest:
     def test_doctest(self):
         """Check docstring examples works"""
         import doctest
-
         doctest.testmod(tvdb_api)
 
 
@@ -479,7 +394,7 @@ class TestTvdbCustomCaching:
     def test_custom_request_session(self):
         from requests import Session as OriginalSession
 
-        class Used(Exception):
+        class Used(Exception):  # noqa: N818
             pass
 
         class CustomCacheForTest(OriginalSession):
@@ -518,13 +433,13 @@ class TestTvdbShowOrdering:
         t_dvd = tvdb_api.Tvdb(cache=get_test_cache_session(), dvdorder=True)
         t_air = tvdb_api.Tvdb(cache=get_test_cache_session())
 
-        assert u'The Train Job' == t_air['Firefly'][1][1]['episodeName']
-        assert u'Serenity' == t_dvd['Firefly'][1][1]['episodeName']
+        assert 'The Train Job' == t_air['Firefly'][1][1]['episodeName']
+        assert 'Serenity' == t_dvd['Firefly'][1][1]['episodeName']
 
         assert (
-            u'The Cat and the Claw (1)' == t_air['Batman The Animated Series'][1][1]['episodeName']
+            'The Cat and the Claw (1)' == t_air['Batman The Animated Series'][1][1]['episodeName']
         )
-        assert u'On Leather Wings' == t_dvd['Batman The Animated Series'][1][1]['episodeName']
+        assert 'On Leather Wings' == t_dvd['Batman The Animated Series'][1][1]['episodeName']
 
 
 class TestTvdbShowSearch:
@@ -542,6 +457,56 @@ class TestTvdbShowSearch:
         results = self.t.search("my name is earl")
         all_ids = [x['id'] for x in results]
         assert 75397 in all_ids
+
+def raise_error(e):
+    raise e
+
+class TestConsoleUI:
+    @unittest.mock.patch('builtins.input', lambda *args: '1')
+    def test_first_option(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        episode = t['scrubs'][1][2]
+        assert episode['episodeName'] == 'My Mentor'
+
+    @unittest.mock.patch('builtins.input', lambda *args: '2')
+    def test_second_option(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        episode = t['scrubs'][1][2]
+        # Test second result is anything but the first option (not being specific to avoid sporadic test failures if results change order)
+        assert episode['episodeName'] != 'My Mentor'
+
+    def test_select_first(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI, select_first=True)
+        episode = t['scrubs'][1][2]
+        assert episode['episodeName'] == 'My Mentor'
+
+    @unittest.mock.patch('builtins.input', lambda *args: 'asdfasdf')
+    def test_first_option(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        episode = t['cnnnn'][1][2]
+        assert episode['episodeName'] == 'Terrorthon'
+
+    @unittest.mock.patch('builtins.input', lambda *args: raise_error(KeyboardInterrupt("Stopit")))
+    def test_select_interrupted(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        try:
+            episode = t['scrubs'][1][2]
+        except tvdb_api.TvdbUserAbort as e:
+            pass
+        else:
+            # Expected error
+            assert False
+
+    @unittest.mock.patch('builtins.input', lambda *args: raise_error(EOFError()))
+    def test_select_error(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        try:
+            episode = t['scrubs'][1][2]
+        except tvdb_api.TvdbUserAbort as e:
+            pass
+        else:
+            # Expected error
+            assert False
 
 
 class TestTvdbAltNames:
@@ -561,9 +526,4 @@ class TestTvdbAltNames:
 
 
 if __name__ == '__main__':
-    cache = get_test_cache_session()
-    t = tvdb_api.Tvdb(cache=cache)
-    t['scrubs'][1][2]
-    t = tvdb_api.Tvdb(cache=cache)
-    t['scrubs'][1][2]
-    # pytest.main()
+    pytest.main()

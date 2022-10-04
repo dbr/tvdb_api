@@ -1,0 +1,46 @@
+{
+  "_content": "dm?0EbYUVodm?FMB04uVGC43TB6DSOX=QUsWFk5uA}k_vWpZg{b53DxWg<EvGBhGAB4KQ4VRL13B05_lGBi3MOlfvyAVF?#bZBLAAVgt#B3&#Zb7f(3Z*C$wA~_-~B5-eWbY*fPIwEjyb97~Lb1yeGGC43UG%jjzXCf>jVqtD>WpW}qB4=`8aA;{`VQeoqHZnOdEoU_@YH(*FEFxxMZeenCB03^wVQyh^bT4mmX=iC}VQeoqHZnOdEi^VRYH(*FEFyDsVRUtKB03^PZe(R-A}k_iX>xOPL1}VjWFk5uGB7YPEio}IFg7AAB5q}LcW-iQB03^QPgo)>B5q}LcW-iQNn|2AA~7>DI3g?}a&>NWX>Da9IwCYRA}k_oVQy!2VP|C`IwECmA}k_jWo~k1B05_lL1T1jZ*C$iB13X%ZDk@XB1CdwZDArTB2;K{X>4p|aw1(UB5!tOa&~EDcOp6>Tp}_wTp}Q8b0A?LR8}B#XmV+6Y-MsFaB^jHWo~q3WFTp7AY3AHWnpX}bZKp6Tp}QMX>@2HWnp7zAZ=-Gb#!GQZ)PB2X>xRFZDk;IXkm09V{dYDWpi+EZe(*HbZ;PGAZ=-Gb#!GQX>K5NXk{R5X?A6EAa7<MbZBKDV`yP=VPkY<a&s;qTp}_wTp}Q4ZE$RFd2=9UVRLjXaA9L*WFTQ~WFTX2ZE$R5cp!6hZ*pm6b1WcXZe$>DW^`q4AY*TCbYW?3b0BqYWq5F9V{~O?AaHDNbRcwhX>)XQE+ABBZ*^yAAZ1}=Xdq-^c_(uqWp-t5baNndd2nfCVQg%9AaZ4PZ)|pDAYpQEb#7!JbZB>Ba&&2KXCPs2AZcxIWo~3?Zf78LWpZ+Fa%ppPAYpWLVPk77AZ1}=XdrWCVRLV8AZc?TZDC|(Aa!scZ)PBNVRC72b#owTZggdGcW-uOZXk1XZ*qAcbZByAVPtbIAXI2&b7dfHVR;~Ob#5SLZ*m}Nb#rteZ*FBEXm53LEFfZabRcbSa%CWOb9G^CY<VDZb#5SUc4cxPb7gjAa$#&BXm53Lb1ooMXk~L{Aar?fX=7n*Y<VDQZgy{Mc4Z)GZgypJbZKW{bZKvHb0BYKAZ%q}WOE>IZXk4Ja&m8SX>)XQEFg4pVPk7)Zf78Kb#riKV{~&YAYpD~AYpc8a&&2KXCPs8bYWv_b1ooMXk{Q}cwu97Aa7!7Wn*+{c4Z)MW*~HEWgui>c_3wWZ)|pDb0BYaWpW^NXk{Q{Z*_8WWgu^6AarPDAaiA5b8l`SVRImKXk{Q_ZggR1Z*FOGbaNnKWMOc0EFfcVZggpGXJu|<X=QUDVRC76Wh@|JZe$>AVRC0>av*bKVQgg}Z*XODVRUJ4ZgU`YZf0+6WG*5sB5YxEbX9O<VRU6=B04cPHZe6cHZwCYEFxiPa&tssc~53nWo2t3IwDPPZe(G3A}k_dX>xN^X>Da9IwCnbFfbrcO(HBJa$$67Zf7DoB2-o_F*G79B57@8Vo78oIwEv*FfuqbGcz$FEFyYga58ChNn|2AA|fmzVPs@wWFk5uGB7YWEif`IFf<@AFgh?WIxsLIEFxiKWMyPRc_KP7EFyDhbY)UubZKs9B04xOI4mM_X>?^$VRUJ3XG3pwZge6#F*7hSGAtr<Y;|WMIwCSOEpupZcOrd#",
+  "created_at": "2022-10-04T02:22:30.949625",
+  "elapsed": 0.020931,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Date": "Mon, 03 Oct 2022 15:16:23 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "Last-Modified": "Fri, 26 Aug 2022 20:38:50 GMT",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Content-Encoding": "gzip",
+    "Vary": "Accept-Encoding,Accept-Language",
+    "X-Cache": "Hit from cloudfront",
+    "Via": "1.1 7fd2b3d3ec0618823a468ffef67f53ea.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "jiXpA3emBnyzn8UAnFiUBd2rbwtl7QMh1nAW3Voa3n_aqnF6Cp7wxA==",
+    "Age": "39967"
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NDcsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE0N30.gPznlS-wEleFpA6zGWBONb_MWzw7kt-XBqj8YkROC9Pq114r7uHAqyzN-5-2eBiJ1odtSGn3o0sXxDX75G8o3Qef2U9KJ8qaQwBTIHwm-6Espa8CTyURZhuoemYcerjoPkX9TVCzE831j9gSGCrJ8X-cP2ZBeMxv8s41_emu2eAd87tSUurgUja53DA9sVqcTx3mi8HJhmDkUqI0f0h84wJnuVKvyEmD8V6pI__e06MrMgJwEy-apQoehG0yMl0KysxyntwryqA3TuBYza9oGFiHWL4uZKVM_k9Cy14K7WzSACs5-7VRXn3vWDWC1RNPqlDWmrK7zupASZpD7zpXUQ"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/series/76290"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/series/76290"
+}

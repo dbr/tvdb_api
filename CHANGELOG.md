@@ -4,6 +4,7 @@
 
 - Support newer requests-cache version (0.6 onwards)
   [PR #97](https://github.com/dbr/tvdb_api/pull/97)
+- Removed deprecated `tvdb_*` exceptions (e.g `tvdb_error` is now `TvdbError`)
 
 ## `3.1` - 2021-04-29
 

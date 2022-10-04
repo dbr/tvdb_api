@@ -118,21 +118,6 @@ class TvdbAttributeNotFound(TvdbDataNotFound):
 
     pass
 
-
-# Backwards compatability re-bindings
-tvdb_exception = TvdbBaseException  # Deprecated, for backwards compatability
-tvdb_error = TvdbError  # Deprecated, for backwards compatability
-tvdb_userabort = TvdbUserAbort  # Deprecated, for backwards compatability
-tvdb_notauthorized = TvdbNotAuthorized  # Deprecated, for backwards compatability
-tvdb_shownotfound = TvdbShowNotFound  # Deprecated, for backwards compatability
-tvdb_seasonnotfound = TvdbSeasonNotFound  # Deprecated, for backwards compatability
-tvdb_episodenotfound = TvdbEpisodeNotFound  # Deprecated, for backwards compatability
-tvdb_resourcenotfound = TvdbResourceNotFound  # Deprecated, for backwards compatability
-tvdb_attributenotfound = TvdbAttributeNotFound  # Deprecated, for backwards compatability
-
-tvdb_invalidlanguage = TvdbError  # Unused/removed. This exists for backwards compatability.
-
-
 # UI
 
 
@@ -155,7 +140,7 @@ class BaseUI(object):
      {'name': u'Lost Universe', 'sid': u'73181'}]
 
     The "selectSeries" method must return the appropriate dict, or it can raise
-    tvdb_userabort (if the selection is aborted), tvdb_shownotfound (if the show
+    TvdbUserAbort (if the selection is aborted), TvdbShowNotFound (if the show
     cannot be found).
 
     A simple example callback, which returns a random series:
@@ -237,9 +222,9 @@ class ConsoleUI(BaseUI):
                 print("Enter choice (first number, return for default, 'all', ? for help):")
                 ans = input()
             except KeyboardInterrupt:
-                raise tvdb_userabort("User aborted (^c keyboard interupt)")
+                raise TvdbUserAbort("User aborted (^c keyboard interupt)")
             except EOFError:
-                raise tvdb_userabort("User aborted (EOF received)")
+                raise TvdbUserAbort("User aborted (EOF received)")
 
             LOG.debug('Got choice of: %s' % (ans))
             try:
@@ -251,7 +236,7 @@ class ConsoleUI(BaseUI):
                     return allSeries[0]
                 if ans == "q":
                     LOG.debug('Got quit command (q)')
-                    raise tvdb_userabort("User aborted ('q' quit command)")
+                    raise TvdbUserAbort("User aborted ('q' quit command)")
                 elif ans == "?":
                     print("## Help")
                     print("# Enter the number that corresponds to the correct show.")
@@ -325,16 +310,16 @@ class Show(dict):
         # Data wasn't found, raise appropriate error
         if isinstance(key, int) or key.isdigit():
             # Episode number x was not found
-            raise tvdb_seasonnotfound("Could not find season %s" % (repr(key)))
+            raise TvdbSeasonNotFound("Could not find season %s" % (repr(key)))
         else:
             # If it's not numeric, it must be an attribute name, which
             # doesn't exist, so attribute error.
-            raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
+            raise TvdbAttributeNotFound("Cannot find attribute %s" % (repr(key)))
 
     def aired_on(self, date):
         ret = self.search(str(date), 'firstAired')
         if len(ret) == 0:
-            raise tvdb_episodenotfound("Could not find any episodes that aired on %s" % date)
+            raise TvdbEpisodeNotFound("Could not find any episodes that aired on %s" % date)
         return ret
 
     def search(self, term=None, key=None):
@@ -408,7 +393,7 @@ class Season(dict):
 
     def __getitem__(self, episode_number):
         if episode_number not in self:
-            raise tvdb_episodenotfound("Could not find episode %s" % (repr(episode_number)))
+            raise TvdbEpisodeNotFound("Could not find episode %s" % (repr(episode_number)))
         else:
             return dict.__getitem__(self, episode_number)
 
@@ -450,7 +435,7 @@ class Episode(dict):
         try:
             return dict.__getitem__(self, key)
         except KeyError:
-            raise tvdb_attributenotfound("Cannot find attribute %s" % (repr(key)))
+            raise TvdbAttributeNotFound("Cannot find attribute %s" % (repr(key)))
 
     def search(self, term=None, key=None):
         """Search episode data for term, if it matches, return the Episode (self).
@@ -804,21 +789,21 @@ class Tvdb:
 
         if error:
             if error == u'Resource not found':
-                # raise(tvdb_resourcenotfound)
+                # raise(TvdbResourceNotFound)
                 # handle no data at a different level so it is more specific
                 pass
             elif error.lower() == u'not authorized':
                 # Note: Error string sometimes comes back as "Not authorized" or "Not Authorized"
-                raise tvdb_notauthorized()
+                raise TvdbNotAuthorized()
             elif error.startswith(u"ID: ") and error.endswith("not found"):
                 # FIXME: Refactor error out of in this method
-                raise tvdb_shownotfound("%s" % error)
+                raise TvdbShowNotFound("%s" % error)
             else:
-                raise tvdb_error("%s" % error)
+                raise TvdbError("%s" % error)
 
         if errors:
             if errors and u'invalidLanguage' in errors:
-                # raise(tvdb_invalidlanguage(errors[u'invalidLanguage']))
+                # raise(TvdbError(errors[u'invalidLanguage']))
                 # invalidLanguage does not mean there is no data
                 # there is just less data (missing translations)
                 pass
@@ -844,7 +829,7 @@ class Tvdb:
         error = r_json.get('Error')
         if error:
             if error == u'Not Authorized':
-                raise (tvdb_notauthorized)
+                raise (TvdbNotAuthorized)
         token = r_json.get('token')
         self.headers['Authorization'] = "Bearer %s" % str(token)
         self.__authorized = True
@@ -863,7 +848,7 @@ class Tvdb:
         Since the nice-to-use tvdb[1][24]['name] interface
         makes it impossible to do tvdb[1][24]['name] = "name"
         and still be capable of checking if an episode exists
-        so we can raise tvdb_shownotfound, we have a slightly
+        so we can raise TvdbShowNotFound, we have a slightly
         less pretty method of setting items.. but since the API
         is supposed to be read-only, this is the best way to
         do it!
@@ -895,7 +880,7 @@ class Tvdb:
         series_resp = self._getetsrc(self.config['url_getSeries'] % (series))
         if not series_resp:
             LOG.debug('Series result returned zero')
-            raise tvdb_shownotfound(
+            raise TvdbShowNotFound(
                 "Show-name search returned zero results (cannot find show on TVDB)"
             )
 
@@ -1035,7 +1020,7 @@ class Tvdb:
         if self.config['language'] is None:
             LOG.debug('Config language is none, using show language')
             if language is None:
-                raise tvdb_error("config['language'] was None, this should not happen")
+                raise TvdbError("config['language'] was None, this should not happen")
         else:
             LOG.debug(
                 'Configured language %s override show language of %s'

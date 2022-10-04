@@ -11,8 +11,8 @@ Example usage:
 
 >>> from tvdb_api import Tvdb
 >>> t = Tvdb()
->>> t['Lost'][4][11]['episodeName']
-u'Cabin Fever'
+>>> t['Scrubs'][1][4]['episodeName']
+'The Hotel Inspectors'
 """
 
 __author__ = "dbr/Ben"
@@ -147,7 +147,7 @@ class BaseUI(object):
 
     >>> from tvdb_api import Tvdb
     >>> t = Tvdb(custom_ui = RandomUI)
-    >>> random_matching_series = t['Lost']
+    >>> random_matching_series = t['Scrubs']
     >>> type(random_matching_series)
     <class 'tvdb_api.Show'>
     """
@@ -165,7 +165,7 @@ class BaseUI(object):
     def selectSeries(self, allSeries):  # noqa: N802 # Deprecated
         """Deprecated: use `select_series` method instead
         """
-        self.select_series(all_series=allSeries)
+        return self.select_series(all_series=allSeries)
 
     def select_series(self, all_series):
         return all_series[0]
@@ -1082,8 +1082,8 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
 
     tvdb_instance = Tvdb(interactive=False, cache=False)
-    print(tvdb_instance['Lost']['seriesName'])
-    print(tvdb_instance['Lost'][1][4]['episodename'])
+    print(tvdb_instance['Scrubs']['seriesName'])
+    print(tvdb_instance['Scrubs'][1][4]['episodename'])
 
 
 if __name__ == '__main__':

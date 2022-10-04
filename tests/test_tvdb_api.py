@@ -142,31 +142,31 @@ class TestTvdbErrors:
     def test_seasonnotfound(self):
         """Checks exception is thrown when season doesn't exist.
         """
-        with pytest.raises(tvdb_seasonnotfound):
+        with pytest.raises(TvdbSeasonNotFound):
             self.t['Scrubs'][42]
 
     def test_shownotfound(self):
         """Checks exception is thrown when episode doesn't exist.
         """
-        with pytest.raises(tvdb_shownotfound):
+        with pytest.raises(TvdbShowNotFound):
             self.t['the fake show thingy']
 
     def test_shownotfound_by_id(self):
         """Checks exception is thrown when episode doesn't exist.
         """
-        with pytest.raises(tvdb_shownotfound):
+        with pytest.raises(TvdbShowNotFound):
             self.t[999999999999999999999999]
 
     def test_episodenotfound(self):
         """Checks exception is raised for non-existent episode
         """
-        with pytest.raises(tvdb_episodenotfound):
+        with pytest.raises(TvdbEpisodeNotFound):
             self.t['Scrubs'][1][30]
 
     def test_attributenamenotfound(self):
         """Checks exception is thrown for if an attribute isn't found.
         """
-        with pytest.raises(tvdb_attributenotfound):
+        with pytest.raises(TvdbAttributeNotFound):
             self.t['Scrubs'][1][6]['afakeattributething']
             self.t['Scrubs']['afakeattributething']
 
@@ -220,7 +220,7 @@ class TestTvdbSearch:
 
         try:
             sr = self.t['Scrubs'].aired_on(datetime.date(1801, 1, 1))
-        except tvdb_episodenotfound:
+        except TvdbEpisodeNotFound:
             pass  # Good
         else:
             raise AssertionError("expected episode not found exception")

@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        python-version:
+          - '3.7'
+          - '3.8'
+          - '3.9'
+          - '3.10'
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+
+    name: Test python ${{ matrix.python-version }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dev deps
+      run: |
+        pip install codecov
+        pip install -r requirements-dev.txt
+        python setup.py develop
+    - name: Run tests
+      run: python -m pytest
+    - name: Upload test results
+      run: codecov

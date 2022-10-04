@@ -170,7 +170,7 @@ class ConsoleUI(BaseUI):
     """Interactively allows the user to select a show from a console based UI
     """
 
-    def _displaySeries(self, allSeries, limit=6):
+    def _display_series(self, allSeries, limit=6):
         """Helper function, lists series with corresponding ID
         """
         if limit is not None:
@@ -197,7 +197,7 @@ class ConsoleUI(BaseUI):
             print(output)
 
     def selectSeries(self, allSeries):
-        self._displaySeries(allSeries)
+        self._display_series(allSeries)
 
         if len(allSeries) == 1:
             # Single result, return it!
@@ -237,7 +237,7 @@ class ConsoleUI(BaseUI):
                     print("# q - abort tvnamer")
                     print("# Press return with no input to select first result")
                 elif ans.lower() in ["a", "all"]:
-                    self._displaySeries(allSeries, limit=None)
+                    self._display_series(allSeries, limit=None)
                 else:
                     LOG.debug('Unknown keypress %s' % (ans))
             else:
@@ -247,7 +247,7 @@ class ConsoleUI(BaseUI):
                 except IndexError:
                     LOG.debug('Invalid show number entered!')
                     print("Invalid number (%s) selected!")
-                    self._displaySeries(allSeries)
+                    self._display_series(allSeries)
 
 
 # Main API
@@ -603,7 +603,7 @@ class Tvdb:
         self.config['dvdorder'] = dvdorder
 
         if cache is True:
-            cache_dir = self._getTempDir()
+            cache_dir = self._get_temp_dir()
             LOG.debug("Caching using requests_cache to %s" % cache_dir)
             self.session = requests_cache.CachedSession(
                 expire_after=21600,  # 6 hours
@@ -673,7 +673,7 @@ class Tvdb:
             'Accept-Language': self.config['language'],
         }
 
-    def _getTempDir(self):
+    def _get_temp_dir(self):
         """Returns the [system temp dir]/tvdb_api-u501 (or
         tvdb_api-myuser)
         """
@@ -688,7 +688,7 @@ class Tvdb:
 
         return os.path.join(tempfile.gettempdir(), "tvdb_api-%s-py%s" % (uid, py_major))
 
-    def _loadUrl(self, url, data=None, recache=False, language=None):
+    def _load_url(self, url, data=None, recache=False, language=None):
         """Return response from The TVDB API"""
 
         if not language:
@@ -760,7 +760,7 @@ class Tvdb:
         if links and links['next']:
             url = url.split('?')[0]
             _url = url + "?page=%s" % links['next']
-            self._loadUrl(_url, data)
+            self._load_url(_url, data)
 
         return data
 
@@ -781,11 +781,11 @@ class Tvdb:
     def _getetsrc(self, url, language=None):
         """Loads a URL using caching, returns an ElementTree of the source
         """
-        src = self._loadUrl(url, language=language)
+        src = self._load_url(url, language=language)
 
         return src
 
-    def _setItem(self, sid, seas, ep, attrib, value):
+    def _set_item(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
         Episode()s as required. Called by _getShowData to populate show
 
@@ -808,7 +808,7 @@ class Tvdb:
             self.shows[sid][seas][ep] = Episode(season=self.shows[sid][seas])
         self.shows[sid][seas][ep][attrib] = value
 
-    def _setShowData(self, sid, key, value):
+    def _set_show_data(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
         """
         if sid not in self.shows:
@@ -836,7 +836,7 @@ class Tvdb:
 
         return all_series
 
-    def _getSeries(self, series):
+    def _get_series(self, series):
         """This searches TheTVDB.com for the series name,
         If a custom_ui UI is configured, it uses this to select the correct
         series. If not, and interactive == True, ConsoleUI is used, if not
@@ -865,7 +865,7 @@ class Tvdb:
         languages = [x['abbreviation'] for x in et]
         return sorted(languages)
 
-    def _parseBanners(self, sid):
+    def _parse_banners(self, sid):
         """Parses banners XML, from
         http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/banners.xml
 
@@ -914,9 +914,9 @@ class Tvdb:
                         banners[btype][btype2][bid][new_key] = new_url
 
             banners[btype]['raw'] = banners_info
-            self._setShowData(sid, "_banners", banners)
+            self._set_show_data(sid, "_banners", banners)
 
-    def _parseActors(self, sid):
+    def _parse_actors(self, sid):
         """Parsers actors XML, from
         http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/actors.xml
 
@@ -953,9 +953,9 @@ class Tvdb:
                         value = self.config['url_artworkPrefix'] % (value)
                 cur_actor[tag] = value
             cur_actors.append(cur_actor)
-        self._setShowData(sid, '_actors', cur_actors)
+        self._set_show_data(sid, '_actors', cur_actors)
 
-    def _getShowData(self, sid, language):
+    def _get_show_data(self, sid, language):
         """Takes a series ID, gets the epInfo URL and parses the TVDB
         XML file into the shows dict in layout:
         shows[series_id][season_number][episode_number]
@@ -979,17 +979,17 @@ class Tvdb:
                 if tag in ['banner', 'fanart', 'poster']:
                     value = self.config['url_artworkPrefix'] % (value)
 
-            self._setShowData(sid, tag, value)
+            self._set_show_data(sid, tag, value)
         # set language
-        self._setShowData(sid, u'language', self.config['language'])
+        self._set_show_data(sid, u'language', self.config['language'])
 
         # Parse banners
         if self.config['banners_enabled']:
-            self._parseBanners(sid)
+            self._parse_banners(sid)
 
         # Parse actors
         if self.config['actors_enabled']:
-            self._parseActors(sid)
+            self._parse_actors(sid)
 
         # Parse episode data
         LOG.debug('Getting all episodes of %s' % (sid))
@@ -1031,9 +1031,9 @@ class Tvdb:
                 if value is not None:
                     if tag == 'filename':
                         value = self.config['url_artworkPrefix'] % (value)
-                self._setItem(sid, seas_no, ep_no, tag, value)
+                self._set_item(sid, seas_no, ep_no, tag, value)
 
-    def _nameToSid(self, name):
+    def _name_to_sid(self, name):
         """Takes show name, returns the correct series ID (if the show has
         already been grabbed), or grabs all episodes and returns
         the correct SID.
@@ -1043,12 +1043,12 @@ class Tvdb:
             sid = self.corrections[name]
         else:
             LOG.debug('Getting show %s' % name)
-            selected_series = self._getSeries(name)
+            selected_series = self._get_series(name)
             sid = selected_series['id']
             LOG.debug('Got %(seriesName)s, id %(id)s' % selected_series)
 
             self.corrections[name] = sid
-            self._getShowData(selected_series['id'], self.config['language'])
+            self._get_show_data(selected_series['id'], self.config['language'])
 
         return sid
 
@@ -1059,11 +1059,11 @@ class Tvdb:
         if isinstance(key, int):
             sid = key
         else:
-            sid = self._nameToSid(key)
+            sid = self._name_to_sid(key)
             LOG.debug('Got series id %s' % sid)
 
         if sid not in self.shows:
-            self._getShowData(sid, self.config['language'])
+            self._get_show_data(sid, self.config['language'])
         return self.shows[sid]
 
     def __repr__(self):

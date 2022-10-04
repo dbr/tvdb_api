@@ -1,0 +1,43 @@
+{
+  "_content": "dm?0EbYUVoTYDm5Y-wS0Wpg4rTOvYXbZud7Iv`YNWgtOrX>DP2Wn>^zWpZg{b0RDvLSb}mVQwHTAWUH(Q)O~#WgtOrX>DP2VInLdLSb}mVQxAgRA^-&L2hYnVRU6=AX8;>X=QUFEFwZ-bZud7Iv`YNWgtOrX>DP2Wn>^zWpZg{b0S?VB4S}~Ze?;JIwCJ(VQy|^a&s?da$#_2X=7n*FE=(ZHaIP3F)%J_aAzVcB4%lFb96yza%E&9IwCPSIWjFUIV~_XA}k_lWFk5@HZe9hEFx)bVP|C`IwCJ(VQy|^a&s?mZ*z2Ia&s>?HZe9hEjKP|aAzVcB5q}LcW-iQB03^QPgo)>B5!tOa&~EDcOp6>RA^-&L}7AkAWLp(XJ~XFVqtW2Y-MvGV{&P2Wguy8AV+U>Xkl$2Luqt*Aa`kWXdrK6V_|b?Z*F01AZTT5a3E%KZ*3q_Z(?a~AYpD~AVOhuXK8Y5E?jb4ZXzrqaBp*TWpW}qA}?ZLZf<3Ab1!gjb97~Lb1yeGF*Z0YH!f;$XCf>jb7gXAWphqpZDk@lB0^zwZDDRYAXI2&AVF?vZDDj}WFS*za%p9AA}k_vY;|WMIwE3WbZud7Ep%vQEn#kHZDDj}WG!=La%p9AA}k_vbYXOLb0Rt-MQ&teWFmcCeE",
+  "created_at": "2022-10-04T02:23:32.593716",
+  "elapsed": 0.457532,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "521",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 02:23:32 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Miss from cloudfront",
+    "Via": "1.1 e0da386af572b426a5c2bf11a094fdf4.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "TDcY4un4lD_uaLBmcY9gXyj3rDzLIgQGViIjk1kwMHDdIiqpUAYKeA=="
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTUwMTEsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDIxMX0.PdkCf9oly6FF1JlEem4gU_ylHedsfELM9NYq5e7tjgqb85Pmfeo4L7sxOthiz1iQXeOXj4Hc8tEHNHUsC53dTr1Vcv2FEklZ17u7cKEvGP1El-8v4H9JEH3Ti_sdbqA5A6X9ZuCHj6GQUEt8rBAibC3LXs8rtiMc9XyQEGizLMTFhaFxz7geyBewQOvz39WckcICAollcFueZpjwBKl5F8YlC-2eigsEZrkP32kw16eBZcAhEQDGCxhojVA1SKz_k6vxD25uQpRULJ9kfZk3jD9Zd5KtcfcROThsLqCHPXgOy9GQQTuh4W4wgEA0gVDf1vmZAQoDiPRIqHmSSyvfqA"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/search/series?name=Batman%20The%20Animated%20Series"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/search/series?name=Batman%20The%20Animated%20Series"
+}

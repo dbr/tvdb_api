@@ -1,0 +1,43 @@
+{
+  "_content": "dm?0EbYUVoTYDm5Y-wS0Wpg4rTU{(7VqtD>WpW}qA}?ZLZf<3Ab1!FdVQ^?^V_|GBI59UlGA(B=YH(*FEFxxUa&vS+X>w&`B03^6FfcMLFgYzTIU+0~X=EZgH!(FeIV>V+ZDD6+B03^3VqtD>WpZ;baBp*TWpZ;bH!(FeIV~|RYH(*FEFx}Yba!uZYa%)#K|(_@A}k_rc4cyQX=QgJIwD4LZ*3q$Xkl|@azk%&a5^AEPEJlvAZc?TVIXd0cXJ?NZe$>1b#iiLZge1FW@ce&a&sVKXkl({Wo#gCcWz~5AYpD~Aa8JGa$$63WFTUBAVX+jb7gWvZ*p)hAW3u}cVTlNW^Z+FWMyO^VtF7#Xkl|@azk%&a3DiPPas5Lc4=fFQ*>o_VRCdJX>K4fIXE*QbZ;PIZ*^{TWpZI-bRcYLVr6n+Y#?H3VRIm9ZXk4MWgu;3WNBd_VQyp~a%F8{X>M~MbZBKDV{dY9WpZ<LZ*FBEZ)PB2AarGHWp-(EX>V>IZe?_LZ*prObZB98AZ~AWAY*TCbYW?3b0BYaWpW@iFd$@UW@cq_Wo~pJV`yP+Ze?t9EFg1mVQzCEGC4FLV{dhCbaH8Bb0A@EWFT^7VPj}zb0A?LaBp;FZggp3Y#?KGZFOv6bZK^FAYpZ6X=QF>Wgu^6ATcm7AYy53Y-w+9AaG@GaBO8DaAk5JcV%U3A}k_sZ*z2Iaw0k+FJfVCZe?<FFK};jbY*gLFE=qYH90LYE^2URA}k_vWpZg{b53DxWg<EvLug@hWpW@+Z*DD9bZ>AVPGxs<AWmg;cW-iQASgplPEJlKA}k_vY;|WMIwE6eVRL12EpBgaEpv2la4l|ScXKUnWpsCMa%(MPZf<UFA}k_vbYXOLb0Rt-MQ&teWFmcCeE",
+  "created_at": "2022-10-04T02:22:35.250016",
+  "elapsed": 0.40231,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "709",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 02:22:35 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Miss from cloudfront",
+    "Via": "1.1 1b8d25a254f659ff0989f0e7bb579086.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "M7y_DeqdTkcRxT8IeLthytrUG2I5xII9MeotShJNKEY56AfsL8MWSQ=="
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NTQsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE1NH0.ls-14hTZc1EVVv-7XfB-39aluSnoHIZ6uOCU7WzMz5l1rQTKKdcbY0j5qwXty2dHrw1KB5rhrHGLkqwVPoo1qA1y5-TkyPJL9LksyhmtOKQg4QuWssq2asVL0W2RRgUl8g4NlH10Ta-y6J2X31Ws6q4rt5BxBqRQLC0xcaD80ROg7K6a-dG2fne42MnCnW8kPXRqk22fluPEaN3o0Rb1bBSPEu2hkeFx-cLEaDtFBDUPC5zadPyFQpt_FI7UULaEmsCdZKdy2cf5AIuKUjQt3_O0anrQ_3Ml_A034IpyrwtFjMkTVnyrJVLu0GUnGvE50qbbhWL4qyjkRiwkM3zjvg"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/search/series?name=CNNNN"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/search/series?name=CNNNN"
+}

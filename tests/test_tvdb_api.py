@@ -42,10 +42,11 @@ def get_test_cache_session():
     here = os.path.dirname(os.path.abspath(__file__))
     cacher = requests_cache.FileCache(
         cache_name=os.path.join(here, "http_cache"),
-        extension="json",
+        serializer='json',
     )
     sess = requests_cache.CachedSession(
         backend=cacher,
+        serializer='json',
         include_get_headers=True,
         allowable_codes=(200, 404),
         match_headers=['Accept-Language'],
@@ -374,7 +375,6 @@ class TestTvdbDoctest:
     def test_doctest(self):
         """Check docstring examples works"""
         import doctest
-
         doctest.testmod(tvdb_api)
 
 

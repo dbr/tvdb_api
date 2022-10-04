@@ -1,0 +1,44 @@
+{
+  "_content": "dm?0EbYUVodm?6GZeenCB04lMEFy4kb97~LB04cSEFyDdVRLV8B04!UEFyDdVRLV8cWGp0B04fOEFyDda%p9AB04cLeSH",
+  "created_at": "2022-10-04T02:22:43.470168",
+  "elapsed": 0.02209,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "74",
+    "Connection": "keep-alive",
+    "Date": "Mon, 03 Oct 2022 23:13:44 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Hit from cloudfront",
+    "Via": "1.1 d1d963d1b987e74904429c900aa75fd2.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "cIoykgdP_4Vran1cmeLcECKHlMsRTTfTm9mRTdA4W7Y-xzrguBzKfw==",
+    "Age": "11339"
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NjMsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE2M30.QMilKehdh5pSJn13PK0rOBIVIhKmhYC5AzG89jFcFZpMbjo-qtyGw5A9_swBv9LzEw6FGyS8IVM1GN6rXxwML4CSt_wbCYGYuXQIuzAyG6YbZpDKaxUVTfnUABglR6KEtkhpRPhHAvNfMgWhUbWKDafu-5-em0Fskt6bh-v1dOKLx2_caMB-mDopm7m-5UjZM3_UqPv-SzaHQzTmn-NQvJFOCfH1RWetR4aiE1IjMoELDHVGwXgG1Y-XTkJJgjtI-DFIkI0rbgADz037EwxAHNCWAbYpctNrmpkleQUZ-H6MkpmGEw_NnDO1CV4G7jQ53hgo7iaoyKH8cVz1hb7Qxw"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/series/76156/images"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/series/76156/images"
+}

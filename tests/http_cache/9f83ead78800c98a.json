@@ -1,0 +1,45 @@
+{
+  "_content": "dm?0EbYUVodm?FMB04xRGdDLZB6DSOX=QUsWFk5uA}k_vWpZg{b53DxWg<EvRKu)pXdq5!#<1bLooOIQY2mwvZXm>v;kuz|A}k_dY-wS0Wpg4rTU{(7b7f(3Z*C$wA~GT@B5-eWbY*fPIwEjyb97~Lb1yYxWMpJGF*Rc`Ha21|YH(*FEFxlIZf<3AB03^xa$#_2X=7n*FE}wXH#aS3E^2URA}k_iVQyh^bRs$;A}k_vbYXOLb0Rt-MQ&teWFjmgW@&PBbU|ryWn>~cA~G;AGc7PNEif@6EFx}Yba!uZYa%)#R8~SDN?~MWA}k_qWpsCMa%)LsB03^6I5#3JB64+ZbZKp6B03^8H6kn`Y+-I^bzx^^B03^^Xd)~kXJu}3Wg<FTB13O&Wn_6GEFwg5VQpa|T`VGRc4cyQX=QgJI&O7rY%C&dVRLj<aAaY0Wn>~cF*Y$bHaRmjFf=S8VQF%6L}7VPW>;lpYa%)#A}k_dX>xN^X>Da9IwB%0B64ALX>MmCI&O7rY%C&aZDe9eWFk5uA}k_$VQ?~ObV+0)IwB%0B4K1?Wn>~cA~G;AI4v+TEig17FfckWFgh?WA}k_dWMpMzLU|%OF)Si;X>?^$VRUJ3XCgW<EFyDhbY)UubZKs9LvM9%bRs%1EFyDkb!Q?vB6ewVbaiEOEpKKmXkl_~Z*F-lX=x&TeE",
+  "created_at": "2022-10-04T02:22:42.704402",
+  "elapsed": 0.024089,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "549",
+    "Connection": "keep-alive",
+    "Date": "Tue, 04 Oct 2022 01:09:43 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "Last-Modified": "Tue, 06 Apr 2021 07:18:24 GMT",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Hit from cloudfront",
+    "Via": "1.1 404908a44b28b9941efc528aa5e2c114.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "j53NfwwcMKUM1UJWR3G8upOw7Gjo7uYtrqePb9DdY2idefHOVHWG2Q==",
+    "Age": "4379"
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "zh",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTQ5NjIsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDE2Mn0.WEnmgosFqOfzrM4edIxBqXeMdcftsBVnEFsAYbREdmZko8vyYHoJUcGB-kVM0sPsOdBtKm1CUR667tcl357WutNonYfh3yoaetLXbVi5wzF16o56S7wMUQvo6VbBq5IsQJGeZ8oNP04SMjZjTNKzcCKsLO0IFI7gult9qWjF2c1yWO57FvIEJoeGg7dJKPi4I0byohP99I3xAfXqCDKz7hCvRj-1dxvyJrIO8uPcZ0gdumv8a4q7H2ZIEF4JtNAxVno2Ncf7xXbYQz7UGUaMUyQyVzoYFE75JYxJbjzjbKz5TnhvcMojvsNUEhg330td_1mfHEKzG_c7uTiVjZzgbw"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/series/81377"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/series/81377"
+}

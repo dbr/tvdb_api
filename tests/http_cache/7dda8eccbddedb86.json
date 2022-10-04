@@ -1,0 +1,45 @@
+{
+  "_content": "dm?0EbYUVodm?FMB04uVF*Z0XB6DSOX=QUsWFk5uA}k_vWpZg{b53DxWg<EvLSb}mVQxAgRA^-&L2hYnVRU6=AX8;>X=QUFEFxiSX<>6^b0RuhT`VGVWnpt~ZX!A&G$Je_aBp*TWpW}qB5-eWbY*gLFE=(ZHaIOeE^2URA}k_eVQy|^aw0k+XL4b1XlY|%Y%e!9F*Z0YXE87?YH(*FEFxxMZeenCB03^wVQyh^bT4mmX=iC}VQeoqHZe9hEip4LYH(*FEFyDsVRUtKB03^PZe(R-A}k_iX>xOPL1}VjWFk5uF*!LgEif}JFf}49B5q}LcW-iQB03^QPgo)>B5q}LcW-iQNn|2AA~7>DI3g?}a&>NWX>Da9IwCSPA}k_oVQy!2VP|C`IwECmA}k_jWo~k1B05_lL1T1jZ*C$iB0*$!Wo~qJa%CbcB0+9xZDDk2Z*C$iB13X%ZDk@XB1U0tX>55SEFw*Lb97~Lc_J(#Q)6jmZewL2MrmVoX>V>KEFx5Ba%pUAWpW~2EFy1qWpZ|DWp^SvB2;K)AVgtuYamN*X=iA3AYx&3bZljFAY*cAZDk;7ZXic*bZB91AVX<%c_4RbbZ8)NV`E`+X>V>}Y#?Z5Y;YiEa&K)QQg32uZXjW9WFSIebZ2RDY%W}KTy7#PB5YxEbX9O<VRU6=B04cPH8wOfGBr0jEFxiPa&tssc~53nWo2t3IwB%0B4KHAb5v<<Wg<EvA}k_uVRUJ3XCgWxR8}oeM<OgDX>DX;Nn|2AB6M^xF)%YTH8~<IB6?wPGHG;4WFk5uA}k_dWMpMzB03^6FfceRFfuJLG$1fAIxsLgFfbx4B4K1?Wn@BmB04cFB6DeUWl~{uX>MmCIyo*eEFyDhbY)UubZKs9LvM9%bRs%4GB`FYB6DnYXCgWxVqtV`VQwvSXk{&7ZfR{{bY)~Mb7gXAWpg5ZeE",
+  "created_at": "2022-10-04T02:23:32.635213",
+  "elapsed": 0.022235,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "753",
+    "Connection": "keep-alive",
+    "Date": "Mon, 03 Oct 2022 13:21:37 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "Last-Modified": "Tue, 28 Jun 2022 18:56:19 GMT",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Vary": "Accept-Language",
+    "X-Cache": "Hit from cloudfront",
+    "Via": "1.1 e0da386af572b426a5c2bf11a094fdf4.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "Vops6Y0MmQJuG_aLVl9vPUYhygQjWih3yvWcMQYF65yNq3NpbUBMZw==",
+    "Age": "46915"
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTUwMTEsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDIxMX0.PdkCf9oly6FF1JlEem4gU_ylHedsfELM9NYq5e7tjgqb85Pmfeo4L7sxOthiz1iQXeOXj4Hc8tEHNHUsC53dTr1Vcv2FEklZ17u7cKEvGP1El-8v4H9JEH3Ti_sdbqA5A6X9ZuCHj6GQUEt8rBAibC3LXs8rtiMc9XyQEGizLMTFhaFxz7geyBewQOvz39WckcICAollcFueZpjwBKl5F8YlC-2eigsEZrkP32kw16eBZcAhEQDGCxhojVA1SKz_k6vxD25uQpRULJ9kfZk3jD9Zd5KtcfcROThsLqCHPXgOy9GQQTuh4W4wgEA0gVDf1vmZAQoDiPRIqHmSSyvfqA"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/series/76168"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/series/76168"
+}

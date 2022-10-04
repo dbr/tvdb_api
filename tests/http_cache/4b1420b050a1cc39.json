@@ -1,0 +1,46 @@
+{
+  "_content": "dm?0EbYUVodm?FMB04uXI5#vbB6DSOX=QUsWFk5uA}k_vWpZg{b53DxWg<EvMrm?oW^8#PEFxiSX<>6^b0RuhB2#5@Wo~J7c_LjbB6DS7b8l`UIwCP5EFy4kb97~LB03^)Z*z2Ia&s>?I5;;nEix`@aAzVcB4S}~Ze?;JIwEIsVQ^?^V_|GBH!wLjEoUxjaAzVcB4%N3VRCdLIwEFaZeenCFK=>bXK8L>Y%e!BI5#vcF)=P`aAzVcB6D<MbaitgIwD1GWMyO`EFxxUa&vS+X>w&`B03^6FfcMLFgYzUFd{4>Ze?_LZ*prQIwD3-SRyPUZe?_LZ*pr%WFk5uF*7kZA}k_ub#8QNZDk@lA~ZE3EFx@SZfA92XJsNfB4utOEFx!RZgOQJI$I(^WOik4bairNA}k_Aa$#*@A}k_PV`*h>V`U&lX=8M0Z*C%8EFy1qWpZ|DWp^SvB1vu_bZBKDW?^zIWNCABVQzFFW_5IRa%C(aLt$`qVQFq4O<`<fZ)|NKTp~?jY+NEBQe}B=Z){|9AZc?TVIXp4Ze?d-WMv>`Z*pyAav)-IZ+C7jV{c(}AaiAMXJuh-bSxllZ+9Scb#iWHWFT{Gb!TU6WpW@~buch8HXw3uXLV&PAa`hQAZc?TbZBKDV{dJ3VQyq)av*PJAYmYLZDDL|AaihGV`XD<VP<qJAa`kWXdq!AY;SpCY#?Z1Ze%TRX=7_;WFTX5Wp^NLVPs_>b#NeWW*~HEWgup0a&vSbZDDj}EFfBMWgu5!a&l#EJ0NsuWgu{AY;SZRNN-|cZXjGDS7CE#Tp}P>VRL9=b#iVyAarPDAZK-MXDw)NAZK!QZge0@VR>$4AVY6rVmlyoXk{Q}Zf9w3Wo2?8OJR9zWn~~na(QJtAarPDAZB%EX>@6JWpf}zaxNfKX>D(AAXH&(AYpD~AZTfGAaHYeV`yn(AaiMRbY*fNQfYQ&axNfLZ)at6Xk~INAarPDc_4IhVRmI~AarPDAZB55AaZ44V`yb_Aa7<Mb8ul}Wguy8AaiA5a${&9Z)PB7Z*OEQAZ>4MWqB+hVQyp~VQzVJXlZU|AarjaY-x67Aa8CiA}k_oVRLj<aAaY0Wn>~cF*Y_dGch?cGB_+EVQF%6L}7VPW>;lpYa%)#A}k_dX>xN^X>Da9IwB%0B64ALX>MmCIwDk7Eip7AEFx)bWMWBVB03^;bTBh8Gc-0aA}k_$VQ?~ObV+0)IwB%0B4K1?Wn>~cA~G;AI4v+TEig17FfckWFgh?WA}k_dWMpMzLU|%OF)Si;X>?^$VRUJ3XCgW|E;TG7b7^#CQekvyZf8Spb#8PbIx#dfH!v(Bb8K~IB03^wX>w&|Y<VJmeE",
+  "created_at": "2022-10-04T02:23:32.022816",
+  "elapsed": 0.024231,
+  "encoding": "utf-8",
+  "headers": {
+    "Content-Type": "application/json; charset=utf-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Date": "Mon, 03 Oct 2022 19:31:32 GMT",
+    "Cache-Control": "private, max-age=86400",
+    "Last-Modified": "Tue, 27 Sep 2022 22:55:28 GMT",
+    "X-Powered-By": "Thundar!",
+    "X-Thetvdb-Api-Version": "3.0.0",
+    "Content-Encoding": "gzip",
+    "Vary": "Accept-Encoding,Accept-Language",
+    "X-Cache": "Hit from cloudfront",
+    "Via": "1.1 e0da386af572b426a5c2bf11a094fdf4.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Pop": "MEL50-C2",
+    "X-Amz-Cf-Id": "xqaMAMpfx1T7gdKafdCK53OW4Fs3f9eFe9QLbQ80AkaZMeGWGsNEIg==",
+    "Age": "24720"
+  },
+  "raw": {
+    "decode_content": false,
+    "reason": "OK",
+    "status": 200,
+    "version": 11
+  },
+  "reason": "OK",
+  "request": {
+    "body": "PH%2y",
+    "headers": {
+      "User-Agent": "python-requests/2.28.1",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept": "application/json",
+      "Connection": "keep-alive",
+      "Content-Type": "application/json",
+      "Accept-Language": "en",
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NjU0NTUwMTEsImlkIjoidHZkYl9hcGkgdGVzdHMiLCJvcmlnX2lhdCI6MTY2NDg1MDIxMX0.PdkCf9oly6FF1JlEem4gU_ylHedsfELM9NYq5e7tjgqb85Pmfeo4L7sxOthiz1iQXeOXj4Hc8tEHNHUsC53dTr1Vcv2FEklZ17u7cKEvGP1El-8v4H9JEH3Ti_sdbqA5A6X9ZuCHj6GQUEt8rBAibC3LXs8rtiMc9XyQEGizLMTFhaFxz7geyBewQOvz39WckcICAollcFueZpjwBKl5F8YlC-2eigsEZrkP32kw16eBZcAhEQDGCxhojVA1SKz_k6vxD25uQpRULJ9kfZk3jD9Zd5KtcfcROThsLqCHPXgOy9GQQTuh4W4wgEA0gVDf1vmZAQoDiPRIqHmSSyvfqA"
+    },
+    "method": "GET",
+    "url": "https://api.thetvdb.com/series/78874"
+  },
+  "status_code": 200,
+  "url": "https://api.thetvdb.com/series/78874"
+}

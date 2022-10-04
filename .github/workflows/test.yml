@@ -13,7 +13,7 @@ jobs:
           - '3.7'
           - '3.8'
           - '3.9'
-          # - '3.10' # FIXME: Reenable, checking maybe-odd failure in GH
+          - '3.10'
         os:
           - ubuntu-latest
           - macOS-latest

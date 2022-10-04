@@ -458,6 +458,9 @@ class TestTvdbShowSearch:
         all_ids = [x['id'] for x in results]
         assert 75397 in all_ids
 
+def raise_error(e):
+    raise e
+
 class TestConsoleUI:
     @unittest.mock.patch('builtins.input', lambda *args: '1')
     def test_first_option(self):
@@ -471,6 +474,39 @@ class TestConsoleUI:
         episode = t['scrubs'][1][2]
         # Test second result is anything but the first option (not being specific to avoid sporadic test failures if results change order)
         assert episode['episodeName'] != 'My Mentor'
+
+    def test_select_first(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI, select_first=True)
+        episode = t['scrubs'][1][2]
+        assert episode['episodeName'] == 'My Mentor'
+
+    @unittest.mock.patch('builtins.input', lambda *args: 'asdfasdf')
+    def test_first_option(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        episode = t['cnnnn'][1][2]
+        assert episode['episodeName'] == 'Terrorthon'
+
+    @unittest.mock.patch('builtins.input', lambda *args: raise_error(KeyboardInterrupt("Stopit")))
+    def test_select_interrupted(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        try:
+            episode = t['scrubs'][1][2]
+        except tvdb_api.TvdbUserAbort as e:
+            pass
+        else:
+            # Expected error
+            assert False
+
+    @unittest.mock.patch('builtins.input', lambda *args: raise_error(EOFError()))
+    def test_select_error(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        try:
+            episode = t['scrubs'][1][2]
+        except tvdb_api.TvdbUserAbort as e:
+            pass
+        else:
+            # Expected error
+            assert False
 
 
 class TestTvdbAltNames:

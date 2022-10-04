@@ -246,7 +246,7 @@ class TestTvdbMisc:
         """Check repr() of Season
         """
         assert (
-            repr(self.t['CNNNN']).replace("u'", "'")
+            repr(self.t['CNNNN'])
             == "<Show 'Chaser Non-Stop News Network (CNNNN)' (containing 3 seasons)>"
         )
 
@@ -258,7 +258,7 @@ class TestTvdbMisc:
     def test_repr_episode(self):
         """Check repr() of Episode
         """
-        assert repr(self.t['CNNNN'][1][1]).replace("u'", "'") == "<Episode 01x01 - 'Terror Alert'>"
+        assert repr(self.t['CNNNN'][1][1]) == "<Episode 01x01 - 'Terror Alert'>"
 
     def test_available_langs(self):
         """Check available_languages returns something sane looking

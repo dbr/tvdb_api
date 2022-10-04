@@ -28,18 +28,11 @@ import tempfile
 import warnings
 import logging
 import hashlib
+from urllib.parse import quote as url_quote
 
 import requests
 import requests_cache
 
-_DEFAULT_HEADERS = requests.utils.default_headers()
-
-
-def _to_bytes(s, encoding='utf-8'):
-    return s if isinstance(s, bytes) else bytes(s, encoding)
-
-
-from urllib.parse import quote as url_quote
 
 LOG = logging.getLogger("tvdb_api")
 

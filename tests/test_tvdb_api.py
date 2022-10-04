@@ -11,14 +11,13 @@
 
 import os
 import sys
-import types
 import datetime
 import pytest
 
 # Force parent directory onto path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import tvdb_api  # noqa: E402
+import tvdb_api
 from tvdb_api import (
     TvdbShowNotFound,
     TvdbSeasonNotFound,
@@ -27,16 +26,8 @@ from tvdb_api import (
 )
 
 
-import requests_cache.backends  # noqa: E402
-import requests_cache.backends.base  # noqa: E402
-
-
-try:
-    from collections.abc import MutableMapping
-except ImportError:
-    from collections import MutableMapping
-
-import pickle  # noqa: E402
+import requests_cache.backends
+import requests_cache.backends.base
 
 
 # By default tests use persistent (committed to Git) cache.
@@ -310,15 +301,6 @@ class TestTvdbUnicode:
         assert type(show) == tvdb_api.Show
         assert show['seriesName'] == u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i'
 
-    @pytest.mark.skip('Новое API не возвращает сразу все языки')
-    def test_search_in_all_languages(self):
-        """Check search_all_languages returns Chinese show, with language=en
-        """
-        t = tvdb_api.Tvdb(cache=get_test_cache_session(), search_all_languages=True, language="en")
-        show = t[u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i']
-        assert type(show) == tvdb_api.Show
-        assert show['seriesName'] == u'Virtues Of Harmony II'
-
 
 class TestTvdbBanners:
     # Used to store the cached instance of Tvdb()
@@ -343,13 +325,11 @@ class TestTvdbBanners:
                     for bid, banner_info in res_data.items():
                         assert banner_info['_bannerpath'].startswith("http://")
 
-    @pytest.mark.skip('В новом API нет картинки у эпизода')
     def test_episode_image(self):
         """Checks episode 'filename' image is fully qualified URL
         """
         assert self.t['scrubs'][1][1]['filename'].startswith("http://")
 
-    @pytest.mark.skip('В новом API у сериала кроме банера больше нет картинок')
     def test_show_artwork(self):
         """Checks various image URLs within season data are fully qualified
         """
@@ -422,7 +402,7 @@ class TestTvdbCustomCaching:
     def test_custom_request_session(self):
         from requests import Session as OriginalSession
 
-        class Used(Exception):
+        class Used(Exception):  # noqa: N818
             pass
 
         class CustomCacheForTest(OriginalSession):
@@ -504,9 +484,4 @@ class TestTvdbAltNames:
 
 
 if __name__ == '__main__':
-    cache = get_test_cache_session()
-    t = tvdb_api.Tvdb(cache=cache)
-    t['scrubs'][1][2]
-    t = tvdb_api.Tvdb(cache=cache)
-    t['scrubs'][1][2]
-    # pytest.main()
+    pytest.main()

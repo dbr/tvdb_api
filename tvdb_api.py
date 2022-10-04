@@ -506,7 +506,6 @@ class Tvdb:
         actors=False,
         custom_ui=None,
         language=None,
-        search_all_languages=False,
         apikey=None,
         username=None,
         userkey=None,
@@ -556,11 +555,6 @@ class Tvdb:
             the `Tvdb.available_languages` method.
             Default is "en" (English).
 
-        search_all_languages (True/False):
-            By default, Tvdb will only search in the language specified using
-            the language option. When this is True, it will search for the
-            show in and language
-
         apikey (str/unicode):
             Your API key for TheTVDB. You can easily register a key with in
             a few minutes:
@@ -602,8 +596,6 @@ class Tvdb:
         self.config['interactive'] = interactive  # prompt for correct series?
 
         self.config['select_first'] = select_first
-
-        self.config['search_all_languages'] = search_all_languages
 
         self.config['dvdorder'] = dvdorder
 

@@ -6,6 +6,7 @@
   [PR #97](https://github.com/dbr/tvdb_api/pull/97)
 - Removed deprecated `tvdb_*` exceptions (e.g `tvdb_error` is now `TvdbError`)
 - Remove deprecated `Tvdb(forceConnect=...)` option
+- Remove 'search_all_languages' option - had no effect
 
 ## `3.1` - 2021-04-29
 

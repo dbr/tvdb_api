@@ -12,6 +12,7 @@
 import os
 import sys
 import datetime
+import unittest.mock
 import pytest
 
 # Force parent directory onto path
@@ -457,6 +458,20 @@ class TestTvdbShowSearch:
         results = self.t.search("my name is earl")
         all_ids = [x['id'] for x in results]
         assert 75397 in all_ids
+
+class TestConsoleUI:
+    @unittest.mock.patch('builtins.input', lambda *args: '1')
+    def test_first_option(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        episode = t['scrubs'][1][2]
+        assert episode['episodeName'] == 'My Mentor'
+
+    @unittest.mock.patch('builtins.input', lambda *args: '2')
+    def test_second_option(self):
+        t = tvdb_api.Tvdb(cache=get_test_cache_session(), custom_ui=tvdb_api.ConsoleUI)
+        episode = t['scrubs'][1][2]
+        # Test second result is anything but the first option (not being specific to avoid sporadic test failures if results change order)
+        assert episode['episodeName'] != 'My Mentor'
 
 
 class TestTvdbAltNames:

@@ -193,11 +193,11 @@ class ConsoleUI(BaseUI):
             )
             print(output)
 
-    def selectSeries(self, allSeries):
+    def selectSeries(self, allSeries):  # noqa: N802 # Deprecated
         """Deprecated: use `select_series` method instead
         """
 
-        return self._selectSeries(all_series=allSeries)
+        return self.select_series(all_series=allSeries)
 
     def select_series(self, all_series):  # noqa: N802 # Deprecated
         self._display_series(all_series)
@@ -842,7 +842,7 @@ class Tvdb:
                 LOG.debug('Interactively selecting show using ConsoleUI')
                 ui = ConsoleUI(config=self.config)
 
-        return ui.selectSeries(all_series)
+        return ui.select_series(all_series)
 
     def available_languages(self):
         """Returns a list of the available language abbreviations

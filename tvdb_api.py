@@ -573,7 +573,7 @@ class Tvdb:
 
         self.config = {}
 
-        # Ability to pull key form env-var mostly for unit-tests
+        # Ability to pull key from env-var mostly for unit-tests
         _test_key = os.getenv('TVDB_API_KEY')
         if apikey is None and _test_key is not None:
             apikey = _test_key

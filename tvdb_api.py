@@ -162,8 +162,13 @@ class BaseUI(object):
             )
             self.log = logging.getLogger(__name__)
 
-    def selectSeries(self, allSeries):
-        return allSeries[0]
+    def selectSeries(self, allSeries):  # noqa: N802 # Deprecated
+        """Deprecated: use `select_series` method instead
+        """
+        self.select_series(all_series=allSeries)
+
+    def select_series(self, all_series):
+        return all_series[0]
 
 
 class ConsoleUI(BaseUI):
@@ -199,9 +204,10 @@ class ConsoleUI(BaseUI):
     def selectSeries(self, allSeries):
         """Deprecated: use `select_series` method instead
         """
+
         return self._selectSeries(all_series=allSeries)
 
-    def select_series(self, all_series):
+    def select_series(self, all_series):  # noqa: N802 # Deprecated
         self._display_series(all_series)
 
         if len(all_series) == 1:

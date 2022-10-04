@@ -13,7 +13,10 @@ import os
 import sys
 import datetime
 import unittest.mock
+
 import pytest
+import requests_cache.backends
+import requests_cache.backends.base
 
 # Force parent directory onto path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,10 +28,6 @@ from tvdb_api import (
     TvdbEpisodeNotFound,
     TvdbAttributeNotFound,
 )
-
-
-import requests_cache.backends
-import requests_cache.backends.base
 
 
 def get_test_cache_session():

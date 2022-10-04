@@ -773,13 +773,6 @@ class Tvdb:
         self.headers['Authorization'] = "Bearer %s" % str(token)
         self.__authorized = True
 
-    def _getetsrc(self, url, language=None):
-        """Loads a URL using caching, returns an ElementTree of the source
-        """
-        src = self._load_url(url, language=language)
-
-        return src
-
     def _set_item(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
         Episode()s as required. Called by _getShowData to populate show
@@ -816,7 +809,7 @@ class Tvdb:
         """
         series = url_quote(series.encode("utf-8"))
         LOG.debug("Searching for show %s" % series)
-        series_resp = self._getetsrc(self.config['url_getSeries'] % (series))
+        series_resp = self._load_url(self.config['url_getSeries'] % (series))
         if not series_resp:
             LOG.debug('Series result returned zero')
             raise TvdbShowNotFound(
@@ -856,7 +849,7 @@ class Tvdb:
         """Returns a list of the available language abbreviations
         which can be used in Tvdb(language="...") etc
         """
-        et = self._getetsrc("https://api.thetvdb.com/languages")
+        et = self._load_url("https://api.thetvdb.com/languages")
         languages = [x['abbreviation'] for x in et]
         return sorted(languages)
 
@@ -879,10 +872,10 @@ class Tvdb:
         This interface will be improved in future versions.
         """
         LOG.debug('Getting season banners for %s' % (sid))
-        banners_resp = self._getetsrc(self.config['url_seriesBanner'] % sid)
+        banners_resp = self._load_url(self.config['url_seriesBanner'] % sid)
         banners = {}
         for cur_banner in banners_resp.keys():
-            banners_info = self._getetsrc(self.config['url_seriesBannerInfo'] % (sid, cur_banner))
+            banners_info = self._load_url(self.config['url_seriesBannerInfo'] % (sid, cur_banner))
             for banner_info in banners_info:
                 bid = banner_info.get('id')
                 btype = banner_info.get('keyType')
@@ -937,7 +930,7 @@ class Tvdb:
         data from the XML)
         """
         LOG.debug("Getting actors for %s" % (sid))
-        actors_resp = self._getetsrc(self.config['url_actorsInfo'] % (sid))
+        actors_resp = self._load_url(self.config['url_actorsInfo'] % (sid))
 
         cur_actors = Actors()
         for cur_actor_item in actors_resp:
@@ -968,7 +961,7 @@ class Tvdb:
 
         # Parse show information
         LOG.debug('Getting all series data for %s' % (sid))
-        series_info_resp = self._getetsrc(self.config['url_seriesInfo'] % sid)
+        series_info_resp = self._load_url(self.config['url_seriesInfo'] % sid)
         for tag, value in series_info_resp.items():
             if value is not None:
                 if tag in ['banner', 'fanart', 'poster']:
@@ -991,7 +984,7 @@ class Tvdb:
 
         url = self.config['url_epInfo'] % sid
 
-        eps_resp = self._getetsrc(url, language=language)
+        eps_resp = self._load_url(url, language=language)
 
         for cur_ep in eps_resp:
 

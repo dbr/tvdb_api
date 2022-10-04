@@ -34,28 +34,12 @@ import requests_cache
 
 _DEFAULT_HEADERS = requests.utils.default_headers()
 
+
 def _to_bytes(s, encoding='utf-8'):
     return s if isinstance(s, bytes) else bytes(s, encoding)
 
 
-IS_PY2 = sys.version_info[0] == 2
-
-if IS_PY2:
-    user_input = raw_input  # noqa
-    from urllib import quote as url_quote  # noqa
-else:
-    from urllib.parse import quote as url_quote
-
-    user_input = input
-
-
-if IS_PY2:
-    int_types = (int, long)  # noqa
-    text_type = unicode  # noqa
-else:
-    int_types = int
-    text_type = str
-
+from urllib.parse import quote as url_quote
 
 LOG = logging.getLogger("tvdb_api")
 
@@ -234,10 +218,7 @@ class ConsoleUI(BaseUI):
                 str(cshow['id']),
                 extra,
             )
-            if IS_PY2:
-                print(output.encode("UTF-8", "ignore"))
-            else:
-                print(output)
+            print(output)
 
     def selectSeries(self, allSeries):
         self._displaySeries(allSeries)
@@ -254,7 +235,7 @@ class ConsoleUI(BaseUI):
         while True:  # return breaks this loop
             try:
                 print("Enter choice (first number, return for default, 'all', ? for help):")
-                ans = user_input()
+                ans = input()
             except KeyboardInterrupt:
                 raise tvdb_userabort("User aborted (^c keyboard interupt)")
             except EOFError:
@@ -496,14 +477,14 @@ class Episode(dict):
         if term is None:
             raise TypeError("must supply string to search for (contents)")
 
-        term = text_type(term).lower()
+        term = str(term).lower()
         for cur_key, cur_value in self.items():
-            cur_key = text_type(cur_key)
-            cur_value = text_type(cur_value).lower()
+            cur_key = str()(cur_key)
+            cur_value = str(cur_value).lower()
             if key is not None and cur_key != key:
                 # Do not search this key
                 continue
-            if cur_value.find(text_type(term)) > -1:
+            if cur_value.find(str(term)) > -1:
                 return self
 
 
@@ -865,7 +846,7 @@ class Tvdb:
             if error == u'Not Authorized':
                 raise (tvdb_notauthorized)
         token = r_json.get('token')
-        self.headers['Authorization'] = "Bearer %s" % text_type(token)
+        self.headers['Authorization'] = "Bearer %s" % str(token)
         self.__authorized = True
 
     def _getetsrc(self, url, language=None):
@@ -1146,7 +1127,7 @@ class Tvdb:
         """Handles tvdb_instance['seriesName'] calls.
         The dict index should be the show id
         """
-        if isinstance(key, int_types):
+        if isinstance(key, int):
             sid = key
         else:
             sid = self._nameToSid(key)

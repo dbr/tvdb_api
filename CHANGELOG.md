@@ -8,6 +8,7 @@
 - Removed deprecated `tvdb_*` exceptions (e.g `tvdb_error` is now `TvdbError`)
 - Remove deprecated `Tvdb(forceConnect=...)` option
 - Remove 'search_all_languages' option - had no effect
+- Remove `self.log` from custom UI's (which inherit from `BaseUI` etc)
 
 ## `3.1` - 2021-04-29
 

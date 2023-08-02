@@ -103,14 +103,12 @@ class FileCache(requests_cache.backends.base.BaseCache):
         self.keys_map = FileCacheDict(base_dir=fc_base_dir)
 
 
-requests_cache.backends.registry['tvdb_api_file_cache'] = FileCache
-
 
 def get_test_cache_session():
     here = os.path.dirname(os.path.abspath(__file__))
     additional = "_py2" if sys.version_info[0] == 2 else ""
     sess = requests_cache.CachedSession(
-        backend="tvdb_api_file_cache",
+        backend="filesystem",
         fc_base_dir=os.path.join(here, "httpcache%s" % additional),
         include_get_headers=True,
         allowable_codes=(200, 404),

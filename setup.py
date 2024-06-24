@@ -13,29 +13,27 @@ else:
 
 setup(
     name='tvdb_api',
-    version='3.1.0',
+    version='3.2.1',
 
     author='dbr/Ben',
+    author_rev='doudalidou/jy',
     description='Interface to thetvdb.com',
-    url='http://github.com/dbr/tvdb_api',
+    url='http://github.com/doudalidou/tvdb_api',
 
     long_description=long_description,
     long_description_content_type='text/markdown',
 
     py_modules=['tvdb_api'],
-    install_requires=['requests_cache', 'requests'],
+    install_requires=['requests_cache~=1.2.1', 'requests~=2.32.3'],
 
     classifiers=[
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Multimedia",
         "Topic :: Utilities",
         "Topic :: Software Development :: Libraries :: Python Modules",

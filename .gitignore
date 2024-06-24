@@ -5,3 +5,8 @@ dist/*.tar.gz
 /.mypy_cache
 /.coverage
 /htmlcov
+.vscode/settings.json
+*.sqlite
+tests/http_cache/*
+.vscode/*
+build/*

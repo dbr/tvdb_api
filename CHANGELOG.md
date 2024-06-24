@@ -1,5 +1,19 @@
 # Changelog
 
+## `3.2.1` - 2024-06-22
+- Bug fix for `TVDB Api` error `No results for your query: map[]` thrown on a corrupted links section while getting incorrect page total and next page information (by Doudalidou)
+
+
+## `3.2` - 2024-06-21
+
+- Dropped support for Python 2. Only maintained versions of Python are supported (currently Python 3.9 onwards) (by Doudalidou)
+- Support newer requests-cache version (1.2.1 onwards) (by Doudalidou)
+  [PR #97](https://github.com/dbr/tvdb_api/pull/97)
+- Removed deprecated `tvdb_*` exceptions (e.g `tvdb_error` is now `TvdbError`)
+- Remove deprecated `Tvdb(forceConnect=...)` option
+- Remove 'search_all_languages' option - had no effect
+- Remove `self.log` from custom UI's (which inherit from `BaseUI` etc)
+
 ## `3.1` - 2021-04-29
 
 - Rename exceptions to conventional PEP8 naming syntax, e.g `tvdb_error` becomes `TvdbError`, `tvdb_episodenotfound` becomes `TvdbEpisodeNotFound` etc. All exceptions have changed. Backwards-compatible bindings to old names exist until next version (i.e will be removed in version 3.2)

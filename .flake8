@@ -1,7 +1,8 @@
 [flake8]
 max-line-length = 100
 ignore =
-    N802, # FIXME: tidy up camel case naming mess then re-enable these
-    N803,
-
     W503, # Contradicts PEP8
+
+    E402, # breaks sys.path addition etc
+
+    N818, # Wants 'Error' suffix on exception names

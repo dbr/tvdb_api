@@ -528,7 +528,7 @@ class Actor(dict):
         return "<Actor %r>" % self.get("name")
 
 
-def create_key(self, request):
+def create_key(self, request, **kwargs):
     """A new cache_key algo is required as the authentication token
     changes with each run. Also there are other header params which
     also change with each request (e.g. timestamp). Excluding all
@@ -544,7 +544,8 @@ def create_key(self, request):
     cache is to be used thus saving host and network traffic.
     """
 
-    if self._ignored_parameters:
+    # Use 'ignored_parameters' if present (instead of _ignored_parameters) #balls
+    if getattr(self, 'ignored_parameters', None):
         url, body = self._remove_ignored_parameters(request)
     else:
         url, body = request.url, request.body
@@ -554,7 +555,7 @@ def create_key(self, request):
     if request.body:
         key.update(_to_bytes(body))
     else:
-        if self._include_get_headers and request.headers != _DEFAULT_HEADERS:
+        if getattr(self, '_include_get_headers', False) and request.headers != _DEFAULT_HEADERS:
             for name, value in sorted(request.headers.items()):
                 # include only Accept-Language as it is important for context
                 if name in ['Accept-Language']:

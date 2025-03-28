@@ -5,3 +5,5 @@ dist/*.tar.gz
 /.mypy_cache
 /.coverage
 /htmlcov
+*.sublime-project
+*.sublime-workspace

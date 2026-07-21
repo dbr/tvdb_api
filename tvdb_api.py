@@ -135,18 +135,18 @@ class TvdbAttributeNotFound(TvdbDataNotFound):
     pass
 
 
-# Backwards compatability re-bindings
-tvdb_exception = TvdbBaseException  # Deprecated, for backwards compatability
-tvdb_error = TvdbError  # Deprecated, for backwards compatability
-tvdb_userabort = TvdbUserAbort  # Deprecated, for backwards compatability
-tvdb_notauthorized = TvdbNotAuthorized  # Deprecated, for backwards compatability
-tvdb_shownotfound = TvdbShowNotFound  # Deprecated, for backwards compatability
-tvdb_seasonnotfound = TvdbSeasonNotFound  # Deprecated, for backwards compatability
-tvdb_episodenotfound = TvdbEpisodeNotFound  # Deprecated, for backwards compatability
-tvdb_resourcenotfound = TvdbResourceNotFound  # Deprecated, for backwards compatability
-tvdb_attributenotfound = TvdbAttributeNotFound  # Deprecated, for backwards compatability
+# Backwards compatibility re-bindings
+tvdb_exception = TvdbBaseException  # Deprecated, for backwards compatibility
+tvdb_error = TvdbError  # Deprecated, for backwards compatibility
+tvdb_userabort = TvdbUserAbort  # Deprecated, for backwards compatibility
+tvdb_notauthorized = TvdbNotAuthorized  # Deprecated, for backwards compatibility
+tvdb_shownotfound = TvdbShowNotFound  # Deprecated, for backwards compatibility
+tvdb_seasonnotfound = TvdbSeasonNotFound  # Deprecated, for backwards compatibility
+tvdb_episodenotfound = TvdbEpisodeNotFound  # Deprecated, for backwards compatibility
+tvdb_resourcenotfound = TvdbResourceNotFound  # Deprecated, for backwards compatibility
+tvdb_attributenotfound = TvdbAttributeNotFound  # Deprecated, for backwards compatibility
 
-tvdb_invalidlanguage = TvdbError  # Unused/removed. This exists for backwards compatability.
+tvdb_invalidlanguage = TvdbError  # Unused/removed. This exists for backwards compatibility.
 
 
 # UI
